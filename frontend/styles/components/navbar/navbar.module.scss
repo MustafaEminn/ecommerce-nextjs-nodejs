@@ -1,0 +1,57 @@
+.navbarHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  margin: 0 auto;
+
+  .navbarHeadUserSectionContainer {
+    .navbarHeadUserSectionUl {
+      display: flex;
+
+      & li div {
+        display: flex;
+
+        & span {
+          font-size: 12px;
+          font-family: var(--source-sans-pro);
+          margin: 0 0 0 5px;
+        }
+      }
+
+      .navbarHeadUserSectionLiMyAccount {
+        margin: 0 14px 0 0;
+
+        & span {
+          transition: all 0.2s;
+        }
+      }
+
+      .navbarHeadUserSectionLiMyAccount:hover {
+        & span {
+          color: var(--main-color);
+        }
+
+        & svg {
+          fill: var(--main-color);
+        }
+      }
+
+      .navbarHeadUserSectionLiMyCart {
+        & span {
+          transition: all 0.2s;
+        }
+      }
+
+      .navbarHeadUserSectionLiMyCart:hover {
+        & span {
+          color: var(--main-color);
+        }
+
+        & svg {
+          fill: var(--main-color);
+        }
+      }
+    }
+  }
+}

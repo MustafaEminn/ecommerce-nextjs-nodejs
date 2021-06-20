@@ -1,0 +1,23 @@
+.searchBarContainer {
+  width: 590px;
+  position: relative;
+
+  .searchBar {
+    outline: none;
+    border: none;
+    width: 539px;
+    height: 20px;
+    padding: 10px 40px 10px 15px;
+    border-radius: 6px;
+    background-color: var(--textInput-background);
+    font-family: var(--source-sans-pro);
+    font-size: 14px;
+  }
+
+  .searchBarIcon {
+    fill: var(--main-color);
+    position: absolute;
+    right: 15px;
+    top: 10px;
+  }
+}

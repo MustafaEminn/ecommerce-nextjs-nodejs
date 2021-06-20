@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Fabiolla";
+  src: url(../../../public/fonts/Fabiolla.ttf) format("truetype");
+}
+
+.logo {
+  font-family: "Fabiolla";
+  color: var(--logo-color);
+}
