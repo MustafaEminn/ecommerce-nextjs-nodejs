@@ -9,4 +9,14 @@ export const PAGE = {
     urlPathname: "hakkimizda",
     href: "/hakkimizda",
   },
+  Hesabim: {
+    name: "Hesabım",
+    urlPathname: "hesabim",
+    href: "/hesabim",
+  },
+  Sepetim: {
+    name: "Sepetim",
+    urlPathname: "sepetim",
+    href: "/sepetim",
+  },
 };

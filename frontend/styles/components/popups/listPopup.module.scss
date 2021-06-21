@@ -1,0 +1,22 @@
+.popupContainer {
+  position: relative;
+
+  &:hover {
+    & .listPopupContainer {
+      display: flex;
+    }
+  }
+
+  .listPopupContainer {
+    display: none;
+    position: absolute;
+    left: -100%;
+
+    & .listPopup {
+      padding: 7px;
+      background-color: var(--modal-background);
+      box-shadow: var(--modal-shadow);
+      border: 1px solid var(--border-gray);
+    }
+  }
+}

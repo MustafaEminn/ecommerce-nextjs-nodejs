@@ -6,6 +6,7 @@ import Logo from "../logo";
 import SearchBar from "../SearchBar/searchbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ListPopupContainer, ListPopup } from "../popups/listPopup";
 
 function Navbar() {
   const router = useRouter();
@@ -25,6 +26,16 @@ function Navbar() {
     );
   };
 
+  const NavbarPopupItem = ({ title }) => {
+    return (
+      <li className={styles.navbarPopupItem}>
+        <Link href={PAGE.Hesabim.href}>
+          <a>{title}</a>
+        </Link>
+      </li>
+    );
+  };
+
   return (
     <div>
       {/* Navbar Head Begin */}
@@ -35,16 +46,30 @@ function Navbar() {
         <div className={styles.navbarHeadUserSectionContainer}>
           <ul className={styles.navbarHeadUserSectionUl}>
             <li className={styles.navbarHeadUserSectionLiMyAccount}>
-              <div>
-                <UserIcon width="16px" height="16px" />
-                <span>Hesabım</span>
-              </div>
+              <ListPopupContainer>
+                <Link href={PAGE.Hesabim.href}>
+                  <a>
+                    <UserIcon width="16px" height="16px" />
+                    <span>Hesabım</span>
+                  </a>
+                </Link>
+                <ListPopup>
+                  <ul>
+                    <NavbarPopupItem title="Hesabım" />
+                    <NavbarPopupItem title="Siparişlerim" />
+                    <NavbarPopupItem title="Çıkış Yap" />
+                  </ul>
+                </ListPopup>
+              </ListPopupContainer>
             </li>
+
             <li className={styles.navbarHeadUserSectionLiMyCart}>
-              <div>
-                <ShoppingCartIcon width="16px" height="16px" />
-                <span>Sepetim</span>
-              </div>
+              <Link href={PAGE.Sepetim.href}>
+                <a>
+                  <ShoppingCartIcon width="16px" height="16px" />
+                  <span>Sepetim</span>
+                </a>
+              </Link>
             </li>
           </ul>
         </div>

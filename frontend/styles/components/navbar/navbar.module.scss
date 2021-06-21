@@ -9,7 +9,7 @@
     .navbarHeadUserSectionUl {
       display: flex;
 
-      & li div {
+      & li a {
         display: flex;
 
         & span {
@@ -24,6 +24,19 @@
 
         & span {
           transition: all 0.2s;
+        }
+
+        & .navbarPopupItem {
+          width: 200px;
+          & a {
+            padding: 15px;
+            font-size: 14px;
+            font-family: var(--source-sans-pro);
+          }
+
+          & a:hover {
+            color: var(--main-color);
+          }
         }
       }
 

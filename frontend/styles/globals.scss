@@ -123,7 +123,13 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 /* Reset CSS End */
 
 @import "./variables/variables.scss";
 @import "./variables/fonts.scss";
+
+a {
+  text-decoration: none;
+  color: var(--link-color);
+}
