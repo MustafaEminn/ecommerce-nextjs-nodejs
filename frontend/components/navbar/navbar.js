@@ -7,6 +7,7 @@ import SearchBar from "../SearchBar/searchbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ListPopupContainer, ListPopup } from "../popups/listPopup";
+import Divider from "../divider/divider";
 
 function Navbar() {
   const router = useRouter();

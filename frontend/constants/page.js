@@ -19,4 +19,9 @@ export const PAGE = {
     urlPathname: "sepetim",
     href: "/sepetim",
   },
+  CokSatanlar: {
+    name: "Çok Satanlar",
+    urlPathname: "cok-satanlar",
+    href: "/cok-satanlar",
+  },
 };

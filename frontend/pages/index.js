@@ -2,6 +2,9 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.scss";
 import LayoutMain from "../components/Layout/layoutMain";
+import { PAGE } from "../constants";
+import Divider from "../components/divider/divider";
+import Link from "next/dist/client/link";
 
 export default function Home() {
   return (
@@ -13,6 +16,11 @@ export default function Home() {
       </Head>
 
       <LayoutMain>
+        <Divider direction="left">
+          <Link href={PAGE.CokSatanlar.href}>
+            <a>{PAGE.CokSatanlar.name}</a>
+          </Link>
+        </Divider>
         <div style={{ height: "100px" }}></div>
       </LayoutMain>
     </div>
