@@ -1,5 +1,6 @@
 .popupContainer {
   position: relative;
+  z-index: var(--list-popup-zindex);
 
   &:hover {
     & .listPopupContainer {

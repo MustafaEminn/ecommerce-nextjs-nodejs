@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--card-product-background);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--card-product-border);
+  padding: 15px;
+
+  &:hover {
+    & .linkTitle {
+      color: var(--main-color);
+    }
+  }
+
+  & .img {
+    width: 100%;
+    height: 150px;
+  }
+  & .linkTitle {
+    width: 100%;
+    padding: 15px 0 15px 0;
+    font-family: var(--source-sans-pro);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+  }
+}

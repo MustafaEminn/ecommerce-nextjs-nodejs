@@ -1,0 +1,21 @@
+.swiper-button-prev,
+.swiper-button-next {
+  color: var(--swiper-array-color) !important;
+  background-color: var(--swiper-background-color);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 0.5px solid var(--swiper-array-border-color);
+}
+
+.swiper-button-prev {
+  left: 5px !important;
+}
+
+.swiper-button-next {
+  right: 5px !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 29px !important;
+}

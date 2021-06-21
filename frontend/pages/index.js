@@ -1,12 +1,15 @@
 import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.scss";
+import styles from "../styles/pages/Home/Home.module.scss";
 import LayoutMain from "../components/Layout/layoutMain";
 import { PAGE } from "../constants";
 import Divider from "../components/divider/divider";
 import Link from "next/dist/client/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Navigation } from "swiper/core";
+import CardProduct from "../components/cards/cardProduct";
 
 export default function Home() {
+  SwiperCore.use([Navigation]);
   return (
     <div>
       <Head>
@@ -16,12 +19,32 @@ export default function Home() {
       </Head>
 
       <LayoutMain>
+        {/* Çok Satanlar Begin */}
         <Divider direction="left">
           <Link href={PAGE.CokSatanlar.href}>
             <a>{PAGE.CokSatanlar.name}</a>
           </Link>
         </Divider>
-        <div style={{ height: "100px" }}></div>
+        <Swiper
+          spaceBetween={25}
+          slidesPerView={5}
+          className={styles.swiperContainer}
+          navigation={true}
+        >
+          {Array(14)
+            .fill(0)
+            .map(() => {
+              return (
+                <SwiperSlide>
+                  <CardProduct
+                    title="Concept Davetiye - 5555"
+                    imageUrl="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
+                  />
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
+        {/* Çok Satanlar End */}
       </LayoutMain>
     </div>
   );
