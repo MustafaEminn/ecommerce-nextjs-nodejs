@@ -7,9 +7,15 @@ import Link from "next/dist/client/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Navigation } from "swiper/core";
 import CardProduct from "../components/cards/cardProduct";
+import Spacer from "../components/Spacer/spacer";
 
 export default function Home() {
   SwiperCore.use([Navigation]);
+  const SLIDES_PER_GROUP = 3;
+
+  const TopSwiperImage = ({ src }) => {
+    return <img height="600px" width="100%" src={src} />;
+  };
   return (
     <div>
       <Head>
@@ -19,6 +25,26 @@ export default function Home() {
       </Head>
 
       <LayoutMain>
+        {/* Top Swiper Begin */}
+        <Swiper
+          slidesPerView={1}
+          className={styles.swiperContainer}
+          navigation={true}
+        >
+          {Array(14)
+            .fill(0)
+            .map(() => {
+              return (
+                <SwiperSlide key={1}>
+                  <TopSwiperImage src="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg" />
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
+        {/* Top Swiper End */}
+
+        <Spacer top="25px" />
+
         {/* Çok Satanlar Begin */}
         <Divider direction="left">
           <Link href={PAGE.CokSatanlar.href}>
@@ -30,14 +56,16 @@ export default function Home() {
           slidesPerView={5}
           className={styles.swiperContainer}
           navigation={true}
+          slidesPerGroup={SLIDES_PER_GROUP}
         >
           {Array(14)
             .fill(0)
             .map(() => {
               return (
-                <SwiperSlide>
+                <SwiperSlide key={1}>
                   <CardProduct
                     title="Concept Davetiye - 5555"
+                    price={80}
                     imageUrl="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
                   />
                 </SwiperSlide>
@@ -45,6 +73,37 @@ export default function Home() {
             })}
         </Swiper>
         {/* Çok Satanlar End */}
+
+        <Spacer top="50px" />
+
+        {/* En Yeniler Begin */}
+        <Divider direction="left">
+          <Link href={PAGE.EnYeniler.href}>
+            <a>{PAGE.EnYeniler.name}</a>
+          </Link>
+        </Divider>
+        <Swiper
+          spaceBetween={25}
+          slidesPerView={5}
+          className={styles.swiperContainer}
+          navigation={true}
+          slidesPerGroup={SLIDES_PER_GROUP}
+        >
+          {Array(14)
+            .fill(0)
+            .map(() => {
+              return (
+                <SwiperSlide key={1}>
+                  <CardProduct
+                    title="Concept Davetiye - 5555"
+                    price={80}
+                    imageUrl="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
+                  />
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
+        {/* En Yeniler End */}
       </LayoutMain>
     </div>
   );

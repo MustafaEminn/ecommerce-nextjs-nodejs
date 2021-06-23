@@ -2,15 +2,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--main-color);
+  background-color: var(--button-gray);
   width: 80%;
-  padding: 5px;
+  padding: 5px 0px;
   border: none;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: var(--horizontal-middle-cart-button-hover-adding-color);
+    background-color: var(--horizontal-middle-product-button-hover--color);
   }
 
   & svg {

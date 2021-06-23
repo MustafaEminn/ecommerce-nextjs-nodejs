@@ -24,4 +24,9 @@ export const PAGE = {
     urlPathname: "cok-satanlar",
     href: "/cok-satanlar",
   },
+  EnYeniler: {
+    name: "En Yeniler",
+    urlPathname: "en-yeniler",
+    href: "/en-yeniler",
+  },
 };

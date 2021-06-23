@@ -19,10 +19,25 @@
   }
   & .linkTitle {
     width: 100%;
-    padding: 15px 0 15px 0;
+    padding: 15px 0 5px 0;
     font-family: var(--source-sans-pro);
     font-weight: 600;
     font-size: 14px;
     text-align: center;
+  }
+
+  & .price {
+    width: 100%;
+    padding: 5px 0 5px 0;
+    font-family: var(--source-sans-pro);
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  & .cardDivider{
+    width: 100%;
+    border-top: 2px solid var(--border-gray);
+    padding: 4px 0
   }
 }

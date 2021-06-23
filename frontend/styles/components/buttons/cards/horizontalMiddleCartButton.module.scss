@@ -1,0 +1,27 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-color);
+  width: 80%;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--horizontal-middle-cart-button-hover-adding-color);
+  }
+
+  & svg {
+    padding-right: 10px;
+    fill: white;
+  }
+
+  & .addCartText {
+    font-family: var(--source-sans-pro);
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+  }
+}
