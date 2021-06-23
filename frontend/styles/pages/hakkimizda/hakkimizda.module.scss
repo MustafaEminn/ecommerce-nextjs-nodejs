@@ -1,0 +1,22 @@
+.container {
+  & p {
+    padding: 0 10px;
+    font-size: 18px;
+    font-family: var(--source-sans-pro);
+    letter-spacing: 1px;
+  }
+  .topTitleContainer {
+    display: flex;
+    align-items: center;
+    height: 200px;
+    opacity: 0.75;
+    background-color: var(--black);
+
+    & h1 {
+      color: var(--white);
+      padding: 0 0 0 30px;
+      font-size: 80px;
+      font-family: var(--source-sans-pro);
+    }
+  }
+}
