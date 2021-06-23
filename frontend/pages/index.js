@@ -13,8 +13,17 @@ export default function Home() {
   SwiperCore.use([Navigation]);
   const SLIDES_PER_GROUP = 3;
 
-  const TopSwiperImage = ({ src }) => {
-    return <img height="600px" width="100%" src={src} />;
+  const TopSwiperItem = ({ src, title, href }) => {
+    return (
+      <Link href={`${href}`}>
+        <a>
+          <img height="600px" width="100%" src={src} />
+          <div className={styles.topSwiperTitle}>
+            <h1>{title}</h1>
+          </div>
+        </a>
+      </Link>
+    );
   };
   return (
     <div>
@@ -28,15 +37,19 @@ export default function Home() {
         {/* Top Swiper Begin */}
         <Swiper
           slidesPerView={1}
-          className={styles.swiperContainer}
+          className={styles.topSwiperContainer}
           navigation={true}
+          loop={true}
         >
           {Array(14)
             .fill(0)
             .map(() => {
               return (
                 <SwiperSlide key={1}>
-                  <TopSwiperImage src="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg" />
+                  <TopSwiperItem
+                    title="Concept Davetiye - 5555"
+                    src="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
+                  />
                 </SwiperSlide>
               );
             })}
@@ -57,6 +70,7 @@ export default function Home() {
           className={styles.swiperContainer}
           navigation={true}
           slidesPerGroup={SLIDES_PER_GROUP}
+          loop={true}
         >
           {Array(14)
             .fill(0)
@@ -87,6 +101,7 @@ export default function Home() {
           slidesPerView={5}
           className={styles.swiperContainer}
           navigation={true}
+          loop={true}
           slidesPerGroup={SLIDES_PER_GROUP}
         >
           {Array(14)
