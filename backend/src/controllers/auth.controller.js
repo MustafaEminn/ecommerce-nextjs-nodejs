@@ -3,38 +3,69 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
-const httpStatus = require("http-status");
+const ShortUniqueId = require("short-unique-id");
 const bcrypt = require("bcrypt-nodejs");
 const { default: jwtDecode } = require("jwt-decode");
 const sql = require("mssql");
 
 exports.register = async (req, res, next) => {
-  try {
-    const body = req.body;
-    const newBody = {
-      ...body,
-      password: bcrypt.hashSync(body.password, config.hashKey),
-    };
+  var request = new sql.Request();
+  const body = req.body;
+  const uid = new ShortUniqueId();
+  const newBody = {
+    ...body,
+    password: bcrypt.hashSync(body.password, config.hashKey),
+    id: uid.stamp(32),
+  };
 
-    var request = new sql.Request();
+  const emailExistsQuery = `SELECT Email FROM Users WHERE Email = '${newBody["email"]}'`;
+  const phonenumberExistsQuery = `SELECT PhoneNumber FROM Users WHERE PhoneNumber = '${newBody["phoneNumber"]}'`;
+  const registerQuery = `INSERT INTO Users VALUES 
+  ('${newBody["name"]}',
+  '${newBody["surname"]}',
+  '${newBody["password"]}',
+  '${newBody["address"]}',
+  '${newBody["city"]}',
+  '${newBody["district"]}',
+  '${newBody["neighborhood"]}',
+  '${newBody["phoneNumber"]}',
+  '${newBody["id"]}',
+  '${newBody["email"]}')`;
 
-    var name = newBody["name"].replace(" ", "_");
-
-    await request.query(
-      `INSERT INTO [User] VALUES (${name},${newBody["surname"]},${newBody["password"]},
-      ${newBody["address"]},${newBody["city"]},${newBody["district"]},${newBody["neighborhood"]})`,
-      function (err, recordset) {
-        if (err) next(err);
-
-        // send records as a response
-        res.send(recordset);
-      }
-    );
-  } catch (error) {
-    console.log(error);
-    res.send({ success: false });
-    return next(User.checkDuplicateEmailError(error));
-  }
+  // Register
+  // Error code 2 mean is already exists email
+  // Error code 3 mean is already exists PhoneNumber
+  await request.query(emailExistsQuery, async function (err, recordset) {
+    if (err) {
+      next(err);
+    }
+    console.log(recordset);
+    if (recordset.recordset.length === 0) {
+      await request.query(
+        phonenumberExistsQuery,
+        async function (err, recordset) {
+          if (err) {
+            next(err);
+          }
+          if (recordset.recordset.length === 0) {
+            await request.query(registerQuery, function (err, recordset) {
+              if (err) {
+                next(err);
+              } else {
+                res.status(200).send({ message: "Account created." });
+              }
+            });
+          } else {
+            res
+              .status(500)
+              .send({ code: 3, message: "Phone number already taken." });
+          }
+        }
+      );
+    } else {
+      res.status(500).send({ code: 2, message: "Email already taken." });
+    }
+  });
 };
 
 exports.login = async (req, res, next) => {

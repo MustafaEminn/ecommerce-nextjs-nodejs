@@ -10,6 +10,8 @@ var configSQL = {
   database: "e-davetiyecim",
   integratedSecurity: "SSPI",
   trustServerCertificate: true,
+  name: "default",
+  requestTimeout: 300000,
 };
 
 exports.connect = () => {
