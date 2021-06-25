@@ -29,4 +29,9 @@ export const PAGE = {
     urlPathname: "en-yeniler",
     href: "/en-yeniler",
   },
+  Giris: {
+    name: "Giriş",
+    urlPathname: "giris",
+    href: "/giris",
+  },
 };

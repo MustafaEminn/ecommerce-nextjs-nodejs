@@ -3,11 +3,25 @@ import styles from "../../styles/components/Layout/LayoutMain.module.scss";
 import Navbar from "../navbar/navbar";
 import FooterComp from "../footer/footer";
 
-function LayoutMain({ children }) {
+function LayoutMain({
+  children,
+  authCheck = true,
+  fadeBG = false,
+  centerContent = false,
+}) {
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{ backgroundColor: fadeBG ? "#fbfbfa" : "#ffffff" }}
+    >
       <Navbar />
-      <div className={styles.main} style={{ width: BASE.widthPage }}>
+      <div
+        className={styles.main}
+        style={{
+          width: BASE.widthPage,
+          display: centerContent ? "flex" : "inherit",
+        }}
+      >
         {children}
       </div>
       <FooterComp />

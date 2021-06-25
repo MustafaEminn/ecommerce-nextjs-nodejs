@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { ListPopupContainer, ListPopup } from "../popups/listPopup";
 import Divider from "../divider/divider";
 
-function Navbar() {
+function Navbar({ isLogined }) {
   const router = useRouter();
   const NavbarFooterItem = ({ title, activeLinkText, href }) => {
     return router.pathname.split("/")[1] === activeLinkText ? (
@@ -38,7 +38,7 @@ function Navbar() {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       {/* Navbar Head Begin */}
       <div className={styles.navbarHead} style={{ width: BASE.widthNavbar }}>
         <Logo fontSize="46px" />
@@ -48,19 +48,38 @@ function Navbar() {
           <ul className={styles.navbarHeadUserSectionUl}>
             <li className={styles.navbarHeadUserSectionLiMyAccount}>
               <ListPopupContainer>
-                <Link href={PAGE.Hesabim.href}>
-                  <a>
-                    <UserIcon width="16px" height="16px" />
-                    <span>Hesabım</span>
-                  </a>
-                </Link>
-                <ListPopup>
-                  <ul>
-                    <NavbarPopupItem title="Hesabım" />
-                    <NavbarPopupItem title="Siparişlerim" />
-                    <NavbarPopupItem title="Çıkış Yap" />
-                  </ul>
-                </ListPopup>
+                {isLogined ? (
+                  <div>
+                    <Link href={PAGE.Hesabim.href}>
+                      <a>
+                        <UserIcon width="16px" height="16px" />
+                        <span>Hesabım</span>
+                      </a>
+                    </Link>
+                    <ListPopup>
+                      <ul>
+                        <NavbarPopupItem title="Hesabım" />
+                        <NavbarPopupItem title="Siparişlerim" />
+                        <NavbarPopupItem title="Çıkış Yap" />
+                      </ul>
+                    </ListPopup>
+                  </div>
+                ) : (
+                  <div>
+                    <Link href={PAGE.Giris.href}>
+                      <a>
+                        <UserIcon width="16px" height="16px" />
+                        <span>Giriş Yap</span>
+                      </a>
+                    </Link>
+                    <ListPopup>
+                      <ul>
+                        <NavbarPopupItem title="Kayıt Ol" />
+                        <NavbarPopupItem title="Giriş Yap" />
+                      </ul>
+                    </ListPopup>
+                  </div>
+                )}
               </ListPopupContainer>
             </li>
 
