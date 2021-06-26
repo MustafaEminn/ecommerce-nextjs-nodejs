@@ -1,0 +1,54 @@
+.containerBG {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--modal-bg);
+  z-index: var(--modal-zindex);
+  & .container {
+    z-index: var(--modal-container-zindex);
+    position: relative;
+    padding: 15px;
+    padding-top: 40px;
+    background-color: var(--modal-bg-in);
+    border-radius: 8px;
+
+    & .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      height: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border-gray);
+
+      & .headerH1 {
+        font-size: 18px;
+        font-weight: 600;
+        font-family: var(--source-sans-pro);
+        line-height: 40px;
+        padding-left: 15px;
+      }
+
+      & .closeButton {
+        background: none;
+        border: none;
+        height: 17px;
+        margin-top: 10px;
+        padding-right: 10px;
+        cursor: pointer;
+        & svg {
+          fill: var(--black);
+        }
+      }
+    }
+  }
+}

@@ -4,14 +4,19 @@ import Spacer from "../Spacer/spacer";
 import TelephoneIcon from "../../public/icons/telephone";
 import WhatsappIcon from "../../public/icons/whatsapp";
 import InstagramIcon from "../../public/icons/instagram";
-import { BASE, SOCIAL } from "../../constants";
+import { BASE, PAGE, SOCIAL } from "../../constants";
+import Link from "next/dist/client/link";
 
 function FooterComp() {
   return (
     <div className={styles.containerBG}>
       <div className={styles.container} style={{ width: BASE.widthNavbar }}>
         <span className={styles.logo}>
-          <LogoWhite fontSize="40px" />
+          <Link href={PAGE.login.href}>
+            <a>
+              <LogoWhite fontSize="40px" />
+            </a>
+          </Link>
         </span>
         <div className={styles.contact}>
           <span className={styles.phone}>

@@ -30,7 +30,7 @@ function Navbar({ isLogined }) {
   const NavbarPopupItem = ({ title }) => {
     return (
       <li className={styles.navbarPopupItem}>
-        <Link href={PAGE.Hesabim.href}>
+        <Link href={PAGE.myAccount.href}>
           <a>{title}</a>
         </Link>
       </li>
@@ -41,7 +41,12 @@ function Navbar({ isLogined }) {
     <div className={styles.container}>
       {/* Navbar Head Begin */}
       <div className={styles.navbarHead} style={{ width: BASE.widthNavbar }}>
-        <Logo fontSize="46px" />
+        <Link href={PAGE.login.href}>
+          <a>
+            <Logo fontSize="46px" />
+          </a>
+        </Link>
+
         <SearchBar />
 
         <div className={styles.navbarHeadUserSectionContainer}>
@@ -50,7 +55,7 @@ function Navbar({ isLogined }) {
               <ListPopupContainer>
                 {isLogined ? (
                   <div>
-                    <Link href={PAGE.Hesabim.href}>
+                    <Link href={PAGE.myAccount.href}>
                       <a>
                         <UserIcon width="16px" height="16px" />
                         <span>Hesabım</span>
@@ -66,7 +71,7 @@ function Navbar({ isLogined }) {
                   </div>
                 ) : (
                   <div>
-                    <Link href={PAGE.Giris.href}>
+                    <Link href={PAGE.login.href}>
                       <a>
                         <UserIcon width="16px" height="16px" />
                         <span>Giriş Yap</span>
@@ -84,7 +89,7 @@ function Navbar({ isLogined }) {
             </li>
 
             <li className={styles.navbarHeadUserSectionLiMyCart}>
-              <Link href={PAGE.Sepetim.href}>
+              <Link href={PAGE.cart.href}>
                 <a>
                   <ShoppingCartIcon width="16px" height="16px" />
                   <span>Sepetim</span>
@@ -100,14 +105,14 @@ function Navbar({ isLogined }) {
       <div className={styles.navbarFooter} style={{ width: BASE.widthNavbar }}>
         <ul className={styles.navbarFooterUl}>
           <NavbarFooterItem
-            title={PAGE.AnaSayfa.name}
-            activeLinkText={PAGE.AnaSayfa.urlPathname}
-            href={PAGE.AnaSayfa.href}
+            title={PAGE.home.name}
+            activeLinkText={PAGE.home.urlPathname}
+            href={PAGE.home.href}
           />
           <NavbarFooterItem
-            title={PAGE.Hakkimizda.name}
-            activeLinkText={PAGE.Hakkimizda.urlPathname}
-            href={PAGE.Hakkimizda.href}
+            title={PAGE.aboutUs.name}
+            activeLinkText={PAGE.aboutUs.urlPathname}
+            href={PAGE.aboutUs.href}
           />
         </ul>
       </div>

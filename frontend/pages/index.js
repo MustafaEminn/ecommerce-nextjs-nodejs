@@ -60,8 +60,8 @@ export default function Home() {
 
         {/* Çok Satanlar Begin */}
         <Divider direction="left">
-          <Link href={PAGE.CokSatanlar.href}>
-            <a>{PAGE.CokSatanlar.name}</a>
+          <Link href={PAGE.bestSelling.href}>
+            <a>{PAGE.bestSelling.name}</a>
           </Link>
         </Divider>
         <Swiper
@@ -92,8 +92,8 @@ export default function Home() {
 
         {/* En Yeniler Begin */}
         <Divider direction="left">
-          <Link href={PAGE.EnYeniler.href}>
-            <a>{PAGE.EnYeniler.name}</a>
+          <Link href={PAGE.newests.href}>
+            <a>{PAGE.newests.name}</a>
           </Link>
         </Divider>
         <Swiper

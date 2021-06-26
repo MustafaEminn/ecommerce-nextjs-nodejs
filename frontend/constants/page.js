@@ -1,37 +1,42 @@
 export const PAGE = {
-  AnaSayfa: {
+  home: {
     name: "Ana Sayfa",
     urlPathname: "",
     href: "/",
   },
-  Hakkimizda: {
+  aboutUs: {
     name: "Hakkımızda",
-    urlPathname: "hakkimizda",
-    href: "/hakkimizda",
+    urlPathname: "about-us",
+    href: "/about-us",
   },
-  Hesabim: {
+  myAccount: {
     name: "Hesabım",
-    urlPathname: "hesabim",
-    href: "/hesabim",
+    urlPathname: "my-account",
+    href: "/my-account",
   },
-  Sepetim: {
+  cart: {
     name: "Sepetim",
-    urlPathname: "sepetim",
-    href: "/sepetim",
+    urlPathname: "cart",
+    href: "/cart",
   },
-  CokSatanlar: {
+  bestSelling: {
     name: "Çok Satanlar",
-    urlPathname: "cok-satanlar",
-    href: "/cok-satanlar",
+    urlPathname: "best-selling",
+    href: "/best-selling",
   },
-  EnYeniler: {
+  newests: {
     name: "En Yeniler",
-    urlPathname: "en-yeniler",
-    href: "/en-yeniler",
+    urlPathname: "newests",
+    href: "/newests",
   },
-  Giris: {
+  login: {
     name: "Giriş",
-    urlPathname: "giris",
-    href: "/giris",
+    urlPathname: "login",
+    href: "/login",
+  },
+  register: {
+    name: "Kayıt Ol",
+    urlPathname: "register",
+    href: "/register",
   },
 };

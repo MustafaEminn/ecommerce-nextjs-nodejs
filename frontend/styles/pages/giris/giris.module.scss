@@ -1,6 +1,25 @@
+.forgotPassHeader {
+  font-size: 16px;
+  font-family: var(--source-sans-pro);
+  width: 400px;
+  margin: 0 auto;
+}
+
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
+  & .forgotPass {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    & .forgotPassButton {
+      background: none;
+      border: none;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+    }
+  }
 }

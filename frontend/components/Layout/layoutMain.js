@@ -19,7 +19,7 @@ function LayoutMain({
         className={styles.main}
         style={{
           width: BASE.widthPage,
-          display: centerContent ? "flex" : "inherit",
+          display: centerContent ? "flex" : "initial",
         }}
       >
         {children}

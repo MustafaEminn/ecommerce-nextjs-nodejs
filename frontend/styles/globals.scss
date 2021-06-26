@@ -124,6 +124,10 @@ table {
   border-spacing: 0;
 }
 
+input:focus {
+  outline: none;
+}
+
 /* Reset CSS End */
 
 @import "./variables/variables.scss";

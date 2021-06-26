@@ -16,7 +16,7 @@ export default function Home() {
       <LayoutMain>
         <div className={styles.container}>
           <div className={styles.topTitleContainer}>
-            <h1>{PAGE.Hakkimizda.name}</h1>
+            <h1>{PAGE.aboutUs.name}</h1>
           </div>
 
           <Spacer top="15px" />
