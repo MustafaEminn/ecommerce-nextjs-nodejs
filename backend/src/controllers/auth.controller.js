@@ -30,7 +30,8 @@ exports.register = async (req, res, next) => {
   '${newBody["neighborhood"]}',
   '${newBody["phoneNumber"]}',
   '${newBody["id"]}',
-  '${newBody["email"]}')`;
+  '${newBody["email"]}',
+  '${newBody["gender"]}')`;
 
   // Register
   // Error code 2 mean is already exists email
@@ -39,7 +40,6 @@ exports.register = async (req, res, next) => {
     if (err) {
       next(err);
     }
-    console.log(recordset);
     if (recordset.recordset.length === 0) {
       await request.query(
         phonenumberExistsQuery,
