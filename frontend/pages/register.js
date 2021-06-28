@@ -22,6 +22,7 @@ function Register() {
   const [disabledRegisterButton, setDisabledRegisterButton] = useState(false);
 
   const onRegister = () => {
+    e.preventDefault();
     let values = Form.getFields();
     let isFormSuccess = true;
     Object.keys(values).map((item) => {
@@ -87,7 +88,7 @@ function Register() {
         <div className={styles.container}>
           <Spacer top="30px" />
           <Card width="325px" height="100%">
-            <Form>
+            <Form onSubmit={onRegister}>
               <InputText
                 pattern="^.{3,}$"
                 labelText="Ad"

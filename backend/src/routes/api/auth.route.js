@@ -7,9 +7,11 @@ const auth = require("../../middlewares/authorization");
 
 router.post("/register", authController.register); // validate and register
 router.post("/login", authController.login);
+router.post("/resetPasswordSendMail", authController.resetPasswordSendMail);
+router.put("/resetPassword", authController.resetPassword);
 router.get("/checkAuth", auth(), authController.checkAuth);
+
 router.post("/checkUsername", authController.checkUsername);
-router.post("/toggleLike", authController.toggleLike);
 router.post("/checkLike", authController.checkLike);
 router.post("/toggleBookmark", authController.toggleBookmark);
 router.post("/checkBookmark", authController.checkBookmark);

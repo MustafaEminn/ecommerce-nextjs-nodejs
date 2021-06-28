@@ -18,9 +18,11 @@ import router from "next/router";
 function Giris() {
   const [forgotPasswordModalVisible, setForgotPasswordModalVisible] =
     useState(false);
-  const [disableLoginButton, setDisableLoginButton] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
+  const [forgotPassEmail, setForgotPassEmail] = useState("");
 
   const onLogin = () => {
+    e.preventDefault();
     const values = Form.getFields();
     let isFormSuccess = true;
 
@@ -40,7 +42,7 @@ function Giris() {
       Object.keys(values).map((item) => {
         sendValues[item] = values[item].value;
       });
-      setDisableLoginButton(true);
+      setDisableButton(true);
       postData("/api/auth/login", sendValues)
         .then((res) => {
           Swal.fire({
@@ -63,7 +65,47 @@ function Giris() {
           }
         });
 
-      setDisableLoginButton(false);
+      setDisableButton(false);
+    }
+  };
+
+  const onResetPassword = (e) => {
+    e.preventDefault();
+    let isFormSuccess = true;
+
+    if (forgotPassEmail.length < 6) {
+      isFormSuccess = false;
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Lütfen şifrenizi unuttuğunuz hesabınız emailini giriniz.",
+      });
+    }
+
+    if (isFormSuccess) {
+      setDisableButton(true);
+      postData("/api/auth/resetPasswordSendMail", { email: forgotPassEmail })
+        .then((res) => {
+          Swal.fire({
+            icon: "success",
+            title: "Başarılı!",
+            text: "Mail gönderildi.",
+            didClose: () => {
+              router.push(PAGE.home.href);
+            },
+          });
+        })
+        .catch((err) => {
+          if (err.response?.data.code === 1) {
+            Swal.fire({
+              icon: "error",
+              title: "Hata!",
+              text: "Bu emaile ait bir hesap bulunamadı.",
+            });
+          }
+        });
+
+      setDisableButton(false);
     }
   };
   return (
@@ -94,20 +136,29 @@ function Giris() {
             mail göndereceğiz.
           </h4>
           <Spacer top="15px" />
-          <Form>
+          <Form onSubmit={onResetPassword}>
             <InputText
               width="94%"
               labelText="Email"
               name="email"
               type="email"
+              onChange={(e) => {
+                setForgotPassEmail(e.target.value);
+              }}
             />
             <Spacer top="14px" />
-            <MainColorButton height="44px" text="Email Gönder" />
+            <MainColorButton
+              height="44px"
+              type="button"
+              disabled={disableButton}
+              text="Şifre Sıfırlama Maili Gönder"
+              onClick={onResetPassword}
+            />
           </Form>
         </Modal>
         <div className={styles.container}>
           <Card width="325px" height="320px">
-            <Form>
+            <Form onSubmit={onLogin}>
               <InputText
                 labelText="Email"
                 name="email"
@@ -139,7 +190,7 @@ function Giris() {
                 type="button"
                 height="44px"
                 text="Giriş Yap"
-                disabled={disableLoginButton}
+                disabled={disableButton}
               />
               <Spacer bottom="16px" />
               <Link href={PAGE.register.href}>

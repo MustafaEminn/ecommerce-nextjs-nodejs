@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
-function Form({ children, action, id, method, onChange = () => {} }) {
+function Form({
+  children,
+  action,
+  id,
+  method,
+  onChange = () => {},
+  onSubmit = () => {},
+}) {
   const [values, setValues] = useState({});
   const formRef = useRef();
   Form.getFields = () => {
@@ -20,6 +27,7 @@ function Form({ children, action, id, method, onChange = () => {} }) {
 
   return (
     <form
+      onSubmit={onSubmit}
       ref={formRef}
       onChange={(e) => {
         let newValue = values;
