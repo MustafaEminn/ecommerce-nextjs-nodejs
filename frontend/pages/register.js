@@ -23,9 +23,10 @@ function Register() {
 
   const onRegister = () => {
     let values = Form.getFields();
-    let isErrorGived = false;
+    let isFormSuccess = true;
     Object.keys(values).map((item) => {
       if (!values[item].verified) {
+        isFormSuccess = false;
         Swal.fire({
           icon: "error",
           title: "Hata!",
@@ -34,7 +35,7 @@ function Register() {
       }
     });
 
-    if (!isErrorGived) {
+    if (isFormSuccess) {
       let sendValues = {};
       Object.keys(values).map((item) => {
         sendValues[item] = values[item].value;

@@ -7,7 +7,6 @@ import SearchBar from "../SearchBar/searchbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ListPopupContainer, ListPopup } from "../popups/listPopup";
-import Divider from "../divider/divider";
 
 function Navbar({ isLogined }) {
   const router = useRouter();
@@ -27,10 +26,10 @@ function Navbar({ isLogined }) {
     );
   };
 
-  const NavbarPopupItem = ({ title }) => {
+  const NavbarPopupItem = ({ title, href }) => {
     return (
       <li className={styles.navbarPopupItem}>
-        <Link href={PAGE.myAccount.href}>
+        <Link href={href}>
           <a>{title}</a>
         </Link>
       </li>
@@ -63,7 +62,10 @@ function Navbar({ isLogined }) {
                     </Link>
                     <ListPopup>
                       <ul>
-                        <NavbarPopupItem title="Hesabım" />
+                        <NavbarPopupItem
+                          href={PAGE.myAccount.href}
+                          title="Hesabım"
+                        />
                         <NavbarPopupItem title="Siparişlerim" />
                         <NavbarPopupItem title="Çıkış Yap" />
                       </ul>
@@ -79,8 +81,14 @@ function Navbar({ isLogined }) {
                     </Link>
                     <ListPopup>
                       <ul>
-                        <NavbarPopupItem title="Kayıt Ol" />
-                        <NavbarPopupItem title="Giriş Yap" />
+                        <NavbarPopupItem
+                          href={PAGE.register.href}
+                          title="Kayıt Ol"
+                        />
+                        <NavbarPopupItem
+                          href={PAGE.login.href}
+                          title="Giriş Yap"
+                        />
                       </ul>
                     </ListPopup>
                   </div>

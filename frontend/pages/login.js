@@ -11,10 +11,61 @@ import { useState } from "react";
 import MainColorButton from "../components/buttons/mainColorButton";
 import WhiteButton from "../components/buttons/whiteButton";
 import Link from "next/dist/client/link";
+import Swal from "sweetalert2";
+import { postData } from "../api/fetch";
+import router from "next/router";
 
 function Giris() {
   const [forgotPasswordModalVisible, setForgotPasswordModalVisible] =
     useState(false);
+  const [disableLoginButton, setDisableLoginButton] = useState(false);
+
+  const onLogin = () => {
+    const values = Form.getFields();
+    let isFormSuccess = true;
+
+    Object.keys(values).map((item) => {
+      if (!values[item].verified) {
+        isFormSuccess = false;
+        Swal.fire({
+          icon: "error",
+          title: "Hata!",
+          text: "Lütfen boş kısımları doldurunuz.",
+        });
+      }
+    });
+
+    if (isFormSuccess) {
+      let sendValues = {};
+      Object.keys(values).map((item) => {
+        sendValues[item] = values[item].value;
+      });
+      setDisableLoginButton(true);
+      postData("/api/auth/login", sendValues)
+        .then((res) => {
+          Swal.fire({
+            icon: "success",
+            title: "Başarılı!",
+            text: "Giriş yapıldı.",
+            didClose: () => {
+              localStorage.setItem("token", res.data.token);
+              router.push(PAGE.home.href);
+            },
+          });
+        })
+        .catch((err) => {
+          if (err.response?.data.code === 1) {
+            Swal.fire({
+              icon: "error",
+              title: "Hata!",
+              text: "Email adresiniz veya şifreniz yanlış.",
+            });
+          }
+        });
+
+      setDisableLoginButton(false);
+    }
+  };
   return (
     <div>
       <Head>
@@ -53,9 +104,19 @@ function Giris() {
         <div className={styles.container}>
           <Card width="325px" height="320px">
             <Form>
-              <InputText labelText="Email" name="email" type="email" />
+              <InputText
+                labelText="Email"
+                name="email"
+                type="email"
+                pattern="^.{6,}$"
+              />
               <Spacer top="16px" />
-              <InputText labelText="Şifre" name="password" type="password" />
+              <InputText
+                labelText="Şifre"
+                name="password"
+                type="password"
+                pattern="^.{6,}$"
+              />
               <Spacer top="24px" />
               <div className={styles.forgotPass}>
                 <button
@@ -69,11 +130,17 @@ function Giris() {
                 </button>
               </div>
               <Spacer bottom="10px" />
-              <MainColorButton height="44px" text="Giriş Yap" />
+              <MainColorButton
+                onClick={onLogin}
+                type="button"
+                height="44px"
+                text="Giriş Yap"
+                disabled={disableLoginButton}
+              />
               <Spacer bottom="16px" />
               <Link href={PAGE.register.href}>
                 <a>
-                  <WhiteButton type="submit" height="44px" text="Kayıt Ol" />
+                  <WhiteButton type="button" height="44px" text="Kayıt Ol" />
                 </a>
               </Link>
             </Form>

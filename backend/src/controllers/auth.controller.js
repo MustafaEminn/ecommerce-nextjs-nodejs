@@ -69,19 +69,31 @@ exports.register = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  try {
-    const user = await User.findAndGenerateToken(req.body);
-    if (user) {
-      const payload = { sub: user.id, username: user.username };
-      const token = jwt.sign(payload, config.secret, { expiresIn: "1d" });
-      return res.send({ success: true, message: "OK", token: token });
-    } else {
-      res.send({ success: false });
+  const body = req.body;
+  var request = new sql.Request();
+  const getUserQuery = `SELECT Email,Password,id,Name,Surname FROM Users WHERE Email = '${body["email"]}'`;
+
+  await request.query(getUserQuery, (err, record) => {
+    if (err) {
+      res.status(500).send({ code: 1, message: "Email or password is wrong." });
     }
-  } catch (error) {
-    res.send({ success: false });
-    next(error);
-  }
+    const resBody = record.recordset[0];
+    const pass = bcrypt.hashSync(body["password"], config.hashKey);
+    if (pass === resBody["Password"]) {
+      const payload = {
+        userId: resBody["id"],
+        email: resBody["Email"],
+        name: resBody["Name"],
+        surname: resBody["Surname"],
+      };
+      const token = jwt.sign(payload, config.secret, { expiresIn: "1y" });
+      res
+        .status(200)
+        .json({ code: 2, token: token, message: "Login successful." });
+    } else {
+      res.status(500).send({ code: 1, message: "Email or password is wrong." });
+    }
+  });
 };
 
 exports.checkEmail = async (req, res, next) => {
