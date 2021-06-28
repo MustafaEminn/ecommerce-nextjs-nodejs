@@ -1,8 +1,21 @@
 import styles from "../../styles/components/buttons/mainColorButton.module.scss";
 
-function MainColorButton({ text, width = "100%", height = "30px" }) {
+function MainColorButton({
+  type,
+  disabled,
+  text,
+  width = "100%",
+  height = "30px",
+  onClick = () => {},
+}) {
   return (
-    <button style={{ width: width, height: height }} className={styles.button}>
+    <button
+      disabled={disabled}
+      type={type}
+      onClick={onClick}
+      style={{ width: width, height: height }}
+      className={styles.button}
+    >
       {text}
     </button>
   );

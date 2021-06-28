@@ -1,14 +1,7 @@
-import styles from "../../styles/components/inputs/inputText.module.scss";
+import styles from "../../styles/components/inputs/inputPhoneNumber.module.scss";
 import Spacer from "../Spacer/spacer";
 
-function InputText({
-  labelText = "",
-  name,
-  type = "text",
-  width = "301px",
-  pattern,
-  onChange,
-}) {
+function InputPhoneNumber({ labelText = "", name, width = "301px", pattern }) {
   return (
     <label>
       {labelText.length > 0 ? (
@@ -18,15 +11,14 @@ function InputText({
       )}
       {labelText.length > 0 ? <Spacer top="10px" /> : <></>}
       <input
-        onChange={onChange}
-        pattern={pattern}
         style={{ width: width }}
-        type={type}
+        type="tel"
         name={name}
+        pattern={pattern}
         className={styles.input}
       />
     </label>
   );
 }
 
-export default InputText;
+export default InputPhoneNumber;

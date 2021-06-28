@@ -1,0 +1,26 @@
+.labelText {
+  font-size: 14px;
+  font-family: var(--source-sans-pro);
+  font-weight: 600;
+}
+
+.select {
+  padding: 10px;
+  width: 325px;
+  height: 44px;
+  font-size: 14px;
+  font-family: var(--source-sans-pro);
+  border: 2px solid var(--border-gray);
+  background-color: var(--input-bg);
+  outline: none;
+
+  & .option {
+    padding: 10px;
+    width: 325px;
+    height: 44px;
+    font-size: 14px;
+    font-family: var(--source-sans-pro);
+    border: 2px solid var(--border-gray);
+    background-color: var(--input-bg);
+  }
+}
