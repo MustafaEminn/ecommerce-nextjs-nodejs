@@ -1,4 +1,4 @@
-import { BASE, PAGE } from "../../constants/index";
+import { API, BASE, PAGE } from "../../constants/index";
 import ShoppingCartIcon from "../../public/icons/shoppingCart";
 import UserIcon from "../../public/icons/user";
 import styles from "../../styles/components/navbar/navbar.module.scss";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ListPopupContainer, ListPopup } from "../popups/listPopup";
 
-function Navbar({ isLogined }) {
+function Navbar({ auth }) {
   const router = useRouter();
   const NavbarFooterItem = ({ title, activeLinkText, href }) => {
     return router.pathname.split("/")[1] === activeLinkText ? (
@@ -26,9 +26,9 @@ function Navbar({ isLogined }) {
     );
   };
 
-  const NavbarPopupItem = ({ title, href }) => {
+  const NavbarPopupItem = ({ title, href = "/", onClick = () => {} }) => {
     return (
-      <li className={styles.navbarPopupItem}>
+      <li onClick={onClick} className={styles.navbarPopupItem}>
         <Link href={href}>
           <a>{title}</a>
         </Link>
@@ -52,7 +52,7 @@ function Navbar({ isLogined }) {
           <ul className={styles.navbarHeadUserSectionUl}>
             <li className={styles.navbarHeadUserSectionLiMyAccount}>
               <ListPopupContainer>
-                {isLogined ? (
+                {auth ? (
                   <div>
                     <Link href={PAGE.myAccount.href}>
                       <a>
@@ -67,7 +67,13 @@ function Navbar({ isLogined }) {
                           title="Hesabım"
                         />
                         <NavbarPopupItem title="Siparişlerim" />
-                        <NavbarPopupItem title="Çıkış Yap" />
+                        <NavbarPopupItem
+                          onClick={() => {
+                            localStorage.removeItem("token");
+                          }}
+                          href={PAGE.login.href}
+                          title="Çıkış Yap"
+                        />
                       </ul>
                     </ListPopup>
                   </div>

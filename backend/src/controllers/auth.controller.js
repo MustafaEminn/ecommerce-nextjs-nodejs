@@ -96,14 +96,8 @@ exports.login = async (req, res, next) => {
   });
 };
 
-exports.checkEmail = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    const user = await User.findEmail(email);
-    res.send({ success: user });
-  } catch (error) {
-    next(error);
-  }
+exports.checkAuth = async (req, res, next) => {
+  return res.status(200).json({ message: "Account have auth." });
 };
 
 exports.toggleLike = async (req, res, next) => {

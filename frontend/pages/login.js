@@ -74,7 +74,11 @@ function Giris() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain centerContent={true} fadeBG={true}>
+      <LayoutMain
+        whenAuthDisabledPage={true}
+        centerContent={true}
+        fadeBG={true}
+      >
         <Modal
           title="Şifre Yenile"
           width="400px"

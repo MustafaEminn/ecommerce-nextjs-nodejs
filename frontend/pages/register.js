@@ -79,7 +79,11 @@ function Register() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain centerContent={true} fadeBG={true}>
+      <LayoutMain
+        whenAuthDisabledPage={true}
+        centerContent={true}
+        fadeBG={true}
+      >
         <div className={styles.container}>
           <Spacer top="30px" />
           <Card width="325px" height="100%">
