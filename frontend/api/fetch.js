@@ -11,6 +11,16 @@ export const getData = (url, config) => {
   });
 };
 
+export const postFormData = (url, data, config) => {
+  return axios.post(API.url + url, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "multipart/form-data",
+    },
+    ...config,
+  });
+};
+
 export const postData = (url, data, config) => {
   return axios.post(API.url + url, data, {
     headers: {

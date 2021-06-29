@@ -2,14 +2,15 @@
 
 const express = require("express");
 const router = express.Router();
-const authController = require("../../controllers/auth.controller");
+const imageController = require("../../controllers/image.controller");
 const auth = require("../../middlewares/authorization");
+const uploadMultiple = require("../../services/multer");
 
-router.post("/register", authController.register); // validate and register
-router.post("/login", authController.login);
-router.post("/resetPasswordSendMail", authController.resetPasswordSendMail);
-router.put("/resetPassword", authController.resetPassword);
-router.get("/checkAuth", auth(), authController.checkAuth);
+router.post("/imageAdd", uploadMultiple, imageController.addImage);
+
+router.get("/:image", imageController.getImage);
+
+router.delete("/:image", imageController.deleteImage);
 // router.get("/secret2", auth(["admin"]), (req, res) => {
 //   // example route for auth
 //   res.json({ message: "Only admin can access" });

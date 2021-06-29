@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+
+  .button {
+    background-color: var(--white);
+    border: 1px solid var(--main-color);
+    font-size: 22px;
+    font-weight: 700;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--button-white-hover-bg);
+    }
+  }
+
+  & .minus {
+    @extend .button;
+  }
+
+  & .count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px;
+    font-size: 18px;
+    font-family: var(--source-sans-pro);
+    border: 2px solid var(--border-gray);
+    text-overflow: ellipsis;
+  }
+
+  & .plus {
+    @extend .button;
+  }
+}

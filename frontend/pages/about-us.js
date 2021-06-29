@@ -3,8 +3,23 @@ import LayoutMain from "../components/Layout/layoutMain";
 import Spacer from "../components/Spacer/spacer";
 import styles from "../styles/pages/hakkimizda/hakkimizda.module.scss";
 import { PAGE } from "../constants";
+import { postData, postFormData } from "../api/fetch";
 
 export default function Home() {
+  function onSubmit(e) {
+    e.preventDefault();
+    const productPhoto = new FormData(e.target);
+    console.log(productPhoto);
+    postFormData("/api/img/imageAdd", productPhoto)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    const formProps = Object.fromEntries(productPhoto);
+    console.log(formProps);
+  }
   return (
     <div>
       <Head>
@@ -32,6 +47,15 @@ export default function Home() {
             and more recently with desktop publishing software like Aldus
             PageMaker including versions of Lorem Ipsum.
           </p>
+          <form
+            onSubmit={onSubmit}
+            // method="post"
+            // action="http://localhost:8085/api/product/addProduct"
+            enctype="multipart/form-data"
+          >
+            <input multiple accept="images/*" type="file" name="productPhoto" />
+            <button type="submit">asmfkas</button>
+          </form>
         </div>
       </LayoutMain>
     </div>

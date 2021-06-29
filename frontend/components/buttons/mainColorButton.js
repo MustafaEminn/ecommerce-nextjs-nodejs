@@ -7,6 +7,7 @@ function MainColorButton({
   width = "100%",
   height = "30px",
   onClick = () => {},
+  icon = <></>,
 }) {
   return (
     <button
@@ -16,7 +17,7 @@ function MainColorButton({
       style={{ width: width, height: height }}
       className={styles.button}
     >
-      {text}
+      {icon} {text}
     </button>
   );
 }

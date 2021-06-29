@@ -1,8 +1,12 @@
 import styles from "../../styles/components/cards/card.module.scss";
 
-function Card({ width, height, children }) {
+function Card({ width, height, children, className = "1m1m1m1m" }) {
   return (
-    <div className={styles.container} style={{ width: width, height: height }}>
+    <div
+      className={className}
+      id={styles.container}
+      style={{ width: width, height: height }}
+    >
       {children}
     </div>
   );

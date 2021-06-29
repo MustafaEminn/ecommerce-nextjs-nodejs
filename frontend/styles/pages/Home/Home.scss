@@ -2,7 +2,7 @@
 .swiper-button-next {
   color: var(--swiper-array-color) !important;
   background-color: var(--swiper-background-color);
-  padding: 7px 14px;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 0.5px solid var(--swiper-array-border-color);
 }
@@ -17,5 +17,5 @@
 
 .swiper-button-prev::after,
 .swiper-button-next::after {
-  font-size: 29px !important;
+  font-size: 22px !important;
 }

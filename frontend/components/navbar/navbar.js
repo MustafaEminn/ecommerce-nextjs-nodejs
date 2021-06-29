@@ -40,7 +40,7 @@ function Navbar({ auth }) {
     <div className={styles.container}>
       {/* Navbar Head Begin */}
       <div className={styles.navbarHead} style={{ width: BASE.widthNavbar }}>
-        <Link href={PAGE.login.href}>
+        <Link href={PAGE.home.href}>
           <a>
             <Logo fontSize="46px" />
           </a>
