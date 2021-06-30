@@ -1,26 +1,25 @@
 "use strict";
 
-const jwt = require("jsonwebtoken");
 const config = require("../config");
-const ShortUniqueId = require("short-unique-id");
-const bcrypt = require("bcrypt-nodejs");
-const { default: jwtDecode } = require("jwt-decode");
-const nodemailer = require("nodemailer");
-const sql = require("mssql");
-const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
 
 exports.addImage = async (req, res, next) => {
-  if (req.file) {
-    res.json(req.file);
-  } else throw "error";
+  if (req.files["productPhoto"]) {
+    res.status(200).send({
+      code: 1,
+      message: "Image updated.",
+      imageName: req.files["productPhoto"][0].filename,
+    });
+  } else {
+    res.status(500).send({ code: 2, message: "Image cannot updated." });
+  }
 };
 exports.getImage = async (req, res, next) => {
   var imagePath = path.resolve("images/" + req.params.image);
   var imageExists = fs.existsSync(imagePath);
   if (imageExists) {
-    res.sendFile(path.resolve("images/" + req.params.image));
+    res.sendFile(imagePath);
   } else {
     res.redirect(config.clientUrl);
   }

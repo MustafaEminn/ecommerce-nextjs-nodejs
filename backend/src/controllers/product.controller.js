@@ -8,6 +8,8 @@ const { default: jwtDecode } = require("jwt-decode");
 const nodemailer = require("nodemailer");
 const sql = require("mssql");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 
 exports.login = async (req, res, next) => {
   const body = req.body;
@@ -53,8 +55,11 @@ exports.addProduct = async (req, res, next) => {
   '${new Date(Date.now()).toISOString()}',
   '${body["isActive"]}')`;
 
-  await request.query(setProductQuery, (err, record) => {
+  await request.query(setProductQuery, async (err, record) => {
     if (err) {
+      await body["photos"].map((item) => {
+        fs.unlinkSync(path.resolve("images/" + item));
+      });
       console.log(err);
       res.status(500).send({ code: 1, message: "Product could not created." });
     } else {
@@ -64,9 +69,8 @@ exports.addProduct = async (req, res, next) => {
 };
 
 exports.deleteProduct = async (req, res, next) => {
-  const body = req.body;
   var request = new sql.Request();
-  const deleteProductQuery = `DELETE FROM Products WHERE id='${body["id"]}'`;
+  const deleteProductQuery = `DELETE FROM Products WHERE id='${req.params.id}'`;
 
   await request.query(deleteProductQuery, (err, record) => {
     if (err) {

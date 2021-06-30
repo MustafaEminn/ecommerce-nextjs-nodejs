@@ -6,7 +6,7 @@ const imageController = require("../../controllers/image.controller");
 const auth = require("../../middlewares/authorization");
 const uploadMultiple = require("../../services/multer");
 
-router.post("/imageAdd", uploadMultiple, imageController.addImage);
+router.post("/imageAdd", [auth(), uploadMultiple], imageController.addImage);
 
 router.get("/:image", imageController.getImage);
 

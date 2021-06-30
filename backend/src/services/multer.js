@@ -10,7 +10,10 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     var date = new Date().toLocaleDateString("tr").replace(".", "_");
-    cb(null, date + "-" + file.originalname.replace(" ", "_"));
+    cb(
+      null,
+      date + "-" + file.originalname.replace(" ", "_").replace("-", "_")
+    );
   },
 });
 
