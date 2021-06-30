@@ -40,7 +40,6 @@ function LayoutMain({
       {loading ? (
         <div className={styles.logo}>
           <Logo fontSize="90px" />
-          <Spacer top="20px" />
           <div className={styles.loader}></div>
         </div>
       ) : (
