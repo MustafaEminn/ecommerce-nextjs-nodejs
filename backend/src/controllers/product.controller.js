@@ -46,13 +46,16 @@ exports.addProduct = async (req, res, next) => {
   var request = new sql.Request();
   const uid = new ShortUniqueId();
   const setProductQuery = `INSERT INTO Products VALUES 
-  ('${uid.stamp(5)}',
+  ('${uid.stamp(10)}',
   '${body["title"]}',
   '${body["details"]}',
-  '${body["photos"]}',)`;
+  '${JSON.stringify(body["photos"])}',
+  '${new Date(Date.now()).toISOString()}',
+  '${body["isActive"]}')`;
 
   await request.query(setProductQuery, (err, record) => {
     if (err) {
+      console.log(err);
       res.status(500).send({ code: 1, message: "Product could not created." });
     } else {
       res.status(200).send({ code: 2, message: "Product created." });
@@ -88,6 +91,39 @@ exports.updateProduct = async (req, res, next) => {
       res.status(500).send({ code: 1, message: "Product could not updated." });
     } else {
       res.status(200).send({ code: 2, message: "Product updated." });
+    }
+  });
+};
+
+exports.getProductsNewest = async (req, res, next) => {
+  var request = new sql.Request();
+
+  const getNewestProductsQuery = `SELECT INTO * FROM Products`;
+
+  await request.query(getNewestProductsQuery, (err, record) => {
+    if (err) {
+      res.status(500).send({ code: 1, message: "Products could not got." });
+    } else {
+      res.status(200).send({ code: 2, message: "Products got." });
+    }
+  });
+};
+
+exports.getProductsTop = async (req, res, next) => {
+  const body = req.body;
+  var request = new sql.Request();
+
+  const getTopProductsQuery = `SELECT TOP ${body["count"]} * FROM Products ORDER BY createdAt DESC`;
+
+  await request.query(getTopProductsQuery, (err, record) => {
+    const resBody = record.recordset;
+    if (err) {
+      console.log(err);
+      res.status(500).send({ code: 1, message: "Products could not got." });
+    } else {
+      res
+        .status(200)
+        .send({ code: 2, message: "Products getted.", products: resBody });
     }
   });
 };

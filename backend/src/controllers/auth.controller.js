@@ -31,7 +31,8 @@ exports.register = async (req, res, next) => {
   '${newBody["phoneNumber"]}',
   '${newBody["id"]}',
   '${newBody["email"]}',
-  '${newBody["gender"]}')`;
+  '${newBody["gender"]}',
+  '${JSON.stringify(["user"])}')`;
 
   // Register
   // Error code 2 mean is already exists email
@@ -84,6 +85,7 @@ exports.login = async (req, res, next) => {
           email: resBody["Email"],
           name: resBody["Name"],
           surname: resBody["Surname"],
+          roles: resBody["Roles"],
         };
         const token = jwt.sign(payload, config.secret, { expiresIn: "1y" });
         res
