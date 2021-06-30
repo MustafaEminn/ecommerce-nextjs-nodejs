@@ -6,6 +6,7 @@ import axios from "axios";
 import { API_URL } from "../API";
 import styles from "./login.module.css";
 import { postData } from "../api/fetch";
+import { PAGE } from "../constants/page";
 
 const Login = () => {
   const [form] = useForm();
@@ -27,7 +28,7 @@ const Login = () => {
           }
         )
         .then((response) => {
-          return route.push("/haber");
+          return route.push(PAGE.products.href);
         })
         .catch((err) => {
           return setPageLoading(false);
@@ -53,7 +54,7 @@ const Login = () => {
         setLoading(false);
         const content = res.data;
         localStorage.setItem("token", content.token);
-        route.push("/haber");
+        route.push(PAGE.products.href);
       })
       .catch((err) => {
         setLoading(false);

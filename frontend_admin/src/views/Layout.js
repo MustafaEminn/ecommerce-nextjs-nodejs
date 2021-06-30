@@ -6,13 +6,14 @@ import {
   MenuFoldOutlined,
   UserOutlined,
   LogoutOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import { Switch, Route, withRouter, useHistory } from "react-router-dom";
-import Post from "./Post";
 import { getData } from "../api/fetch";
 import styles from "../styles/layout/layout.module.css";
 import Logo from "../components/logo";
 import { BASE } from "../constants/base";
+import { PAGE } from "../constants/page";
 
 const { Header, Sider, Content } = Layout;
 
@@ -48,14 +49,20 @@ const LayoutAdmin = ({ children, mainLoading = false }) => {
       ) : (
         <Layout style={{ minHeight: "100vh" }}>
           <Sider trigger={null} collapsible collapsed={collapsed}>
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
+            <Menu theme="dark" mode="inline">
               <Menu.Item key="9" style={{ minHeight: "53px" }}>
                 <a style={{ color: "whitesmoke", fontSize: "180%" }}>
                   {BASE.companyName}
                 </a>
               </Menu.Item>
-              <Menu.Item key="1" icon={<UserOutlined />}>
-                Davetiyeler
+              <Menu.Item
+                onClick={() => {
+                  route.push(PAGE.products.href);
+                }}
+                key="1"
+                icon={<MessageOutlined />}
+              >
+                {PAGE.products.name}
               </Menu.Item>
             </Menu>
           </Sider>

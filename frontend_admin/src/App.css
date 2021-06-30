@@ -20,4 +20,12 @@
   background: #fff;
 }
 
+.ant-upload-list-picture-card-container .ant-upload-list-item-error {
+  border: 1px solid rgb(217, 217, 217) !important;
+}
+
+.ant-upload-list-picture-card-container .ant-tooltip {
+  display: none !important;
+}
+
 @import "./styles/variables/index.css";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Login from "./views/login";
-import Post from "./views/Post";
+import Product from "./views/Product";
 
 export const AppViews = () => {
   return (
@@ -9,8 +9,8 @@ export const AppViews = () => {
       <Route path="/" exact>
         <Login />
       </Route>
-      <Route path="/haber">
-        <Post />
+      <Route path="/urunler">
+        <Product />
       </Route>
     </Switch>
   );
