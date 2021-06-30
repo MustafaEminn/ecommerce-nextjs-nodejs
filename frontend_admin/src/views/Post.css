@@ -1,0 +1,17 @@
+.ant-table-cell {
+  max-width: 200px;
+  height: 85px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+tr {
+  height: 85px !important;
+}
+
+.headerAdminPost {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 5;
+}

@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.login {
+  width: 400px;
+  border: 1px solid gray;
+  padding: 25px;
+  padding-bottom: 0;
+  border-radius: 20px;
+  background-color: white;
+}
