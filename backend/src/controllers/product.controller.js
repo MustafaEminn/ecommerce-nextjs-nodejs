@@ -86,12 +86,14 @@ exports.updateProduct = async (req, res, next) => {
   var request = new sql.Request();
 
   const putProductQuery = `UPDATE Products SET 
-  title = ${body["title"]},
-  details = ${body["details"]},
-  photos = ${body["photos"]};`;
+  title = '${body["title"]}',
+  details = '${body["details"]}',
+  photos = '${JSON.stringify(body["photos"])}',
+  isActive = '${body["isActive"]}' WHERE id = '${body["id"]}'`;
 
   await request.query(putProductQuery, (err, record) => {
     if (err) {
+      console.log(err);
       res.status(500).send({ code: 1, message: "Product could not updated." });
     } else {
       res.status(200).send({ code: 2, message: "Product updated." });
