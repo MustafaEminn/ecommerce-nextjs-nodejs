@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { message, Form, Input, Button } from "antd";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useForm } from "antd/lib/form/Form";
-import axios from "axios";
-import { API_URL } from "../API";
 import styles from "./login.module.css";
 import { getData, postData } from "../api/fetch";
 import { PAGE } from "../constants/page";
+import jwtDecode from "jwt-decode";
 
 const Login = () => {
   const [form] = useForm();
@@ -14,16 +13,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const route = useHistory();
 
-  const checkAuth = async () => {
-    let token = localStorage.getItem("token");
+  const checkAuth = () => {
+    const token = localStorage.getItem("token");
     if (token) {
-      getData("/api/auth/checkAuth")
-        .then((response) => {
-          return route.push(PAGE.products.href);
-        })
-        .catch((err) => {
-          return setPageLoading(false);
-        });
+      const decodedToken = jwtDecode(token);
+      const roles = decodedToken?.roles;
+      const userHasAdminRole = roles?.includes("admin");
+      if (userHasAdminRole) {
+        getData("/api/auth/checkAuth")
+          .then((response) => {
+            return route.push(PAGE.products.href);
+          })
+          .catch((err) => {
+            return setPageLoading(false);
+          });
+      } else if (!userHasAdminRole) {
+        setPageLoading(false);
+        message.error("Admin yetkiniz bulunmamaktır.");
+      }
     } else {
       setPageLoading(false);
     }
@@ -44,8 +51,15 @@ const Login = () => {
       .then((res) => {
         setLoading(false);
         const content = res.data;
-        localStorage.setItem("token", content.token);
-        route.push(PAGE.products.href);
+        const decodedToken = jwtDecode(content.token);
+        const roles = decodedToken?.roles;
+        const userHasAdminRole = roles?.includes("admin");
+        if (userHasAdminRole) {
+          localStorage.setItem("token", content.token);
+          route.push(PAGE.products.href);
+        } else {
+          message.error("Admin yetkiniz bulunmamaktır.");
+        }
       })
       .catch((err) => {
         setLoading(false);

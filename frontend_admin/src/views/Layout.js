@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import "antd/dist/antd.css";
 import { UserOutlined, PictureOutlined } from "@ant-design/icons";
-import { Switch, Route, withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { getData } from "../api/fetch";
 import styles from "../styles/layout/layout.module.css";
 import Logo from "../components/logo";
@@ -28,6 +28,7 @@ const LayoutAdmin = ({ children, mainLoading = false }) => {
         });
     } else {
       setPageLoading(false);
+      route.push("/");
     }
   }, []);
   return (

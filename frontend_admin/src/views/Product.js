@@ -20,7 +20,6 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { API_URL, checkErrorIsAuth } from "../API";
-import axios from "axios";
 import { useHistory } from "react-router-dom";
 import SunEditor, { buttonList } from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
@@ -35,8 +34,6 @@ import {
   putData,
 } from "../api/fetch";
 import { PAGE } from "../constants/page";
-import fs from "fs";
-import { arr_diff } from "../utils/arrDiff";
 
 const Product = () => {
   const [posts, setPosts] = useState([]);
@@ -59,7 +56,7 @@ const Product = () => {
   const editorRef = useRef();
 
   const getPosts = async () => {
-    postData("/api/product/getProductsTop", { count: countPosts })
+    await postData("/api/product/getProductsTop", { count: countPosts })
       .then((res) => {
         setPosts(res.data.products);
       })
@@ -466,6 +463,7 @@ const Product = () => {
   const TablePosts = useMemo(
     () => (
       <Table
+        size="small"
         pagination={false}
         columns={columns}
         dataSource={searchPost[0] ? searchPost : posts}
@@ -530,11 +528,11 @@ const Product = () => {
         >
           Davetiye Ekle
         </Button>
-        <div>
+        <div style={{ display: "flex", alignItems: "center" }}>
           Davetiye Sayısı:
           <InputNumber
             defaultValue={10}
-            style={{ margin: "15px" }}
+            style={{ margin: "15px", height: "32px" }}
             placeholder="Sayı yazınız"
             onChange={(e) => {
               setCountPosts(e);

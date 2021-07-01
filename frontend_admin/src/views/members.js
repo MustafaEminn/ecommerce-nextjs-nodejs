@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "antd/dist/antd.css";
 import {
   Table,
@@ -8,403 +8,208 @@ import {
   Tooltip,
   Button,
   Form,
-  Upload,
-  Checkbox,
   InputNumber,
-  Tag,
 } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
-  LoadingOutlined,
-  PlusOutlined,
+  CopyOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
-import { API_URL, checkErrorIsAuth } from "../API";
-import axios from "axios";
+import { checkErrorIsAuth } from "../API";
 import { useHistory } from "react-router-dom";
-import SunEditor, { buttonList } from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import "./Product.css";
 import LayoutAdmin from "./Layout";
 import Search from "antd/lib/input/Search";
-import {
-  deleteData,
-  getData,
-  postData,
-  postFormData,
-  putData,
-} from "../api/fetch";
-import { PAGE } from "../constants/page";
-import fs from "fs";
-import { arr_diff } from "../utils/arrDiff";
+import { deleteData, getData, putData } from "../api/fetch";
 
 const Members = () => {
-  const [posts, setPosts] = useState([]);
-  const [searchPost, setSearchPost] = useState([]);
-  const [fileList, setFileList] = useState([]);
-  const [visibleAdd, setVisibleAdd] = useState("");
-  const [deletedPhotosNames, setDeletedPhotosNames] = useState([]);
-  const [previewImage, setPreviewImage] = useState(false);
-  const [previewVisible, setPreviewVisible] = useState("");
-  const [previewTitle, setPreviewTitle] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [searchMember, setSearchMember] = useState([]);
+  const [editRow, setEditRow] = useState({});
+  const [addressModalVisible, setAddressModalVisible] = useState(false);
+  const [addressModalRow, setAddressModalRow] = useState({
+    Name: "",
+    Surname: "",
+    Address: "",
+    District: "",
+    City: "",
+    Neighborhood: "",
+  });
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
-  const [publicBool, setPublicBool] = useState(true);
-  const [editorValue, setEditorValue] = useState();
-  const [title, setTitle] = useState();
-  const [countPosts, setCountPosts] = useState(10);
-  const [editDataIndex, setEditDataIndex] = useState();
+  const [countMembers, setCountMembers] = useState(10);
   const route = useHistory();
-  const editorRef = useRef();
+  const [form] = Form.useForm();
 
-  const getPosts = async () => {
-    postData("/api/product/getProductsTop", { count: countPosts })
+  const getMembers = async () => {
+    await getData("/api/member/getMembersTop/" + countMembers)
       .then((res) => {
-        setPosts(res.data.products);
+        setMembers(res.data.members);
       })
       .catch(() => {
         message.error("Lütfen internetinizi kontrol edin.");
       });
   };
 
-  const deleteProduct = async (id, index) => {
-    message.loading("Ürün siliniyor");
-    let photos = JSON.parse(posts[index].photos || []);
+  const deleteProduct = async (id) => {
+    message.loading("Üye siliniyor...");
 
-    const deleteProductRun = () => {
-      deleteData("/api/product/deleteProduct/" + id)
-        .then(() => {
-          message.destroy();
-          message.success("Ürün silindi.");
-          const filter = posts.filter((p) => p.id !== id);
-          setPosts(filter);
-        })
-        .catch((err) => {
-          message.destroy();
-          if (checkErrorIsAuth(err)) {
-            return route.push("/");
-          } else {
-            message.error("Ürün silinemedi lütfen tekrar deneyiniz.");
-          }
-        });
-    };
-
-    const deleteImg = async (item, index) => {
-      await deleteData("/api/img/" + item)
-        .then(() => {
-          return index === photos.length - 1 ? deleteProductRun() : void 0;
-        })
-        .catch((err) => {
-          console.log(err);
-          return index === photos.length - 1 ? deleteProductRun() : void 0;
-        });
-    };
-
-    Promise.all(
-      photos.map(async (item, index) => {
-        await deleteImg(item, index);
+    deleteData("/api/member/deleteMember/" + id)
+      .then(() => {
+        message.destroy();
+        message.success("Ürün silindi.");
+        const filter = members.filter((p) => p.id !== id);
+        setMembers(filter);
       })
-    );
+      .catch((err) => {
+        message.destroy();
+        if (checkErrorIsAuth(err)) {
+          return route.push("/");
+        } else {
+          message.error("Ürün silinemedi lütfen tekrar deneyiniz.");
+        }
+      });
   };
-
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
 
   const closeModal = () => {
-    setVisibleAdd(false);
     setVisibleEdit(false);
-    setFileList([]);
-    setDeletedPhotosNames([]);
-    setTitle("");
-    setEditorValue("");
+    form.resetFields();
   };
 
-  const productAddClick = async () => {
-    if (title && editorValue && fileList[0]) {
+  const editPost = (row) => {
+    form.setFieldsValue(row);
+    setVisibleEdit(true);
+    setEditRow(row);
+  };
+
+  const memberUpdateClick = () => {
+    const errors = form.getFieldsError();
+    var formHasError = false;
+    errors.map((item) => {
+      return item.errors[0] ? (formHasError = true) : void 0;
+    });
+
+    if (!formHasError) {
       setLoading(true);
-      var uploadedPhotosNames = [];
-
-      const postProduct = () => {
-        let productData = {
-          title: title,
-          details: editorValue,
-          photos: uploadedPhotosNames,
-          isActive: publicBool,
-        };
-
-        postData("/api/product/addProduct", productData)
-          .then(() => {
-            setLoading(false);
-            getPosts();
-            closeModal();
-          })
-          .catch(() => {
-            setLoading(false);
-            message.error(
-              "Ürün yüklenirken hata oluştu lütfen tekrar deneyin."
-            );
-          });
-      };
-
-      const addImage = async (item, index) => {
-        const productPhoto = new FormData();
-
-        await productPhoto.append(
-          "productPhoto",
-          new File([item.originFileObj], item.name)
-        );
-        await postFormData("/api/img/imageAdd", productPhoto)
-          .then(async (res) => {
-            await uploadedPhotosNames.push(res.data.imageName);
-            index == fileList.length - 1 ? postProduct() : void 0;
-          })
-          .catch((err) => {
-            if (checkErrorIsAuth(err)) {
-              return route.push(PAGE.home.href);
-            } else {
-              message.error("Bir fotoğraf yüklenemedi.");
-            }
-          });
-      };
-
-      Promise.all(
-        fileList.map(async (item, index) => {
-          await addImage(item, index);
+      message.loading("Üye düzenleniyor...", 999);
+      var datas = form.getFieldsValue();
+      datas["id"] = editRow.id;
+      putData("/api/member/updateMember", datas)
+        .then(() => {
+          message.destroy();
+          message.success("Güncellendi.");
+          setLoading(false);
+          closeModal();
+          getMembers();
         })
-      );
-    } else {
-      message.error(
-        "Lütfen başlık eklediğinize ve fotoğraf yüklediğinize emin olun."
-      );
-      setLoading(false);
-    }
-  };
-
-  const editPost = (dataIndex) => {
-    let newFileList = [];
-    const setDatas = () => {
-      setFileList(newFileList);
-      setEditDataIndex(dataIndex);
-      setTitle(posts[dataIndex].title);
-      setEditorValue(posts[dataIndex].details);
-      setPublicBool(posts[dataIndex].isActive);
-      setVisibleEdit(true);
-    };
-    const photos = JSON.parse(posts[dataIndex].photos);
-    if (photos[0]) {
-      const toBlob = async (item, index) => {
-        const response = await getData(`/api/img/${item}`, {
-          responseType: "blob",
+        .catch(() => {
+          message.destroy();
+          setLoading(false);
+          message.error("Tekrar deneyin.");
         });
-        // here image is url/location of image
-        const blob = await response.data;
-
-        var file = new File([blob], item, { type: blob.type });
-        file["thumbUrl"] = `${API_URL}/api/img/${item}`;
-        await newFileList.push(file);
-
-        return index === photos.length - 1 ? setDatas() : void 0;
-      };
-      Promise.all(
-        photos.map(async (item, index) => {
-          await toBlob(item, index);
-        })
-      );
     } else {
-      setDatas();
+      message.error("Lütfen gerekli alanları doldurunuz.");
     }
   };
 
-  const productUpdateClick = async () => {
-    if (title && editorValue && fileList[0]) {
-      setLoading(true);
-
-      const onError = () => {
-        setLoading(false);
-        return message.error("Lütfen tekrar deneyiniz.");
-      };
-
-      let fileListFiltered = fileList.filter((item) => {
-        return item.uid.indexOf("rc") === -1;
-      });
-      let updatePhotoList = fileList.filter((item) => {
-        return item.uid.indexOf("rc") !== -1;
-      });
-      var uploadedPhotosNames = [];
-
-      const updateRun = () => {
-        let alreadyUploadedPhotosNames = fileListFiltered.map((item) => {
-          return item.name;
-        });
-        let productData = {
-          title: title,
-          details: editorValue,
-          photos: [...alreadyUploadedPhotosNames, ...uploadedPhotosNames],
-          isActive: publicBool,
-          id: posts[editDataIndex].id,
-        };
-
-        putData("/api/product/updateProduct", productData)
-          .then(() => {
-            setLoading(false);
-            getPosts();
-            closeModal();
-          })
-          .catch(() => {
-            setLoading(false);
-            message.error(
-              "Ürün düzenlenirken hata oluştu lütfen tekrar deneyin."
-            );
-          });
-      };
-
-      const photosNamesPush = async (name) => {
-        await uploadedPhotosNames.push(name);
-      };
-
-      const updatePhoto = async (item, index) => {
-        const productPhoto = new FormData();
-
-        await productPhoto.append(
-          "productPhoto",
-          new File([item.originFileObj], item.name)
-        );
-        return postFormData("/api/img/imageAdd", productPhoto)
-          .then(async (res) => {
-            await photosNamesPush(res.data.imageName);
-            index === updatePhotoList.length - 1 ? updateRun() : void 0;
-          })
-          .catch((err) => {
-            if (checkErrorIsAuth(err)) {
-              return route.push(PAGE.home.href);
-            } else {
-              message.error("Bir fotoğraf yüklenemedi.");
-            }
-          });
-      };
-
-      const updateNewPhotosRun = () => {
-        if (updatePhotoList[0]) {
-          Promise.all(
-            updatePhotoList.map(async (item, index) => {
-              await updatePhoto(item, index);
-            })
-          );
-        } else {
-          updateRun();
-        }
-      };
-      let deletingPhotosHasError = false;
-      const deleteImage = async (item, index) => {
-        await deleteData("/api/img/" + item)
-          .then(() => {
-            return index === deletedPhotosNames.length - 1
-              ? updateNewPhotosRun()
-              : void 0;
-          })
-          .catch(() => {
-            console.log("smakfmksaf");
-            deletingPhotosHasError = true;
-            onError();
-            setLoading(false);
-          });
-      };
-
-      if (deletedPhotosNames[0]) {
-        Promise.all(
-          deletedPhotosNames.map(async (item, index) => {
-            if (!deletingPhotosHasError) {
-              return await deleteImage(item, index);
-            } else {
-              setLoading(false);
-            }
-          })
-        );
-      } else {
-        updateNewPhotosRun();
-      }
-    } else {
-      message.error(
-        "Lütfen başlık eklediğinize ve fotoğraf yüklediğinize emin olun."
-      );
-      setLoading(false);
-    }
+  const onAddressModalCancel = () => {
+    setAddressModalVisible(false);
   };
 
-  const onImagePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-
-    setPreviewImage(file.url || file.preview);
-    setPreviewVisible(true);
-    setPreviewTitle(
-      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
-    );
+  const copyId = (index) => {
+    const memberIdElem = document.getElementById("memberIdCopyElem" + index);
+    var r = document.createRange();
+    r.selectNode(memberIdElem);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(r);
+    document.execCommand("copy");
+    message.success("Kopyalandı");
   };
-
-  const onImagePreviewCancel = () => {
-    setPreviewVisible(false);
-  };
-
-  const onImageChange = (files) => {
-    console.log(files);
-    if (files.file.status === "removed") {
-      if (files.file?.thumbUrl?.indexOf("api/img/") !== -1) {
-        const fileName = files.file.thumbUrl.split("img/")[1];
-        let newDeletedPhotosNames = [...deletedPhotosNames, fileName];
-        setDeletedPhotosNames(newDeletedPhotosNames);
-      }
-    }
-
-    setFileList(files.fileList);
-  };
-
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Yükle</div>
-    </div>
-  );
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
+      render: (title, row, index) => {
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <p
+              style={{
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+              id={"memberIdCopyElem" + index}
+            >
+              {row.id}
+            </p>
+            <Button
+              onClick={() => {
+                copyId(index);
+              }}
+              type="primary"
+              icon={<CopyOutlined />}
+            />
+          </div>
+        );
+      },
     },
     {
-      title: "Başlık",
-      dataIndex: "title",
-      key: "title",
-      render: (title) => (
-        <p
-          className="titlesTable"
-          style={{ maxHeight: "85px", overflow: "hidden" }}
-        >
-          {title}
-        </p>
-      ),
+      title: "Ad Soyad",
+      dataIndex: "name",
+      key: "id",
+      render: (title, row) => {
+        return (
+          <p className="titlesTable">
+            {row.Name} {row.Surname}
+          </p>
+        );
+      },
     },
     {
-      title: "Durumu",
-      dataIndex: "isActive",
-      key: "isActive",
-      render: (boolean) => (
-        <p style={{ maxHeight: "85px", overflow: "hidden" }}>
-          {boolean ? (
-            <Tag color="green">Aktif</Tag>
-          ) : (
-            <Tag color="red">Pasif</Tag>
-          )}
-        </p>
-      ),
+      title: "İletişim",
+      dataIndex: "PhoneNumber",
+      key: "id",
+      render: (title, row) => {
+        return (
+          <p className="titlesTable">
+            {row.PhoneNumber}
+            <br /> {row.Email}
+          </p>
+        );
+      },
     },
+    {
+      title: "Adres",
+      key: "id",
+      render: (title, row) => {
+        return (
+          <>
+            {row.City !== "undefined" ? (
+              <Button
+                onClick={() => {
+                  setAddressModalRow(row);
+                  setAddressModalVisible(true);
+                }}
+                type="primary"
+                icon={<EyeOutlined />}
+              />
+            ) : (
+              "-"
+            )}
+          </>
+        );
+      },
+    },
+
     {
       title: "Tarih",
       dataIndex: "createdAt",
@@ -417,9 +222,7 @@ const Members = () => {
           hour: "2-digit",
           minute: "2-digit",
         });
-        return (
-          <p style={{ maxHeight: "85px", overflow: "hidden" }}>{dateFormat}</p>
-        );
+        return <p>{dateFormat}</p>;
       },
     },
     {
@@ -439,7 +242,7 @@ const Members = () => {
                   color: "#1890ff",
                 }}
                 onClick={() => {
-                  editPost(index);
+                  editPost(row);
                 }}
               />
             </Tooltip>
@@ -453,7 +256,7 @@ const Members = () => {
                   borderColor: "#ff4d4f",
                   color: "#ff4d4f",
                 }}
-                onClick={() => deleteProduct(row.id, index)}
+                onClick={() => deleteProduct(row.id)}
               />
             </Tooltip>
           </>
@@ -463,86 +266,143 @@ const Members = () => {
   ];
 
   // OPTIMIZE LAG PROBLEM
-  const TablePosts = useMemo(
+  const TableMembers = useMemo(
     () => (
       <Table
+        size="small"
         pagination={false}
         columns={columns}
-        dataSource={searchPost[0] ? searchPost : posts}
+        dataSource={searchMember[0] ? searchMember : members}
       />
     ),
-    [posts, searchPost]
+    [members, searchMember]
   );
-  const onSearch = () => {
-    var input, filter, i, txtValue, titles;
-    input = document.querySelector(".ant-input");
-    filter = input.value.toLowerCase();
-    titles = document.querySelectorAll(".titlesTable");
-
-    for (i = 0; i < titles.length; i++) {
-      txtValue = titles[i].textContent || titles[i].innerText;
-      if (txtValue.toLowerCase().indexOf(filter) > -1) {
-        titles[i].parentElement.parentElement.style.display = "";
-      } else {
-        titles[i].parentElement.parentElement.style.display = "none";
-      }
-    }
-  };
   const onSearchID = async (e) => {
-    if (e.length >= 10) {
+    if (e.length >= 32) {
       message.loading("Aranıyor...", 999);
-      await getData("/api/product/getProductById/" + e)
+      await getData("/api/member/getMemberById/" + e)
         .then((res) => {
           message.destroy();
-          message.success("Ürün bulundu.");
-          setSearchPost(res.data.product);
+          message.success("Üye bulundu.");
+          setSearchMember(res.data.member);
         })
         .catch((err) => {
-          if (err.response.data.code === 1) {
+          if (err.response?.data.code === 1) {
             message.destroy();
-            message.error("Ürün aranırken hata oluştu.");
+            message.error("Üye aranırken hata oluştu.");
           } else {
             message.destroy();
-            message.error("Bu ID'ye sahip ürün bulunamadı.");
+            message.error("Bu ID'ye sahip üye bulunamadı.");
           }
         });
-    } else if (e.length === 0 && searchPost[0]) {
-      setSearchPost([]);
+    } else if (e.length === 0 && searchMember[0]) {
+      setSearchMember([]);
     } else {
-      message.error("ID en az 10 haneli olmalıdır.");
+      message.error("ID en az 32 haneli olmalıdır.");
+    }
+  };
+
+  const onSearchName = async (e) => {
+    if (e.length >= 2) {
+      message.loading("Aranıyor...", 999);
+      await getData("/api/member/getMemberByName/" + e)
+        .then((res) => {
+          console.log(res.data);
+          message.destroy();
+          message.success("Üye bulundu.");
+          setSearchMember(res.data.member);
+        })
+        .catch((err) => {
+          if (err.response?.data.code === 1) {
+            message.destroy();
+            message.error("Üye aranırken hata oluştu.");
+          } else {
+            message.destroy();
+            message.error("Bu isime sahip üye bulunamadı.");
+          }
+        });
+    } else if (e.length === 0 && searchMember[0]) {
+      setSearchMember([]);
+    } else {
+      message.error("Ad soyad en az 2 haneli olmalıdır.");
+    }
+  };
+  const onSearchEmail = async (e) => {
+    if (e.length >= 5) {
+      message.loading("Aranıyor...", 999);
+      await getData("/api/member/getMemberByEmail/" + e)
+        .then((res) => {
+          console.log(res.data);
+          message.destroy();
+          message.success("Üye bulundu.");
+          setSearchMember(res.data.member);
+        })
+        .catch((err) => {
+          if (err.response?.data.code === 1) {
+            message.destroy();
+            message.error("Üye aranırken hata oluştu.");
+          } else {
+            message.destroy();
+            message.error("Bu isime sahip üye bulunamadı.");
+          }
+        });
+    } else if (e.length === 0 && searchMember[0]) {
+      setSearchMember([]);
+    } else {
+      message.error("Email en az 5 haneli olmalıdır.");
     }
   };
 
   useEffect(() => {
-    getPosts();
+    getMembers();
     setPageLoading(false);
   }, []);
 
   return (
     <LayoutAdmin mainLoading={pageLoading}>
       <div className="headerAdminPost">
-        <Button
-          onClick={() => {
-            setVisibleAdd(true);
-          }}
-          style={{ margin: "15px" }}
-          type="primary"
-        >
-          Davetiye Ekle
-        </Button>
         <div>
+          <Search
+            placeholder="ID ara..."
+            allowClear
+            enterButton
+            onSearch={onSearchID}
+            style={{ margin: "15px", width: "200px" }}
+          />
+          <Search
+            placeholder="Ad soyad ara..."
+            allowClear
+            enterButton
+            onSearch={onSearchName}
+            style={{ margin: "15px", width: "200px" }}
+          />
+          <Search
+            placeholder="Email ara..."
+            allowClear
+            enterButton
+            onSearch={onSearchEmail}
+            style={{ margin: "15px", width: "200px" }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            alignSelf: "flex-start",
+          }}
+        >
           Davetiye Sayısı:
           <InputNumber
             defaultValue={10}
-            style={{ margin: "15px" }}
+            style={{ margin: "15px", height: "32px" }}
             placeholder="Sayı yazınız"
             onChange={(e) => {
-              setCountPosts(e);
+              setCountMembers(e);
             }}
           />
           <Button
             onClick={() => {
-              getPosts();
+              getMembers();
             }}
             style={{ margin: "15px" }}
             type="primary"
@@ -551,84 +411,9 @@ const Members = () => {
           </Button>
         </div>
       </div>
-      <Search
-        placeholder="Başlık ara..."
-        allowClear
-        enterButton
-        onChange={onSearch}
-        style={{ margin: "15px", width: "200px" }}
-      />
-      <Search
-        placeholder="ID ara..."
-        allowClear
-        enterButton
-        onSearch={onSearchID}
-        style={{ margin: "15px", width: "200px" }}
-      />
-      {TablePosts}
-      {/* ADD POST MODAL BEGIN */}
-      <Modal
-        destroyOnClose={true}
-        maskClosable={false}
-        visible={visibleAdd}
-        title="Ürün Ekle"
-        onCancel={closeModal}
-        width="90%"
-        footer={[
-          <Button onClick={closeModal}>Kapat</Button>,
-          <Button type="primary" loading={loading} onClick={productAddClick}>
-            Davetiyeyi Ekle
-          </Button>,
-        ]}
-      >
-        <Form encType="multipart/form-data" id="imageUploadForm">
-          <Form.Item name="title" label="Ürün Başlığı">
-            <Input
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
-            />
-          </Form.Item>
 
-          <Form.Item label="Ürün Fotoğrafları" rules={[{ required: true }]}>
-            <Upload
-              accept="images/*"
-              name="productPhoto"
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={onImagePreview}
-              onChange={onImageChange}
-              multiple
-              maxCount={10}
-              id="imageUploadInput"
-            >
-              {fileList.length >= 10 ? null : uploadButton}
-            </Upload>
-          </Form.Item>
+      {TableMembers}
 
-          <Form.Item label="Halka Açık">
-            <Checkbox
-              defaultChecked={publicBool}
-              onChange={(e) => {
-                setPublicBool(e.target.checked);
-              }}
-            />
-          </Form.Item>
-        </Form>
-        <SunEditor
-          ref={editorRef}
-          setContents={editorValue}
-          setOptions={{
-            height: 400,
-            buttonList: buttonList.complex,
-          }}
-          onChange={(e) => {
-            setEditorValue(e);
-          }}
-          width="100%"
-        />
-      </Modal>
-      {/* ADD POST MODAL END */}
       {/* EDIT POST MODAL BEGIN */}
       <Modal
         destroyOnClose={true}
@@ -639,70 +424,73 @@ const Members = () => {
         width="90%"
         footer={[
           <Button onClick={closeModal}>Kapat</Button>,
-          <Button type="primary" loading={loading} onClick={productUpdateClick}>
+
+          <Button type="primary" loading={loading} onClick={memberUpdateClick}>
             Düzenlemeyi Kaydet
           </Button>,
         ]}
       >
-        <Form encType="multipart/form-data" id="imageUploadForm">
-          <Form.Item name="title" label="Ürün Başlığı">
-            <Input
-              defaultValue={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
-            />
+        <Form onFinish={memberUpdateClick} form={form} layout="vertical">
+          <Form.Item
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
+            name="Name"
+            label="Ad"
+          >
+            <Input name="name" />
           </Form.Item>
-
-          <Form.Item label="Ürün Fotoğrafları" rules={[{ required: true }]}>
-            <Upload
-              accept="images/*"
-              name="productPhoto"
-              listType="picture-card"
-              fileList={fileList}
-              onChange={onImageChange}
-              multiple
-              maxCount={10}
-              id="imageUploadInput"
-            >
-              {fileList.length >= 10 ? null : uploadButton}
-            </Upload>
+          <Form.Item
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
+            name="Surname"
+            label="Soyad"
+          >
+            <Input name="surname" />
           </Form.Item>
-
-          <Form.Item label="Halka Açık">
-            <Checkbox
-              defaultChecked={publicBool}
-              onChange={(e) => {
-                setPublicBool(e.target.checked);
-              }}
-            />
+          <Form.Item
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
+            name="Email"
+            label="Email"
+          >
+            <Input name="email" />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
+            name="PhoneNumber"
+            label="Telefon Numarası"
+          >
+            <Input name="phoneNumber" />
+          </Form.Item>
+          <Form.Item name="City" label="Şehir">
+            <Input name="city" />
+          </Form.Item>
+          <Form.Item name="District" label="İlçe">
+            <Input name="district" />
+          </Form.Item>
+          <Form.Item name="Neighborhood" label="Mahalle">
+            <Input name="neighborhood" />
+          </Form.Item>
+          <Form.Item name="Address" label="Adres">
+            <Input name="address" />
           </Form.Item>
         </Form>
-        <SunEditor
-          ref={editorRef}
-          setContents={editorValue}
-          defaultValue={editorValue}
-          setOptions={{
-            height: 400,
-            buttonList: buttonList.complex,
-          }}
-          onChange={(e) => {
-            setEditorValue(e);
-          }}
-          width="100%"
-        />
       </Modal>
       {/* EDIT POST MODAL END */}
-      {/* PREVIEW IMAGE MODAL BEGIN */}
+      {/* ADDRESS MODAL BEGIN */}
       <Modal
-        visible={previewVisible}
-        title={previewTitle}
+        visible={addressModalVisible}
+        title={
+          addressModalRow.Name +
+          " " +
+          addressModalRow.Surname +
+          " " +
+          "Adres Bilgisi"
+        }
         footer={null}
-        onCancel={onImagePreviewCancel}
+        onCancel={onAddressModalCancel}
       >
-        <img style={{ width: "100%" }} src={previewImage} />
+        {addressModalRow.Address} {addressModalRow.Neighborhood}{" "}
+        {addressModalRow.District}/{addressModalRow.City}
       </Modal>
-      {/* PREVIEW IMAGE MODAL END */}
+      {/* ADDRESS MODAL END */}
     </LayoutAdmin>
   );
 };
