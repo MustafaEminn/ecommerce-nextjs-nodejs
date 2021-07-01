@@ -1,5 +1,9 @@
 const multer = require("multer");
 
+function generateRandomIntegerInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./images");
@@ -12,7 +16,11 @@ const storage = multer.diskStorage({
     var date = new Date().toLocaleDateString("tr").replace(".", "_");
     cb(
       null,
-      date + "-" + file.originalname.replace(" ", "_").replace("-", "_")
+      date +
+        "-" +
+        generateRandomIntegerInRange(1, 9) +
+        "-" +
+        file.originalname.replace(" ", "_").replace("-", "_")
     );
   },
 });

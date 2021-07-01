@@ -101,6 +101,29 @@ exports.updateProduct = async (req, res, next) => {
   });
 };
 
+exports.getProductById = async (req, res, next) => {
+  var request = new sql.Request();
+
+  const getProductQuery = `SELECT * FROM Products WHERE id= '${req.params.id}'`;
+
+  await request.query(getProductQuery, (err, record) => {
+    const resBody = record.recordset;
+    if (err) {
+      res
+        .status(500)
+        .send({ code: 1, message: "We got error when product getting." });
+    } else if (!resBody[0]) {
+      res.status(500).send({ code: 2, message: "Product not found." });
+    } else {
+      res.status(200).send({
+        code: 3,
+        message: "Products getted.",
+        product: resBody,
+      });
+    }
+  });
+};
+
 exports.getProductsNewest = async (req, res, next) => {
   var request = new sql.Request();
 
