@@ -9,4 +9,9 @@ export const PAGE = {
     urlPathname: "urunler",
     href: "/urunler",
   },
+  members: {
+    name: "Üyeler",
+    urlPathname: "uyeler",
+    href: "/uyeler",
+  },
 };

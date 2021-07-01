@@ -1,4 +1,4 @@
-#components-layout-demo-custom-trigger .trigger {
+/* #components-layout-demo-custom-trigger .trigger {
   padding: 0 24px;
   font-size: 18px;
   line-height: 64px;
@@ -14,7 +14,7 @@
   height: 32px;
   margin: 16px;
   background: rgba(255, 255, 255, 0.3);
-}
+} */
 
 .site-layout .site-layout-background {
   background: #fff;
@@ -26,6 +26,26 @@
 
 .ant-upload-list-picture-card-container .ant-tooltip {
   display: none !important;
+}
+
+.site-layout-content {
+  min-height: 280px;
+  padding: 24px;
+  background: #fff;
+}
+.logo {
+  float: left;
+  width: 120px;
+  margin: 0px 24px 0px 0;
+  font-size: 20px;
+}
+.ant-row-rtl .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
+
+.ant-table {
+  overflow: auto !important;
 }
 
 @import "./styles/variables/index.css";

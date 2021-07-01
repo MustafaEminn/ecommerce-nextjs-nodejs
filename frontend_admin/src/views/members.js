@@ -38,7 +38,7 @@ import { PAGE } from "../constants/page";
 import fs from "fs";
 import { arr_diff } from "../utils/arrDiff";
 
-const Product = () => {
+const Members = () => {
   const [posts, setPosts] = useState([]);
   const [searchPost, setSearchPost] = useState([]);
   const [fileList, setFileList] = useState([]);
@@ -706,4 +706,4 @@ const Product = () => {
     </LayoutAdmin>
   );
 };
-export default Product;
+export default Members;
