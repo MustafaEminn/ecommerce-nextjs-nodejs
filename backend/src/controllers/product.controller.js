@@ -4,10 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const ShortUniqueId = require("short-unique-id");
 const bcrypt = require("bcrypt-nodejs");
-const { default: jwtDecode } = require("jwt-decode");
-const nodemailer = require("nodemailer");
 const sql = require("mssql");
-const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 

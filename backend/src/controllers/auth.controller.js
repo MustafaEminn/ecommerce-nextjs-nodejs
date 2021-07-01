@@ -24,15 +24,16 @@ exports.register = async (req, res, next) => {
   ('${newBody["name"]}',
   '${newBody["surname"]}',
   '${newBody["password"]}',
-  '${newBody["address"]}',
-  '${newBody["city"]}',
-  '${newBody["district"]}',
-  '${newBody["neighborhood"]}',
+  '',
+  '',
+  '',
+  '',
   '${newBody["phoneNumber"]}',
   '${newBody["id"]}',
   '${newBody["email"]}',
   '${newBody["gender"]}',
-  '${JSON.stringify(["user"])}')`;
+  '${JSON.stringify(["user"])}',
+  '${new Date(Date.now()).toISOString()}')`;
 
   // Register
   // Error code 2 mean is already exists email
@@ -72,7 +73,7 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();
-  const getUserQuery = `SELECT Email,Password,id,Name,Surname FROM Users WHERE Email = '${body["email"]}'`;
+  const getUserQuery = `SELECT Email,Password,id,Name,Surname,Roles FROM Users WHERE Email = '${body["email"]}'`;
 
   await request.query(getUserQuery, (err, record) => {
     const resBody = record.recordset[0];
@@ -85,7 +86,7 @@ exports.login = async (req, res, next) => {
           email: resBody["Email"],
           name: resBody["Name"],
           surname: resBody["Surname"],
-          roles: resBody["Roles"],
+          roles: JSON.parse(resBody["Roles"]),
         };
         const token = jwt.sign(payload, config.secret, { expiresIn: "1y" });
         res

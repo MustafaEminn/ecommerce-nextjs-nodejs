@@ -4,13 +4,15 @@ const router = express.Router();
 const authRouter = require("./auth.route");
 const productRouter = require("./product.route");
 const imageRouter = require("./image.route");
+const memberRouter = require("./members.route");
 
 router.get("/status", (req, res) => {
   res.send({ status: "OK" });
 }); // api status
 
-router.use("/auth", authRouter); // mount auth paths
-router.use("/product", productRouter); // mount auth paths
-router.use("/img", imageRouter); // mount auth paths
+router.use("/auth", authRouter);
+router.use("/product", productRouter);
+router.use("/img", imageRouter);
+router.use("/member", memberRouter);
 
 module.exports = router;

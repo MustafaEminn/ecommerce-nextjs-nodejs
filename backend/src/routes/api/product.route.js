@@ -4,11 +4,24 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../../controllers/product.controller");
 const auth = require("../../middlewares/authorization");
+const checkRoles = require("../../middlewares/checkRoles");
 
-router.post("/addProduct", auth(), productController.addProduct);
+router.post(
+  "/addProduct",
+  [auth(), checkRoles("admin")],
+  productController.addProduct
+);
 router.post("/getProductsTop", productController.getProductsTop);
-router.put("/updateProduct", auth(), productController.updateProduct);
-router.delete("/deleteProduct/:id", auth(), productController.deleteProduct);
+router.put(
+  "/updateProduct",
+  [auth(), checkRoles("admin")],
+  productController.updateProduct
+);
+router.delete(
+  "/deleteProduct/:id",
+  [auth(), checkRoles("admin")],
+  productController.deleteProduct
+);
 
 router.get("/getProductById/:id", productController.getProductById);
 // router.get("/secret2", auth(["admin"]), (req, res) => {
