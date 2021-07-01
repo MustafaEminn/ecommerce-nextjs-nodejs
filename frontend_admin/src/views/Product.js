@@ -27,7 +27,13 @@ import "suneditor/dist/css/suneditor.min.css";
 import "./Product.css";
 import LayoutAdmin from "./Layout";
 import Search from "antd/lib/input/Search";
-import { deleteData, postData, postFormData } from "../api/fetch";
+import {
+  deleteData,
+  getData,
+  postData,
+  postFormData,
+  putData,
+} from "../api/fetch";
 import { PAGE } from "../constants/page";
 import fs from "fs";
 import { arr_diff } from "../utils/arrDiff";
@@ -36,6 +42,7 @@ const Product = () => {
   const [posts, setPosts] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [visibleAdd, setVisibleAdd] = useState("");
+  const [deletedPhotosNames, setDeletedPhotosNames] = useState([]);
   const [previewImage, setPreviewImage] = useState(false);
   const [previewVisible, setPreviewVisible] = useState("");
   const [previewTitle, setPreviewTitle] = useState(false);
@@ -64,8 +71,8 @@ const Product = () => {
   };
 
   const deleteProduct = async (id, index) => {
-    message.loading("Haber siliniyor");
-    let photos = JSON.parse(posts[index].photos);
+    message.loading("Ürün siliniyor");
+    let photos = JSON.parse(posts[index].photos || []);
 
     const deleteProductRun = () => {
       deleteData("/api/product/deleteProduct/" + id)
@@ -85,10 +92,19 @@ const Product = () => {
         });
     };
 
+    const deleteImg = (item, index) => {
+      deleteData("/api/img/" + item)
+        .then(() => {
+          return index === photos.length - 1 ? deleteProductRun() : void 0;
+        })
+        .catch((err) => {
+          console.log(err);
+          return index === photos.length - 1 ? deleteProductRun() : void 0;
+        });
+    };
+
     photos.map((item, index) => {
-      deleteData("/api/img/" + item).then(() => {
-        return index === photos.length - 1 ? deleteProductRun() : void 0;
-      });
+      deleteImg(item, index);
     });
   };
 
@@ -104,6 +120,7 @@ const Product = () => {
     setVisibleAdd(false);
     setVisibleEdit(false);
     setFileList([]);
+    setDeletedPhotosNames([]);
     setLink("");
     setTitle("");
     setEditorValue("");
@@ -112,7 +129,7 @@ const Product = () => {
   const productAddClick = async () => {
     if (title && editorValue && fileList[0]) {
       setLoading(true);
-      let uploadedPhotosNames = [];
+      var uploadedPhotosNames = [];
       console.log(fileList);
 
       const postProduct = () => {
@@ -137,16 +154,20 @@ const Product = () => {
           });
       };
 
-      await fileList.map((item, index) => {
+      const pushName = async (name) => {
+        await uploadedPhotosNames.push(name);
+      };
+
+      const addImage = async (item, index) => {
         const productPhoto = new FormData();
 
-        productPhoto.append(
+        await productPhoto.append(
           "productPhoto",
           new File([item.originFileObj], item.name)
         );
-        postFormData("/api/img/imageAdd", productPhoto)
-          .then((res) => {
-            uploadedPhotosNames.push(res.data.imageName);
+        await postFormData("/api/img/imageAdd", productPhoto)
+          .then(async (res) => {
+            await pushName(res.data.imageName);
             index == fileList.length - 1 ? postProduct() : void 0;
           })
           .catch((err) => {
@@ -156,6 +177,10 @@ const Product = () => {
               message.error("Bir fotoğraf yüklenemedi.");
             }
           });
+      };
+
+      fileList.map((item, index) => {
+        addImage(item, index);
       });
     } else {
       message.error(
@@ -177,15 +202,24 @@ const Product = () => {
     };
     const photos = JSON.parse(posts[dataIndex].photos);
     if (photos[0]) {
-      photos.map(async (item, index) => {
-        const response = await fetch(`${API_URL}/api/img/${item}`);
+      const pushFile = async (file) => {
+        await newFileList.push(file);
+      };
+      const toBlob = async (item, index) => {
+        const response = await getData(`/api/img/${item}`, {
+          responseType: "blob",
+        });
         // here image is url/location of image
-        const blob = await response.blob();
+        const blob = await response.data;
 
         var file = new File([blob], item, { type: blob.type });
         file["thumbUrl"] = `${API_URL}/api/img/${item}`;
-        newFileList.push(file);
+        await pushFile(file);
+
         return index === photos.length - 1 ? setDatas() : void 0;
+      };
+      photos.map(async (item, index) => {
+        await toBlob(item, index);
       });
     } else {
       setDatas();
@@ -195,28 +229,6 @@ const Product = () => {
   const productUpdateClick = async () => {
     if (title && editorValue && fileList[0]) {
       setLoading(true);
-      function arr_diff_name(a1, a2) {
-        var a = [],
-          diff = [];
-
-        for (var i = 0; i < a1.length - 1; i++) {
-          a[a1[i]] = true;
-        }
-
-        for (var i = 0; i < a2.length - 1; i++) {
-          if (a[a2[i].name]) {
-            delete a[a2[i].name];
-          } else {
-            a[a2[i].name] = true;
-          }
-        }
-
-        for (var k in a) {
-          diff.push(k);
-        }
-
-        return diff;
-      }
 
       const onError = () => {
         setLoading(false);
@@ -229,50 +241,97 @@ const Product = () => {
       let updatePhotoList = fileList.filter((item) => {
         return item.uid.indexOf("rc") !== -1;
       });
+      var uploadedPhotosNames = [];
 
-      const oldPhotos = JSON.parse(posts[editDataIndex].photos);
-      const deletedImageList = arr_diff_name(oldPhotos, fileListFiltered);
-      const uploadedPhotosNames = fileListFiltered.map((item) => {
-        return item.name;
-      });
-      const uploadedPhotos = arr_diff(uploadedPhotosNames, deletedImageList);
-      console.log(fileListFiltered);
-      console.log(uploadedPhotos);
-      const updateProductRun = () => {
-        console.log(uploadedPhotos);
+      const updateRun = () => {
+        let alreadyUploadedPhotosNames = fileListFiltered.map((item) => {
+          return item.name;
+        });
+        let productData = {
+          title: title,
+          details: editorValue,
+          photos: [...alreadyUploadedPhotosNames, ...uploadedPhotosNames],
+          isActive: publicBool,
+          id: posts[editDataIndex].id,
+        };
+
+        putData("/api/product/updateProduct", productData)
+          .then(() => {
+            setLoading(false);
+            getPosts();
+            closeModal();
+          })
+          .catch(() => {
+            setLoading(false);
+            message.error(
+              "Ürün düzenlenirken hata oluştu lütfen tekrar deneyin."
+            );
+          });
       };
 
-      // deletedImageList.map((item, index) => {
-      //   return deleteData("/api/img/" + item)
-      //     .then(() => {
-      //       updatePhotoList.map((item2) => {
-      //         const productPhoto = new FormData();
+      const photosNamesPush = async (name) => {
+        await uploadedPhotosNames.push(name);
+      };
 
-      //         productPhoto.append(
-      //           "productPhoto",
-      //           new File([item2.originFileObj], item2.name)
-      //         );
-      //         return postFormData("/api/img/imageAdd", productPhoto)
-      //           .then((res) => {
-      //             uploadedPhotosNames.push(res.data.imageName);
-      //             index == updatePhotoList.length - 1
-      //               ? updateProductRun()
-      //               : void 0;
-      //           })
-      //           .catch((err) => {
-      //             if (checkErrorIsAuth(err)) {
-      //               return route.push(PAGE.home.href);
-      //             } else {
-      //               message.error("Bir fotoğraf yüklenemedi.");
-      //             }
-      //           });
-      //       });
-      //     })
-      //     .catch(() => {
-      //       onError();
-      //     });
-      // });
-      setLoading(false);
+      const updatePhoto = async (item, index) => {
+        const productPhoto = new FormData();
+
+        await productPhoto.append(
+          "productPhoto",
+          new File([item.originFileObj], item.name)
+        );
+        return postFormData("/api/img/imageAdd", productPhoto)
+          .then(async (res) => {
+            await photosNamesPush(res.data.imageName);
+            index === updatePhotoList.length - 1 ? updateRun() : void 0;
+          })
+          .catch((err) => {
+            if (checkErrorIsAuth(err)) {
+              return route.push(PAGE.home.href);
+            } else {
+              message.error("Bir fotoğraf yüklenemedi.");
+            }
+          });
+      };
+
+      const updateNewPhotosRun = () => {
+        if (updatePhotoList[0]) {
+          updatePhotoList.map(async (item, index) => {
+            console.log(item);
+            await updatePhoto(item, index);
+          });
+        } else {
+          updateRun();
+        }
+      };
+      let deletingPhotosHasError = false;
+      const deleteImage = async (item, index) => {
+        await deleteData("/api/img/" + item)
+          .then(() => {
+            return index === deletedPhotosNames.length - 1
+              ? updateNewPhotosRun()
+              : void 0;
+          })
+          .catch(() => {
+            console.log("smakfmksaf");
+            deletingPhotosHasError = true;
+            onError();
+            setLoading(false);
+          });
+      };
+
+      if (deletedPhotosNames[0]) {
+        deletedPhotosNames.map(async (item, index) => {
+          console.log();
+          if (!deletingPhotosHasError) {
+            return await deleteImage(item, index);
+          } else {
+            setLoading(false);
+          }
+        });
+      } else {
+        updateNewPhotosRun();
+      }
 
       // let productData = {
       //   title: title,
@@ -315,6 +374,15 @@ const Product = () => {
   };
 
   const onImageChange = (files) => {
+    console.log(files);
+    if (files.file.status === "removed") {
+      if (files.file?.thumbUrl?.indexOf("api/img/") !== -1) {
+        const fileName = files.file.thumbUrl.split("img/")[1];
+        let newDeletedPhotosNames = [...deletedPhotosNames, fileName];
+        setDeletedPhotosNames(newDeletedPhotosNames);
+      }
+    }
+
     setFileList(files.fileList);
   };
 
@@ -574,7 +642,6 @@ const Product = () => {
               name="productPhoto"
               listType="picture-card"
               fileList={fileList}
-              onPreview={onImagePreview}
               onChange={onImageChange}
               multiple
               maxCount={10}

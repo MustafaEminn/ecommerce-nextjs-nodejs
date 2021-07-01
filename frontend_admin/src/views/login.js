@@ -5,7 +5,7 @@ import { useForm } from "antd/lib/form/Form";
 import axios from "axios";
 import { API_URL } from "../API";
 import styles from "./login.module.css";
-import { postData } from "../api/fetch";
+import { getData, postData } from "../api/fetch";
 import { PAGE } from "../constants/page";
 
 const Login = () => {
@@ -17,16 +17,7 @@ const Login = () => {
   const checkAuth = async () => {
     let token = localStorage.getItem("token");
     if (token) {
-      axios
-        .get(
-          `${API_URL}/api/auth/checkAuth`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+      getData("/api/auth/checkAuth")
         .then((response) => {
           return route.push(PAGE.products.href);
         })
