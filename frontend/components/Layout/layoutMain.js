@@ -14,6 +14,7 @@ function LayoutMain({
   fadeBG = false,
   centerContent = false,
   whenAuthDisabledPage = false,
+  pageLoading = false,
 }) {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(false);
@@ -21,10 +22,11 @@ function LayoutMain({
     getData(API.checkAuth)
       .then(() => {
         if (whenAuthDisabledPage) {
-          router.push(PAGE.home.href);
-        } else {
+          return router.push(PAGE.home.href);
+        }
+        setAuth(true);
+        if (!pageLoading) {
           setLoading(false);
-          setAuth(true);
         }
       })
       .catch(() => {
@@ -32,6 +34,10 @@ function LayoutMain({
         setAuth(false);
       });
   }, []);
+
+  useEffect(() => {
+    setLoading(pageLoading);
+  }, [pageLoading]);
   return (
     <div
       className={styles.container}

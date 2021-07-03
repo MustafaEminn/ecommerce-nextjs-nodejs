@@ -28,6 +28,7 @@ import Search from "antd/lib/input/Search";
 import { deleteData, getData, putData } from "../api/fetch";
 import { BASE } from "../constants/base";
 import { dateFormat } from "../utils/dateFormat";
+import { cityDistrict } from "../constants/cityDistrict";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
@@ -95,7 +96,6 @@ const Order = () => {
   const onOrderUpdate = () => {
     const errors = form.getFieldsError();
     var formHasError = false;
-    console.log(form.getFieldsValue());
     errors.map((item) => {
       return item.errors[0] ? (formHasError = true) : void 0;
     });
@@ -308,6 +308,40 @@ const Order = () => {
       key: "id",
       render: (item, row) => {
         return <StatusItem status={item} />;
+      },
+    },
+
+    {
+      title: "Kargo Verilme Tarihi",
+      dataIndex: "shippingBeginAt",
+      key: "shippingBeginAt",
+      render: (date) => {
+        let dateFormat = new Date(date).toLocaleDateString("tr-TR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        let date2000 = new Date("2000").toISOString();
+        return <p>{date2000 < dateFormat ? dateFormat : "-"}</p>;
+      },
+    },
+
+    {
+      title: "Kargo Teslim Tarihi",
+      dataIndex: "shippingEndAt",
+      key: "shippingEndAt",
+      render: (date) => {
+        let dateFormat = new Date(date).toLocaleDateString("tr-TR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        let date2000 = new Date("2000").toISOString();
+        return <p>{date2000 < dateFormat ? dateFormat : "-"}</p>;
       },
     },
 
@@ -558,7 +592,18 @@ const Order = () => {
             name="orderShippingAddressCity"
             label="Ürün Kargo Adresi (Şehir)"
           >
-            <Input name="city" />
+            <Select
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              placeholder="Şehir seçiniz..."
+              optionFilterProp="children"
+            >
+              {cityDistrict.map((item) => {
+                return <Option value={item["il_adi"]}>{item["il_adi"]}</Option>;
+              })}
+            </Select>
           </Form.Item>
           <Form.Item
             rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
@@ -580,7 +625,18 @@ const Order = () => {
             name="orderBillingAddressCity"
             label="Fatura Adresi (Şehir)"
           >
-            <Input name="city" />
+            <Select
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              placeholder="Şehir seçiniz..."
+              optionFilterProp="children"
+            >
+              {cityDistrict.map((item) => {
+                return <Option value={item["il_adi"]}>{item["il_adi"]}</Option>;
+              })}
+            </Select>
           </Form.Item>
           <Form.Item
             rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}

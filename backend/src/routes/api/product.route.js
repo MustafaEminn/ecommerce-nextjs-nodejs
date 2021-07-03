@@ -24,6 +24,10 @@ router.delete(
 );
 
 router.get("/getProductById/:id", productController.getProductById);
+router.get(
+  "/getProductsMostSell/:count",
+  productController.getProductsMostSell
+);
 // router.get("/secret2", auth(["admin"]), (req, res) => {
 //   // example route for auth
 //   res.json({ message: "Only admin can access" });

@@ -1,23 +1,64 @@
 import Head from "next/head";
 import styles from "../styles/pages/Home/Home.module.scss";
 import LayoutMain from "../components/Layout/layoutMain";
-import { PAGE } from "../constants";
+import { API, PAGE } from "../constants";
 import Divider from "../components/divider/divider";
 import Link from "next/dist/client/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Navigation } from "swiper/core";
 import CardProduct from "../components/cards/cardProduct";
 import Spacer from "../components/Spacer/spacer";
+import { getData, postData } from "../api/fetch";
+import { useEffect, useState } from "react";
+import slugify from "slugify";
+import Swal from "sweetalert2";
 
 export default function Home() {
+  const [pageLoading, setPageLoading] = useState(true);
+  const [productsTopData, setProductsTopData] = useState([]);
+  const [mostSellData, setProductsMostSellData] = useState([]);
   SwiperCore.use([Navigation]);
   const SLIDES_PER_GROUP = 3;
 
+  useEffect(() => {
+    postData("/api/product/getProductsTop", { count: 20 })
+      .then((res) => {
+        const parsedData = res.data.products.map((item) => {
+          item["photos"] = JSON.parse(item["photos"]);
+          return item;
+        });
+        setProductsTopData(parsedData);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Hata!",
+          text: "Lütfen sayfayı yenileyiniz. Eğer tekrar bu hatayı alırsanız bu hatayı en kısa sürede düzelteceğiz.",
+        });
+      });
+    getData("/api/product/getProductsMostSell/" + 20)
+      .then((res) => {
+        const parsedData = res.data.products.map((item) => {
+          item["photos"] = JSON.parse(item["photos"]);
+          return item;
+        });
+        setProductsMostSellData(parsedData);
+        setPageLoading(false);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Hata!",
+          text: "Lütfen sayfayı yenileyiniz. Eğer tekrar bu hatayı alırsanız bu hatayı en kısa sürede düzelteceğiz.",
+        });
+      });
+  }, []);
+
   const TopSwiperItem = ({ src, title, href }) => {
     return (
-      <Link href={`${href}`}>
+      <Link href={`product/${href}`}>
         <a>
-          <img height="600px" width="100%" src={src} />
+          <img className={styles.topSwiperImg} src={src} />
           <div className={styles.topSwiperTitle}>
             <h1>{title}</h1>
           </div>
@@ -33,7 +74,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain>
+      <LayoutMain pageLoading={pageLoading}>
         {/* Top Swiper Begin */}
         <Swiper
           slidesPerView={1}
@@ -41,18 +82,17 @@ export default function Home() {
           navigation={true}
           loop={true}
         >
-          {Array(14)
-            .fill(0)
-            .map(() => {
-              return (
-                <SwiperSlide key={1}>
-                  <TopSwiperItem
-                    title="Concept Davetiye - 5555"
-                    src="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
-                  />
-                </SwiperSlide>
-              );
-            })}
+          {productsTopData.map((item, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <TopSwiperItem
+                  title={item.title}
+                  href={slugify(item.title) + "-" + item.id}
+                  src={`${API.imgUrl}${item.photos[0]}`}
+                />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         {/* Top Swiper End */}
 
@@ -72,19 +112,18 @@ export default function Home() {
           slidesPerGroup={SLIDES_PER_GROUP}
           loop={true}
         >
-          {Array(14)
-            .fill(0)
-            .map(() => {
-              return (
-                <SwiperSlide key={1}>
-                  <CardProduct
-                    title="Concept Davetiye - 5555"
-                    price={80}
-                    imageUrl="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
-                  />
-                </SwiperSlide>
-              );
-            })}
+          {mostSellData.map((item, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <CardProduct
+                  title={item.title}
+                  href={"product/" + slugify(item.title) + "-" + item.id}
+                  price={item.price || 0}
+                  imageUrl={`${API.imgUrl}${item.photos[0]}`}
+                />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         {/* Çok Satanlar End */}
 
@@ -104,19 +143,18 @@ export default function Home() {
           loop={true}
           slidesPerGroup={SLIDES_PER_GROUP}
         >
-          {Array(14)
-            .fill(0)
-            .map(() => {
-              return (
-                <SwiperSlide key={1}>
-                  <CardProduct
-                    title="Concept Davetiye - 5555"
-                    price={80}
-                    imageUrl="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
-                  />
-                </SwiperSlide>
-              );
-            })}
+          {productsTopData.map((item, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <CardProduct
+                  title={item.title}
+                  href={"product/" + slugify(item.title) + "-" + item.id}
+                  price={item.price || 0}
+                  imageUrl={`${API.imgUrl}${item.photos[0]}`}
+                />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         {/* En Yeniler End */}
       </LayoutMain>

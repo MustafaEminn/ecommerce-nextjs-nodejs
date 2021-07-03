@@ -10,6 +10,12 @@
     width: 504px;
     height: 100%;
     margin-right: 30px;
+    & .thumbImg {
+      height: 70px;
+    }
+    & .swiperImg {
+      object-fit: contain;
+    }
   }
 
   & .rightContainer {
@@ -41,11 +47,13 @@
     }
 
     & .productInfo {
+      display: flex;
       margin-top: 16px;
       padding: 5px !important;
       height: 225px;
       width: 320px;
       flex: 0.8;
+      flex-direction: column;
 
       & .productHeader {
         font-size: 20px;
@@ -55,6 +63,7 @@
 
       & .productDetails {
         margin-top: 7px;
+        flex: 1;
         width: 100%;
         overflow: auto;
       }

@@ -40,6 +40,8 @@ const Product = () => {
   const [searchPost, setSearchPost] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [visibleAdd, setVisibleAdd] = useState("");
+  const [price, setPrice] = useState(1);
+  const [sellCount, setSellCount] = useState(1);
   const [deletedPhotosNames, setDeletedPhotosNames] = useState([]);
   const [previewImage, setPreviewImage] = useState(false);
   const [previewVisible, setPreviewVisible] = useState("");
@@ -120,6 +122,8 @@ const Product = () => {
     setDeletedPhotosNames([]);
     setTitle("");
     setEditorValue("");
+    setSellCount(0);
+    setPrice(0);
   };
 
   const productAddClick = async () => {
@@ -133,6 +137,8 @@ const Product = () => {
           details: editorValue,
           photos: uploadedPhotosNames,
           isActive: publicBool,
+          price: price,
+          sellCount: sellCount,
         };
 
         postData("/api/product/addProduct", productData)
@@ -191,6 +197,8 @@ const Product = () => {
       setTitle(posts[dataIndex].title);
       setEditorValue(posts[dataIndex].details);
       setPublicBool(posts[dataIndex].isActive);
+      setPrice(posts[dataIndex].price);
+      setSellCount(posts[dataIndex].sellCount);
       setVisibleEdit(true);
     };
     const photos = JSON.parse(posts[dataIndex].photos);
@@ -219,7 +227,7 @@ const Product = () => {
   };
 
   const productUpdateClick = async () => {
-    if (title && editorValue && fileList[0]) {
+    if (title && editorValue && fileList[0] && price) {
       setLoading(true);
 
       const onError = () => {
@@ -245,6 +253,8 @@ const Product = () => {
           photos: [...alreadyUploadedPhotosNames, ...uploadedPhotosNames],
           isActive: publicBool,
           id: posts[editDataIndex].id,
+          sellCount: sellCount,
+          price: price,
         };
 
         putData("/api/product/updateProduct", productData)
@@ -385,6 +395,32 @@ const Product = () => {
           style={{ maxHeight: "85px", overflow: "hidden" }}
         >
           {title}
+        </p>
+      ),
+    },
+    {
+      title: "Fiyat",
+      dataIndex: "price",
+      key: "id",
+      render: (item) => (
+        <p
+          className="titlesTable"
+          style={{ maxHeight: "85px", overflow: "hidden" }}
+        >
+          {item}
+        </p>
+      ),
+    },
+    {
+      title: "Satılmış",
+      dataIndex: "sellCount",
+      key: "id",
+      render: (item) => (
+        <p
+          className="titlesTable"
+          style={{ maxHeight: "85px", overflow: "hidden" }}
+        >
+          {item}
         </p>
       ),
     },
@@ -584,6 +620,13 @@ const Product = () => {
             <Input
               onChange={(e) => {
                 setTitle(e.target.value);
+              }}
+            />
+          </Form.Item>
+          <Form.Item name="price" label="Fiyat">
+            <Input
+              onChange={(e) => {
+                setPrice(e.target.value);
               }}
             />
           </Form.Item>

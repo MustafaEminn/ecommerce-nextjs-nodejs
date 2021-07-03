@@ -50,7 +50,10 @@ exports.addProduct = async (req, res, next) => {
   '${body["details"]}',
   '${JSON.stringify(body["photos"])}',
   '${new Date(Date.now()).toISOString()}',
-  '${body["isActive"]}')`;
+  '${body["isActive"]}',
+  '${body["price"]}',
+  '${body["sellCount"]}'
+  )`;
 
   await request.query(setProductQuery, async (err, record) => {
     if (err) {
@@ -86,7 +89,10 @@ exports.updateProduct = async (req, res, next) => {
   title = '${body["title"]}',
   details = '${body["details"]}',
   photos = '${JSON.stringify(body["photos"])}',
-  isActive = '${body["isActive"]}' WHERE id = '${body["id"]}'`;
+  isActive = '${body["isActive"]}',
+  price = '${body["price"]}',
+  sellCount = '${body["sellCount"]}' WHERE id = '${body["id"]}'
+  `;
 
   await request.query(putProductQuery, (err, record) => {
     if (err) {
@@ -116,6 +122,30 @@ exports.getProductById = async (req, res, next) => {
         code: 3,
         message: "Products getted.",
         product: resBody,
+      });
+    }
+  });
+};
+
+exports.getProductsMostSell = async (req, res, next) => {
+  var request = new sql.Request();
+  const getProductsQuery = `SELECT TOP ${req.params.count} * FROM Products ORDER BY sellCount DESC`;
+
+  await request.query(getProductsQuery, (err, record) => {
+    const resBody = record.recordset;
+
+    if (err) {
+      console.log(err);
+      res
+        .status(500)
+        .send({ code: 1, message: "We got error when products getting." });
+    } else if (!resBody[0]) {
+      res.status(500).send({ code: 2, message: "Products not found." });
+    } else {
+      res.status(200).send({
+        code: 3,
+        message: "Products getted.",
+        products: resBody,
       });
     }
   });

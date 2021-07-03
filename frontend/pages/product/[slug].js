@@ -4,15 +4,51 @@ import styles from "../../styles/pages/product/product.module.scss";
 import Card from "../../components/cards/card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Navigation, Thumbs } from "swiper/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LargeCounter from "../../components/counter/largeCounter";
 import MainColorButton from "../../components/buttons/mainColorButton";
 import ShoppingCartIcon from "../../public/icons/shoppingCart";
+import { getData } from "../../api/fetch";
+import Swal from "sweetalert2";
+import { API, PAGE } from "../../constants";
+import router from "next/router";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  const [count, setCount] = useState(100);
+  const [count, setCount] = useState(50);
+  const [product, setProduct] = useState({ photos: [] });
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    const path = pathname.split("-")[pathname.split("-").length - 1];
+    getData("/api/product/getProductById/" + path)
+      .then((res) => {
+        if (res.data.product[0]) {
+          var data = res.data.product[0];
+          data["photos"] = JSON.parse(data["photos"]);
+          setProduct(data);
+          setPageLoading(false);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "Ürün bulunamadı.",
+          });
+        }
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Hata!",
+          text: "Lütfen sayfayı yenileyiniz. Eğer tekrar bu hatayı alırsanız bu hatayı en kısa sürede düzelteceğiz.",
+          didClose: () => {
+            router.push(PAGE.home.href);
+          },
+        });
+      });
+  }, []);
   return (
     <div>
       <Head>
@@ -21,7 +57,7 @@ function ProductPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain>
+      <LayoutMain pageLoading={pageLoading}>
         <div className="productContainerForSwiper">
           <div className={styles.container}>
             <Card className={styles.productPhoto}>
@@ -31,47 +67,44 @@ function ProductPage() {
                 slidesPerView={1}
                 className={styles.swiperContainer}
                 navigation={true}
-                loop={true}
+                loop={product["photos"].length > 1}
                 slidesPerGroup={1}
               >
-                {Array(2)
-                  .fill(0)
-                  .map(() => {
-                    return (
-                      <SwiperSlide key={1}>
-                        <img
-                          width="100%"
-                          src="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg"
-                        />
-                      </SwiperSlide>
-                    );
-                  })}
+                {product["photos"].map((item, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <img
+                        width="100%"
+                        src={`${API.imgUrl}${item}`}
+                        className={styles.swiperImg}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
               <Swiper
                 onSwiper={setThumbsSwiper}
                 spaceBetween={10}
                 slidesPerView={4}
-                freeMode={true}
                 watchSlidesVisibility={true}
                 watchSlidesProgress={true}
                 className="mySwiper"
               >
-                {Array(2)
-                  .fill(0)
-                  .map(() => {
-                    return (
-                      <SwiperSlide key={1}>
-                        <img src="https://www.mekecedavetiye.com/Upload/Bannerlar/7.jpg" />
-                      </SwiperSlide>
-                    );
-                  })}
+                {product["photos"].map((item, index) => {
+                  return (
+                    <SwiperSlide key={index}>
+                      <img
+                        src={`${API.imgUrl}${item}`}
+                        className={styles.thumbImg}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </Card>
             <div className={styles.rightContainer}>
               <Card className={styles.productCard}>
-                <h1 className={styles.productHeader}>
-                  Concept Davetiye - 5555
-                </h1>
+                <h1 className={styles.productHeader}>{product.title}</h1>
                 <h2 className={styles.productPrice}>56.00 TL</h2>
                 <div className={styles.counterContainer}>
                   <LargeCounter
@@ -91,7 +124,10 @@ function ProductPage() {
               </Card>
               <Card className={styles.productInfo}>
                 <h1 className={styles.productHeader}>Ürün Bilgileri</h1>
-                <div className={styles.productDetails}></div>
+                <div
+                  className={styles.productDetails}
+                  dangerouslySetInnerHTML={{ __html: product.details }}
+                ></div>
               </Card>
             </div>
           </div>

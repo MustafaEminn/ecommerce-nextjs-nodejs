@@ -9,7 +9,7 @@ function CardProduct({ imageUrl, title, price, href }) {
     <Link href={`${href}`}>
       <a>
         <div className={styles.container}>
-          <img className={styles.img} src={imageUrl} />
+          <img loading="lazy" className={styles.img} src={imageUrl} />
 
           <span className={styles.linkTitle}>{title}</span>
 
@@ -19,7 +19,7 @@ function CardProduct({ imageUrl, title, price, href }) {
 
           <HorizontalMiddleCartButton />
           <Spacer top="15px" />
-          <HorizontalMiddleProductButton href="/davetiyem" />
+          <HorizontalMiddleProductButton href={href} />
         </div>
       </a>
     </Link>

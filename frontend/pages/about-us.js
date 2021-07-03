@@ -47,15 +47,6 @@ export default function Home() {
             and more recently with desktop publishing software like Aldus
             PageMaker including versions of Lorem Ipsum.
           </p>
-          <form
-            onSubmit={onSubmit}
-            // method="post"
-            // action="http://localhost:8085/api/product/addProduct"
-            enctype="multipart/form-data"
-          >
-            <input multiple accept="images/*" type="file" name="productPhoto" />
-            <button type="submit">asmfkas</button>
-          </form>
         </div>
       </LayoutMain>
     </div>

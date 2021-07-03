@@ -1,12 +1,12 @@
 import styles from "../../styles/components/counter/largeCounter.module.scss";
 
-function LargeCounter({ onChange = () => {}, value = 100 }) {
+function LargeCounter({ onChange = () => {}, value = 50 }) {
   return (
     <div className={styles.container}>
       <button
         onClick={() => {
-          if (value > 100) {
-            onChange(-100);
+          if (value > 50) {
+            onChange(-50);
           }
         }}
         className={styles.minus}
@@ -16,7 +16,7 @@ function LargeCounter({ onChange = () => {}, value = 100 }) {
       <div className={styles.count}>{value}</div>
       <button
         onClick={() => {
-          onChange(+100);
+          onChange(+50);
         }}
         className={styles.plus}
       >
