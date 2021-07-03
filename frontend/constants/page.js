@@ -12,7 +12,12 @@ export const PAGE = {
   myAccount: {
     name: "Hesabım",
     urlPathname: "my-account",
-    href: "/my-account",
+    href: "/user/my-account",
+  },
+  myOrders: {
+    name: "Siparişlerim",
+    urlPathname: "my-orders",
+    href: "/user/my-orders",
   },
   cart: {
     name: "Sepetim",

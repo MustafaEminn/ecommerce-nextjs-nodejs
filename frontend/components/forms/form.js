@@ -7,6 +7,7 @@ function Form({
   method,
   onChange = () => {},
   onSubmit = () => {},
+  style,
 }) {
   const [values, setValues] = useState({});
   const formRef = useRef();
@@ -27,6 +28,7 @@ function Form({
 
   return (
     <form
+      style={style}
       onSubmit={onSubmit}
       ref={formRef}
       onChange={(e) => {

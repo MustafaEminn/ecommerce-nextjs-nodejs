@@ -3,7 +3,7 @@ import Spacer from "../Spacer/spacer";
 
 function InputPhoneNumber({ labelText = "", name, width = "301px", pattern }) {
   return (
-    <label>
+    <label className={styles.label}>
       {labelText.length > 0 ? (
         <span className={styles.labelText}>{labelText}</span>
       ) : (

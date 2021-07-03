@@ -1,15 +1,20 @@
-.labelText {
-  font-size: 14px;
-  font-family: var(--source-sans-pro);
-  font-weight: 600;
-}
+.label {
+  margin: 10px 0;
+  .labelText {
+    font-size: 14px;
+    font-family: var(--source-sans-pro);
+    font-weight: 600;
+    margin: 0 10px;
+  }
 
-.input {
-  padding: 10px;
-  width: 301px;
-  height: 22px;
-  font-size: 14px;
-  font-family: var(--source-sans-pro);
-  border: 2px solid var(--border-gray);
-  background-color: var(--input-bg);
+  .input {
+    margin: 0 10px;
+    padding: 10px;
+    width: 301px;
+    height: 22px;
+    font-size: 14px;
+    font-family: var(--source-sans-pro);
+    border: 2px solid var(--border-gray);
+    background-color: var(--input-bg);
+  }
 }

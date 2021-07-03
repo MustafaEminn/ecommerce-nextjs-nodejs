@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  & .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+
+    & .loader {
+      border: 4px solid var(--border-gray); /* Light grey */
+      border-top: 4px solid var(--main-color); /* Blue */
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 2s linear infinite;
+      margin-top: 20px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  & .main {
+    flex: 1;
+    margin: 0 auto;
+    display: flex;
+    padding: 15px 0;
+
+    & .sidebar {
+      flex: 0.2;
+    }
+
+    & .children {
+      flex: 0.8;
+      margin: 0 50px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

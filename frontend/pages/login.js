@@ -21,7 +21,7 @@ function Giris() {
   const [disableButton, setDisableButton] = useState(false);
   const [forgotPassEmail, setForgotPassEmail] = useState("");
 
-  const onLogin = () => {
+  const onLogin = (e) => {
     e.preventDefault();
     const values = Form.getFields();
     let isFormSuccess = true;

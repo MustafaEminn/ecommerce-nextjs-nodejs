@@ -1,0 +1,36 @@
+.container {
+  border: 4px solid var(--border-gray);
+  border-radius: 8%;
+  width: 100%;
+  padding: 8px 0;
+  box-shadow: var(--card-shadow);
+
+  & ul {
+    display: flex;
+    flex-direction: column;
+
+    & li {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-top: 2px solid var(--border-gray);
+
+      & a {
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        padding: 10px 5px;
+        font-family: var(--source-sans-pro);
+      }
+
+      &:hover {
+        background-color: var(--border-gray);
+      }
+    }
+
+    &:last-child {
+      border-bottom: 2px solid var(--border-gray);
+    }
+  }
+}

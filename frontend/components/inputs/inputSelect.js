@@ -8,9 +8,10 @@ function InputSelect({
   width = "301px",
   onChange,
   pattern,
+  defaultValue = "-",
 }) {
   return (
-    <label>
+    <label className={styles.label}>
       {labelText.length > 0 ? (
         <span className={styles.labelText}>{labelText}</span>
       ) : (
@@ -23,6 +24,7 @@ function InputSelect({
         className={styles.select}
         name={name}
         pattern={pattern}
+        defaultValue={defaultValue}
       >
         <option className={styles.option} value="-">
           Seçiniz

@@ -1,7 +1,7 @@
-import styles from "../../styles/components/inputs/inputText.module.scss";
+import styles from "../../styles/components/inputs/inputTextbox.module.scss";
 import Spacer from "../Spacer/spacer";
 
-function InputText({
+function InputTextbox({
   labelText = "",
   name,
   type = "text",
@@ -9,6 +9,10 @@ function InputText({
   pattern,
   onChange,
   defaultValue = "",
+  rows = 4,
+  maxHeight = "150px",
+  maxWidth = "301px",
+  height,
 }) {
   return (
     <label className={styles.label}>
@@ -18,10 +22,17 @@ function InputText({
         <></>
       )}
       {labelText.length > 0 ? <Spacer top="10px" /> : <></>}
-      <input
+      <textarea
+        wrap={true}
         onChange={onChange}
         pattern={pattern}
-        style={{ width: width }}
+        style={{
+          width: width,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+          height: height,
+        }}
+        rows={rows}
         type={type}
         name={name}
         defaultValue={defaultValue}
@@ -31,4 +42,4 @@ function InputText({
   );
 }
 
-export default InputText;
+export default InputTextbox;

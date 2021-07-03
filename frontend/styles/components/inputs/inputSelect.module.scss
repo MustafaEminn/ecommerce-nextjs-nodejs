@@ -1,20 +1,15 @@
-.labelText {
-  font-size: 14px;
-  font-family: var(--source-sans-pro);
-  font-weight: 600;
-}
+.label {
+  margin: 10px 0;
 
-.select {
-  padding: 10px;
-  width: 325px;
-  height: 44px;
-  font-size: 14px;
-  font-family: var(--source-sans-pro);
-  border: 2px solid var(--border-gray);
-  background-color: var(--input-bg);
-  outline: none;
+  .labelText {
+    font-size: 14px;
+    font-family: var(--source-sans-pro);
+    font-weight: 600;
+    margin: 0 10px;
+  }
 
-  & .option {
+  .select {
+    margin: 0 10px;
     padding: 10px;
     width: 325px;
     height: 44px;
@@ -22,5 +17,16 @@
     font-family: var(--source-sans-pro);
     border: 2px solid var(--border-gray);
     background-color: var(--input-bg);
+    outline: none;
+
+    & .option {
+      padding: 10px;
+      width: 325px;
+      height: 44px;
+      font-size: 14px;
+      font-family: var(--source-sans-pro);
+      border: 2px solid var(--border-gray);
+      background-color: var(--input-bg);
+    }
   }
 }

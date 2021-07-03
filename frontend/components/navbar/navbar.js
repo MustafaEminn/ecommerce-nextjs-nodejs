@@ -66,7 +66,10 @@ function Navbar({ auth }) {
                           href={PAGE.myAccount.href}
                           title="Hesabım"
                         />
-                        <NavbarPopupItem title="Siparişlerim" />
+                        <NavbarPopupItem
+                          href={PAGE.myAccount.href}
+                          title="Siparişlerim"
+                        />
                         <NavbarPopupItem
                           onClick={() => {
                             localStorage.removeItem("token");

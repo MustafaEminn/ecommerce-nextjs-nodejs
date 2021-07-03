@@ -16,5 +16,10 @@
     font-family: var(--source-sans-pro);
     border: 2px solid var(--border-gray);
     background-color: var(--input-bg);
+    resize: none;
+
+    &:focus {
+      outline: none;
+    }
   }
 }

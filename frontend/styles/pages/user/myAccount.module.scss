@@ -1,0 +1,6 @@
+.container {
+  display: flex;
+  & .spaceDivider {
+    padding: 15px 0;
+  }
+}
