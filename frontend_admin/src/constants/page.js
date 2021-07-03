@@ -14,4 +14,9 @@ export const PAGE = {
     urlPathname: "uyeler",
     href: "/uyeler",
   },
+  orders: {
+    name: "Siparişler",
+    urlPathname: "siparisler",
+    href: "/siparisler",
+  },
 };

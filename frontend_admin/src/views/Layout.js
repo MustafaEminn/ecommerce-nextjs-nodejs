@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import "antd/dist/antd.css";
-import { UserOutlined, PictureOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  PictureOutlined,
+  BoxPlotOutlined,
+} from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { getData } from "../api/fetch";
 import styles from "../styles/layout/layout.module.css";
@@ -50,6 +54,9 @@ const LayoutAdmin = ({ children, mainLoading = false }) => {
               </Menu.Item>
               <Menu.Item icon={<UserOutlined />} key="2">
                 <Link to={PAGE.members.href}>{PAGE.members.name}</Link>
+              </Menu.Item>
+              <Menu.Item icon={<BoxPlotOutlined />} key="3">
+                <Link to={PAGE.orders.href + "/1"}>{PAGE.orders.name}</Link>
               </Menu.Item>
             </Menu>
           </Header>
