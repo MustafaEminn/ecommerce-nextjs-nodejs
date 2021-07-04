@@ -22,6 +22,7 @@ import InputTextbox from "../../components/inputs/inputTextbox";
 import Card from "../../components/cards/card";
 import MainColorButton from "../../components/buttons/mainColorButton";
 import { getFormValues } from "../../utils/getFormValues";
+import { resetFormValues } from "../../utils/resetFormValues";
 
 export default function MyAccount() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -68,7 +69,45 @@ export default function MyAccount() {
   }, [user]);
 
   const onUpdatePassword = () => {
-    console.log(Form.getFields());
+    setLoading(true);
+    var fields = getFormValues("form-password");
+    var haveError = false;
+    Object.values(fields).map((item) => {
+      return item.length >= 4 ? void 0 : (haveError = true);
+    });
+    if (haveError) {
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Şifreniz 4 haneden fazla olmak zorundadır.",
+      });
+    } else if (fields["oldPassword"] === fields["newPassword"]) {
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Eski şifrenizle yeni şifreniz aynıdır. Lütfen farklı şekilde giriniz.",
+      });
+    } else {
+      putData("/api/member/updatePassword", fields)
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Başarılı!",
+            text: "Şifreniz güncellendi.",
+          });
+          resetFormValues("form-password");
+          setLoading(false);
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "Lütfen tekrar deneyin.",
+          });
+          setLoading(false);
+        });
+    }
   };
   const onUpdateUser = () => {
     setLoading(true);
@@ -212,16 +251,19 @@ export default function MyAccount() {
                 flexDirection: "column",
                 alignItems: "center",
               }}
+              id="form-password"
             >
               <InputText
                 name="oldPassword"
                 labelText="Şuanki Şifreniz"
                 pattern="^.{2,}$"
+                type="password"
               />
               <InputText
                 name="newPassword"
                 labelText="Yeni Şifreniz"
                 pattern="^.{2,}$"
+                type="password"
               />
               <MainColorButton
                 center

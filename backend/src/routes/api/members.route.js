@@ -15,11 +15,8 @@ router.get(
   membersController.getMemberByEmail
 );
 
-router.put(
-  "/updateMember",
-  [auth(), checkRoles("admin")],
-  membersController.updateMember
-);
+router.put("/updateMember", auth(), membersController.updateMember);
+router.put("/updatePassword", auth(), membersController.updatePassword);
 
 router.delete(
   "/deleteMember/:id",

@@ -1,5 +1,8 @@
 "use strict";
+const { default: jwtDecode } = require("jwt-decode");
 const sql = require("mssql");
+const config = require("../config");
+const bcrypt = require("bcrypt-nodejs");
 
 exports.updateMember = async (req, res, next) => {
   const body = req.body;
@@ -22,6 +25,41 @@ exports.updateMember = async (req, res, next) => {
       res.status(500).send({ code: 1, message: "Update failed try again." });
     } else {
       res.status(200).send({ code: 2, message: "Updated." });
+    }
+  });
+};
+
+exports.updatePassword = async (req, res, next) => {
+  const body = req.body;
+  var request = new sql.Request();
+  var decodedJWT = jwtDecode(req.headers.authorization);
+  const oldPass = bcrypt.hashSync(body["oldPassword"], config.hashKey);
+  const newPass = bcrypt.hashSync(body["newPassword"], config.hashKey);
+  const getPasswordQuery = `SELECT Password FROM Users WHERE id = '${decodedJWT.userId}'`;
+  const updateMember = `UPDATE Users SET 
+  Password='${newPass}'
+  WHERE id='${body["id"]}'`;
+
+  request.query(getPasswordQuery, (err, record) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({ code: 1, message: "Update failed try again." });
+    } else {
+      const resBody = record.recordset[0];
+      if (resBody.Password === oldPass) {
+        request.query(updateMember, (err, record) => {
+          if (err) {
+            console.log(err);
+            res
+              .status(500)
+              .send({ code: 1, message: "Update failed try again." });
+          } else {
+            res.status(200).send({ code: 2, message: "Updated." });
+          }
+        });
+      } else {
+        res.status(500).send({ code: 3, message: "Password not correct." });
+      }
     }
   });
 };
