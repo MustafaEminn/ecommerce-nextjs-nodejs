@@ -99,12 +99,21 @@ export default function MyAccount() {
           resetFormValues("form-password");
           setLoading(false);
         })
-        .catch(() => {
-          Swal.fire({
-            icon: "error",
-            title: "Hata!",
-            text: "Lütfen tekrar deneyin.",
-          });
+        .catch((err) => {
+          if (err?.response?.data?.code === 3) {
+            Swal.fire({
+              icon: "error",
+              title: "Hata!",
+              text: "Şuanki şifrenizi yanlış girdiniz.",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Hata!",
+              text: "Lütfen tekrar deneyin.",
+            });
+          }
+
           setLoading(false);
         });
     }

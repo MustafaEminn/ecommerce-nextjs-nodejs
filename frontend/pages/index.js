@@ -12,11 +12,15 @@ import { getData, postData } from "../api/fetch";
 import { useEffect, useState } from "react";
 import slugify from "slugify";
 import Swal from "sweetalert2";
+import { addCart, addCartWithLogin } from "../utils/cartMethods";
+import { useRecoilValue } from "recoil";
+import { isAuthed } from "../states/index.atom";
 
 export default function Home() {
   const [pageLoading, setPageLoading] = useState(true);
   const [productsTopData, setProductsTopData] = useState([]);
   const [mostSellData, setProductsMostSellData] = useState([]);
+  const isAuth = useRecoilValue(isAuthed);
   SwiperCore.use([Navigation]);
   const SLIDES_PER_GROUP = 3;
 
@@ -120,6 +124,12 @@ export default function Home() {
                   href={"product/" + slugify(item.title) + "-" + item.id}
                   price={item.price || 0}
                   imageUrl={`${API.imgUrl}${item.photos[0]}`}
+                  onAddCart={() => {
+                    addCart(
+                      { productId: item.id, count: 50, checked: true },
+                      isAuth
+                    );
+                  }}
                 />
               </SwiperSlide>
             );

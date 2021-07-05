@@ -38,7 +38,7 @@ exports.updatePassword = async (req, res, next) => {
   const getPasswordQuery = `SELECT Password FROM Users WHERE id = '${decodedJWT.userId}'`;
   const updateMember = `UPDATE Users SET 
   Password='${newPass}'
-  WHERE id='${body["id"]}'`;
+  WHERE id='${decodedJWT["userId"]}'`;
 
   request.query(getPasswordQuery, (err, record) => {
     if (err) {
@@ -67,7 +67,7 @@ exports.updatePassword = async (req, res, next) => {
 exports.getMembersNewest = async (req, res, next) => {
   var request = new sql.Request();
 
-  const getNewestProductsQuery = `SELECT INTO * FROM Products`;
+  const getNewestProductsQuery = `SELECT * FROM Products`;
 
   await request.query(getNewestProductsQuery, (err, record) => {
     if (err) {

@@ -133,6 +133,7 @@ input:focus {
 @import "./variables/variables.scss";
 @import "./variables/fonts.scss";
 @import "./pages/pages.scss";
+@import "./components/components.scss";
 a {
   text-decoration: none;
   color: var(--link-color);

@@ -4,25 +4,29 @@ import HorizontalMiddleCartButton from "../buttons/cards/horizontalMiddleCartBut
 import HorizontalMiddleProductButton from "../buttons/cards/horizontalMiddleProductButton";
 import Spacer from "../Spacer/spacer";
 
-function CardProduct({ imageUrl, title, price, href }) {
+function CardProduct({
+  imageUrl,
+  title,
+  price,
+  href,
+  onAddCart = () => void 0,
+}) {
   return (
-    <Link href={`${href}`}>
-      <a>
-        <div className={styles.container}>
+    <div className={styles.container}>
+      <Link href={`${href}`}>
+        <a>
           <img loading="lazy" className={styles.img} src={imageUrl} />
-
-          <span className={styles.linkTitle}>{title}</span>
-
-          <span className={styles.price}>{price} TL</span>
-
-          <span className={styles.cardDivider}></span>
-
-          <HorizontalMiddleCartButton />
-          <Spacer top="15px" />
-          <HorizontalMiddleProductButton href={href} />
-        </div>
-      </a>
-    </Link>
+        </a>
+      </Link>
+      <Link href={`${href}`}>
+        <a className={styles.linkTitle}>{title}</a>
+      </Link>
+      <span className={styles.price}>{price} TL</span>
+      <span className={styles.cardDivider}></span>
+      <HorizontalMiddleCartButton onClick={onAddCart} />
+      <Spacer top="15px" />
+      <HorizontalMiddleProductButton href={href} />
+    </div>
   );
 }
 

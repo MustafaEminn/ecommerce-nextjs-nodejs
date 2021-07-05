@@ -6,6 +6,7 @@ const productRouter = require("./product.route");
 const imageRouter = require("./image.route");
 const memberRouter = require("./members.route");
 const orderRouter = require("./order.route");
+const cartRouter = require("./cart.route");
 
 router.get("/status", (req, res) => {
   res.send({ status: "OK" });
@@ -16,5 +17,6 @@ router.use("/product", productRouter);
 router.use("/img", imageRouter);
 router.use("/member", memberRouter);
 router.use("/order", orderRouter);
+router.use("/cart", cartRouter);
 
 module.exports = router;

@@ -21,8 +21,8 @@ export const PAGE = {
   },
   cart: {
     name: "Sepetim",
-    urlPathname: "cart",
-    href: "/cart",
+    urlPathname: "my-cart",
+    href: "/user/my-cart",
   },
   bestSelling: {
     name: "Çok Satanlar",

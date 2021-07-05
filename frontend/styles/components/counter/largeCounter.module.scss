@@ -6,7 +6,7 @@
     border: 1px solid var(--main-color);
     font-size: 22px;
     font-weight: 700;
-    width: 35px;
+    width: 24px;
     height: 35px;
     cursor: pointer;
 
@@ -28,6 +28,7 @@
     font-family: var(--source-sans-pro);
     border: 2px solid var(--border-gray);
     text-overflow: ellipsis;
+    height: 17.5px;
   }
 
   & .plus {

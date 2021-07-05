@@ -1,0 +1,17 @@
+.buttonMain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button[color="main"] {
+  @extend .buttonMain;
+  background-color: var(--main-color);
+  & svg {
+    fill: var(--white);
+  }
+}
