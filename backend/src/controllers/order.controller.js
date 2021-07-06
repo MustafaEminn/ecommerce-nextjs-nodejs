@@ -23,7 +23,7 @@ exports.addOrder = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();
   const uid = new ShortUniqueId();
-  const setOrderQuery = `INSERT INTO Orders (id,buyerId,orderShippingAddress,orderBillingAddress,orderStatus,productId,buyAt,shippingCompany) VALUES 
+  const setOrderQuery = `INSERT INTO Orders (id,buyerId,orderShippingAddress,orderBillingAddress,orderStatus,productId,buyAt,shippingCompany,price) VALUES 
   ('${uid.stamp(12)}',
   '${body["buyerId"]}',
   '${JSON.stringify(body["orderShippingAddress"])}',
@@ -31,7 +31,8 @@ exports.addOrder = async (req, res, next) => {
   '${body["orderStatus"]}',
   '${body["productId"]}',
   '${new Date(Date.now()).toISOString()}',
-  '0'
+  '0',
+  '${body["price"]}'
   )`;
 
   await request.query(setOrderQuery, (err, record) => {
@@ -48,8 +49,6 @@ exports.updateOrder = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();
 
-  console.log(body);
-
   const shippingBeginAt = body["shippingBeginAt"]
     ? `shippingBeginAt='${body["shippingBeginAt"]}'`
     : "shippingBeginAt=NULL";
@@ -61,6 +60,7 @@ exports.updateOrder = async (req, res, next) => {
   orderShippingAddress='${body["orderShippingAddress"]}',
   orderBillingAddress='${body["orderBillingAddress"]}',
   orderStatus='${body["orderStatus"]}',
+  price='${body["price"]}',
   ${shippingBeginAt},
   ${shippingEndAt},
   shippingCompany='${body["shippingCompany"] || null}',

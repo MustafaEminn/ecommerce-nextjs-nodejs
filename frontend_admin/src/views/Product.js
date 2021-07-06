@@ -132,27 +132,32 @@ const Product = () => {
       var uploadedPhotosNames = [];
 
       const postProduct = () => {
-        let productData = {
-          title: title,
-          details: editorValue,
-          photos: uploadedPhotosNames,
-          isActive: publicBool,
-          price: price,
-          sellCount: sellCount,
-        };
+        if (uploadedPhotosNames.length === fileList.length) {
+          let productData = {
+            title: title,
+            details: editorValue,
+            photos: uploadedPhotosNames,
+            isActive: publicBool,
+            price: price,
+            sellCount: sellCount,
+          };
 
-        postData("/api/product/addProduct", productData)
-          .then(() => {
-            setLoading(false);
-            getPosts();
-            closeModal();
-          })
-          .catch(() => {
-            setLoading(false);
-            message.error(
-              "Ürün yüklenirken hata oluştu lütfen tekrar deneyin."
-            );
-          });
+          postData("/api/product/addProduct", productData)
+            .then(() => {
+              setLoading(false);
+              getPosts();
+              closeModal();
+            })
+            .catch(() => {
+              setLoading(false);
+              message.error(
+                "Ürün yüklenirken hata oluştu lütfen tekrar deneyin."
+              );
+            });
+        }
+      };
+      const photoNamesPush = (imageName) => {
+        uploadedPhotosNames.push(imageName);
       };
 
       const addImage = async (item, index) => {
@@ -164,8 +169,8 @@ const Product = () => {
         );
         await postFormData("/api/img/imageAdd", productPhoto)
           .then(async (res) => {
-            await uploadedPhotosNames.push(res.data.imageName);
-            index == fileList.length - 1 ? postProduct() : void 0;
+            photoNamesPush(res.data.imageName);
+            postProduct();
           })
           .catch((err) => {
             if (checkErrorIsAuth(err)) {
@@ -176,11 +181,10 @@ const Product = () => {
           });
       };
 
-      Promise.all(
-        fileList.map(async (item, index) => {
-          await addImage(item, index);
-        })
-      );
+      for await (const fileListItem of fileList.map((item, index) => {
+        addImage(item, index);
+      })) {
+      }
     } else {
       message.error(
         "Lütfen başlık eklediğinize ve fotoğraf yüklediğinize emin olun."
@@ -189,20 +193,25 @@ const Product = () => {
     }
   };
 
-  const editPost = (dataIndex) => {
+  const editPost = async (dataIndex) => {
     let newFileList = [];
     const setDatas = () => {
-      setFileList(newFileList);
-      setEditDataIndex(dataIndex);
-      setTitle(posts[dataIndex].title);
-      setEditorValue(posts[dataIndex].details);
-      setPublicBool(posts[dataIndex].isActive);
-      setPrice(posts[dataIndex].price);
-      setSellCount(posts[dataIndex].sellCount);
-      setVisibleEdit(true);
+      if (newFileList.length === photos.length) {
+        setFileList(newFileList);
+        setEditDataIndex(dataIndex);
+        setTitle(posts[dataIndex].title);
+        setEditorValue(posts[dataIndex].details);
+        setPublicBool(posts[dataIndex].isActive);
+        setPrice(posts[dataIndex].price);
+        setSellCount(posts[dataIndex].sellCount);
+        setVisibleEdit(true);
+      }
     };
     const photos = JSON.parse(posts[dataIndex].photos);
     if (photos[0]) {
+      const fileListPush = (file) => {
+        newFileList.push(file);
+      };
       const toBlob = async (item, index) => {
         const response = await getData(`/api/img/${item}`, {
           responseType: "blob",
@@ -212,15 +221,15 @@ const Product = () => {
 
         var file = new File([blob], item, { type: blob.type });
         file["thumbUrl"] = `${API_URL}/api/img/${item}`;
-        await newFileList.push(file);
 
-        return index === photos.length - 1 ? setDatas() : void 0;
+        fileListPush(file);
+
+        setDatas();
       };
-      Promise.all(
-        photos.map(async (item, index) => {
-          await toBlob(item, index);
-        })
-      );
+      for await (const itemPhoto of photos.map((item, index) => {
+        toBlob(item, index);
+      })) {
+      }
     } else {
       setDatas();
     }
@@ -243,32 +252,34 @@ const Product = () => {
       });
       var uploadedPhotosNames = [];
 
-      const updateRun = () => {
-        let alreadyUploadedPhotosNames = fileListFiltered.map((item) => {
-          return item.name;
-        });
-        let productData = {
-          title: title,
-          details: editorValue,
-          photos: [...alreadyUploadedPhotosNames, ...uploadedPhotosNames],
-          isActive: publicBool,
-          id: posts[editDataIndex].id,
-          sellCount: sellCount,
-          price: price,
-        };
-
-        putData("/api/product/updateProduct", productData)
-          .then(() => {
-            setLoading(false);
-            getPosts();
-            closeModal();
-          })
-          .catch(() => {
-            setLoading(false);
-            message.error(
-              "Ürün düzenlenirken hata oluştu lütfen tekrar deneyin."
-            );
+      const updateRun = async () => {
+        if (uploadedPhotosNames.length === updatePhotoList.length) {
+          let alreadyUploadedPhotosNames = fileListFiltered.map((item) => {
+            return item.name;
           });
+          let productData = {
+            title: title,
+            details: editorValue,
+            photos: [...alreadyUploadedPhotosNames, ...uploadedPhotosNames],
+            isActive: publicBool,
+            id: posts[editDataIndex].id,
+            sellCount: sellCount,
+            price: price,
+          };
+
+          await putData("/api/product/updateProduct", productData)
+            .then(() => {
+              setLoading(false);
+              getPosts();
+              closeModal();
+            })
+            .catch(() => {
+              setLoading(false);
+              message.error(
+                "Ürün düzenlenirken hata oluştu lütfen tekrar deneyin."
+              );
+            });
+        }
       };
 
       const photosNamesPush = async (name) => {
@@ -282,10 +293,11 @@ const Product = () => {
           "productPhoto",
           new File([item.originFileObj], item.name)
         );
-        return postFormData("/api/img/imageAdd", productPhoto)
-          .then(async (res) => {
-            await photosNamesPush(res.data.imageName);
-            index === updatePhotoList.length - 1 ? updateRun() : void 0;
+        return await postFormData("/api/img/imageAdd", productPhoto)
+          .then((res) => {
+            photosNamesPush(res.data.imageName);
+
+            updateRun();
           })
           .catch((err) => {
             if (checkErrorIsAuth(err)) {
@@ -296,13 +308,12 @@ const Product = () => {
           });
       };
 
-      const updateNewPhotosRun = () => {
+      const updateNewPhotosRun = async () => {
         if (updatePhotoList[0]) {
-          Promise.all(
-            updatePhotoList.map(async (item, index) => {
-              await updatePhoto(item, index);
-            })
-          );
+          for await (const itemUpdatePhotoList of updatePhotoList.map((e, i) =>
+            updatePhoto(e, i)
+          ))
+            console.log(itemUpdatePhotoList);
         } else {
           updateRun();
         }
@@ -324,15 +335,17 @@ const Product = () => {
       };
 
       if (deletedPhotosNames[0]) {
-        Promise.all(
-          deletedPhotosNames.map(async (item, index) => {
+        for await (const itemDeletedPhotosNames of deletedPhotosNames.map(
+          (e, i) => {
             if (!deletingPhotosHasError) {
-              return await deleteImage(item, index);
+              deleteImage(e, i);
             } else {
               setLoading(false);
             }
-          })
-        );
+          }
+        )) {
+          console.log(itemDeletedPhotosNames);
+        }
       } else {
         updateNewPhotosRun();
       }

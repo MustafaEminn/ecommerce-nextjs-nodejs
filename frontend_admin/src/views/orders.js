@@ -87,6 +87,7 @@ const Order = () => {
       orderBillingAddress: data.orderBillingAddress.address,
       orderBillingAddressContactName: data.orderBillingAddress.contactName,
       orderBillingAddressCity: data.orderBillingAddress.city,
+      price: data.price,
     });
     setEditRow(data);
     setEditVisible(true);
@@ -106,18 +107,22 @@ const Order = () => {
       var fields = form.getFieldsValue();
       var datas = { ...editRow, ...fields };
       datas["id"] = editRow.id;
+
       if (!datas["shippingBeginAt"] && datas["orderStatus"] === "3") {
         datas["shippingBeginAt"] = new Date(Date.now()).toISOString();
       }
+
       if (!datas["shippingEndAt"] && datas["orderStatus"] === "4") {
         datas["shippingEndAt"] = new Date(Date.now()).toISOString();
       }
+
       datas["orderShippingAddress"] = JSON.stringify({
         contactName: datas["orderShippingAddressContactName"],
         city: datas["orderShippingAddressCity"],
         country: "Turkey",
         address: datas["orderShippingAddress"],
       });
+
       datas["orderBillingAddress"] = JSON.stringify({
         contactName: datas["orderBillingAddressContactName"],
         city: datas["orderBillingAddressCity"],
@@ -157,7 +162,11 @@ const Order = () => {
         setProductModalVisible(true);
       })
       .catch((err) => {
-        message.error("Tekrar deneyin.");
+        if (err?.response?.data?.code === 2) {
+          message.error("Bu ürün bulunamıyor.");
+        } else {
+          message.error("Tekrar deneyin.");
+        }
       });
   };
 
@@ -344,7 +353,11 @@ const Order = () => {
         return <p>{date2000 < dateFormat ? dateFormat : "-"}</p>;
       },
     },
-
+    {
+      title: "Alış Fiyatı",
+      dataIndex: "price",
+      key: "id",
+    },
     {
       title: "Tarih",
       dataIndex: "buyAt",
@@ -582,6 +595,13 @@ const Order = () => {
           )}
           <Form.Item
             rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
+            name="price"
+            label="Alış Fiyatı"
+          >
+            <Input name="price" />
+          </Form.Item>
+          <Form.Item
+            rules={[{ required: true, message: "Bu alan boş bırakılamaz." }]}
             name="orderShippingAddressContactName"
             label="Ürün Kargo Adresi (Alıcı Ad Soyad)"
           >
@@ -674,8 +694,8 @@ const Order = () => {
         </p>
         <p>Üye olma zamanı: {dateFormat(buyerModalData.createdAt) || ""}</p>
         <p>
-          Adres: {buyerModalData.Address || ""}
-          {buyerModalData.Neighborhood || ""}
+          Adres: {buyerModalData.Address + " " || ""}
+          {buyerModalData.Neighborhood + " " || ""}
           {buyerModalData.District || ""}/{buyerModalData.City || ""}
         </p>
       </Modal>
