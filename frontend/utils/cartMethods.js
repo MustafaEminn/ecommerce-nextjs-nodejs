@@ -19,6 +19,13 @@ export const addCartWithoutLogin = (product) => {
       }
     }
     const newCart = haveSameItem ? cart : [...cart, product];
+    Swal.fire({
+      timer: 1500,
+      timerProgressBar: true,
+      icon: "success",
+      title: "Başarılı!",
+      text: "Ürün sepete eklendi.",
+    });
     return localStorage.setItem("cart", JSON.stringify(newCart));
   }
   const newCart = [product];

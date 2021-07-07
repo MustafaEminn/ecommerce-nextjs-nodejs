@@ -1,1 +1,10 @@
 @import "./inputs/inputCheckbox.scss";
+
+#input-blank-error{
+  border: 1px solid var(--input-error-border-color) !important;
+
+  &:after{
+    content: 'Lütfen boş bırakmayınız.';
+
+  }
+}

@@ -1,27 +1,15 @@
 import Head from "next/head";
 import styles from "../../styles/pages/user/myCart.module.scss";
-import { API, BASE, PAGE } from "../../constants";
+import { API, PAGE } from "../../constants";
 import Divider from "../../components/divider/divider";
 import Link from "next/dist/client/link";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Navigation } from "swiper/core";
-import CardProduct from "../../components/cards/cardProduct";
-import Spacer from "../../components/Spacer/spacer";
 import { deleteData, getData, postData, putData } from "../../api/fetch";
 import { useEffect, useState } from "react";
 import slugify from "slugify";
 import Swal from "sweetalert2";
-import jwtDecode from "jwt-decode";
-import InputText from "../../components/inputs/inputText";
-import InputSelect from "../../components/inputs/inputSelect";
-import { cityDistrict } from "../../constants/cityDistrict";
 import router from "next/router";
-import Form from "../../components/forms/form";
-import InputTextbox from "../../components/inputs/inputTextbox";
 import Card from "../../components/cards/card";
 import MainColorButton from "../../components/buttons/mainColorButton";
-import { getFormValues } from "../../utils/getFormValues";
-import { resetFormValues } from "../../utils/resetFormValues";
 import LayoutMain from "../../components/Layout/layoutMain";
 import LargeCounter from "../../components/counter/largeCounter";
 import IconButton from "../../components/buttons/iconButton";
@@ -29,20 +17,44 @@ import TrashIcon from "../../public/icons/trash";
 import InputCheckbox from "../../components/inputs/inputCheckbox";
 import { useRecoilValue } from "recoil";
 import { isAuthed } from "../../states/index.atom";
+import ShoppingCartIcon from "../../public/icons/shoppingCart";
 
 export default function MyCart() {
   const [pageLoading, setPageLoading] = useState(true);
-  const [districts, setDistricts] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   const isAuth = useRecoilValue(isAuthed);
 
   const getCart = () => {
     if (isAuth) {
       getData("/api/cart/getCart")
         .then((res) => {
+          var totalPriceItems = 0;
+          res.data.cart.map((item) => {
+            totalPriceItems += +(item.price * (item.count / 50)).toFixed(2);
+          });
+          setTotalPrice(totalPriceItems);
+          setCart(res.data.cart.reverse());
+          setPageLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "Lütfen sayfayı yenileyiniz.",
+          });
+        });
+    } else {
+      getData("/api/cart/getCartWithoutLogin/" + localStorage.getItem("cart"))
+        .then((res) => {
           setCart(res.data.cart);
+          var totalPriceItems = 0;
+          res.data.cart.map((item) => {
+            totalPriceItems += +(item.price * (item.count / 50)).toFixed(2);
+          });
+          setTotalPrice(totalPriceItems);
           setPageLoading(false);
         })
         .catch(() => {
@@ -52,19 +64,6 @@ export default function MyCart() {
             text: "Lütfen sayfayı yenileyiniz.",
           });
         });
-    } else {
-      // getData("/api/cart/getCartWithoutLogin/" + localStorage.getItem("cart"))
-      //   .then((res) => {
-      //     setCart(res.data.cart);
-      //     setPageLoading(false);
-      //   })
-      //   .catch(() => {
-      //     Swal.fire({
-      //       icon: "error",
-      //       title: "Hata!",
-      //       text: "Lütfen sayfayı yenileyiniz.",
-      //     });
-      //   });
     }
   };
 
@@ -73,63 +72,94 @@ export default function MyCart() {
   }, [isAuth]);
 
   const onChangeCount = (productId, count) => {
-    setCartLoading(true);
-    putData("/api/cart/updateCount", { productId, count })
-      .then(() => {
-        getCart();
-        setCartLoading(false);
-        Swal.fire({
-          icon: "success",
-          title: "Başarılı!",
-          text: "Adet değiştirildi.",
-          timer: 1250,
-          timerProgressBar: true,
+    if (isAuth) {
+      setCartLoading(true);
+      putData("/api/cart/updateCount", { productId, count })
+        .then(() => {
+          getCart();
+          setCartLoading(false);
+          Swal.fire({
+            icon: "success",
+            title: "Başarılı!",
+            text: "Adet değiştirildi.",
+            timer: 1250,
+            timerProgressBar: true,
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "Adet değiştirilemedi. Lütfen tekrar deneyin.",
+          });
+          setCartLoading(false);
         });
-      })
-      .catch(() => {
-        Swal.fire({
-          icon: "error",
-          title: "Hata!",
-          text: "Adet değiştirilemedi. Lütfen tekrar deneyin.",
-        });
-        setCartLoading(false);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Lütfen daha fazla işlem yapmak için kayıt olunuz veya giriş yapınız.",
       });
+    }
   };
 
   const deleteCartItem = (productId) => {
-    setCartLoading(true);
-    deleteData("/api/cart/deleteCart/" + productId)
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Başarılı!",
-          text: "Ürün sepetten kaldırıldı.",
-          timer: 1250,
-          timerProgressBar: true,
+    if (isAuth) {
+      setCartLoading(true);
+      deleteData("/api/cart/deleteCart/" + productId)
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Başarılı!",
+            text: "Ürün sepetten kaldırıldı.",
+            timer: 1250,
+            timerProgressBar: true,
+          });
+          setCartLoading(false);
+          getCart();
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "Ürün sepetten silinemedi lütfen tekrar deneyin.",
+          });
+          setCartLoading(false);
         });
-        setCartLoading(false);
-        getCart();
-      })
-      .catch(() => {
-        Swal.fire({
-          icon: "error",
-          title: "Hata!",
-          text: "Ürün sepetten silinemedi lütfen tekrar deneyin.",
-        });
-        setCartLoading(false);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Lütfen daha fazla işlem yapmak için kayıt olunuz veya giriş yapınız.",
       });
+    }
   };
 
   const onCheckedChange = (productId, checked) => {
-    setCartLoading(true);
-    putData("/api/cart/updateChecked/", { productId, checked })
-      .then(() => {
-        setCartLoading(false);
-        getCart();
-      })
-      .catch(() => {
-        setCartLoading(false);
+    if (isAuth) {
+      setCartLoading(true);
+      putData("/api/cart/updateChecked/", { productId, checked })
+        .then(() => {
+          setCartLoading(false);
+          getCart();
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "Bir hata oldu lütfen tekrar seçimi değiştiriniz.",
+          });
+          setCartLoading(false);
+          getCart();
+        });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Lütfen daha fazla işlem yapmak için kayıt olunuz veya giriş yapınız.",
       });
+      getCart();
+    }
   };
 
   const CartItem = ({
@@ -185,7 +215,17 @@ export default function MyCart() {
     );
   };
 
-  const onApplyCart = () => {};
+  const onApplyCart = () => {
+    if (!isAuth) {
+      Swal.fire({
+        icon: "error",
+        title: "Hata!",
+        text: "Lütfen hesabınız yoksa kayıt olun. Hesabınız varsa üst taraftan giriş yaparak alışveriş edebilirsiniz.",
+      });
+    } else {
+      return router.push(PAGE.applyAddress.href);
+    }
+  };
 
   return (
     <div>
@@ -195,59 +235,75 @@ export default function MyCart() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain centerContent pageLoading={pageLoading}>
+      <LayoutMain liveLoading={cartLoading} pageLoading={pageLoading}>
         <div className={styles.containerMain}>
-          <div className={styles.container}>
-            <div className={styles.leftContainer}>
-              <Divider direction="left">Sepetim | {cart.length} Ürün</Divider>
-              {cart.map((item, index) => {
-                return (
-                  <CartItem
-                    key={index}
-                    srcImg={API.imgUrl + item.photos[0]}
-                    productName={item.title}
-                    price={item.price}
-                    productHref={
-                      "product/" + slugify(item.title) + "-" + item.id
-                    }
-                    productId={item.id}
-                    count={item.count}
-                    checked={item.checked}
-                  />
-                );
-              })}
+          {cart.length > 0 ? (
+            <div className={styles.container}>
+              <div className={styles.leftContainer}>
+                <Divider direction="left">Sepetim | {cart.length} Ürün</Divider>
+                {cart.map((item, index) => {
+                  return (
+                    <CartItem
+                      key={index}
+                      srcImg={API.imgUrl + item.photos[0]}
+                      productName={item.title}
+                      price={item.price}
+                      productHref={
+                        "product/" + slugify(item.title) + "-" + item.id
+                      }
+                      productId={item.id}
+                      count={item.count}
+                      checked={item.checked}
+                    />
+                  );
+                })}
+              </div>
+              <div className={styles.spacer}></div>
+              <div className={styles.rightContainer}>
+                <MainColorButton
+                  text="Sepeti Onayla"
+                  width="100%"
+                  height="40px"
+                  onClick={onApplyCart}
+                />
+                <Card width="260px" padding="10px">
+                  <Divider direction="left">Toplam</Divider>
+                  {cart.map((item, index) => {
+                    return (
+                      <div key={index} className={styles.totalItemContainer}>
+                        <span className={styles.totalItemTitle}>
+                          {item.title}
+                        </span>
+                        <span className={styles.totalItemPrice}>
+                          {(item.price * (item.count / 50)).toFixed(2)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  <div className={styles.totalItemBottomContainer}>
+                    <hr />
+                    <div className={styles.totalPrice}>
+                      <span className={styles.totalText}>Toplam</span>
+                      <span className={styles.totalPriceText}>
+                        {totalPrice}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+                <MainColorButton
+                  text="Sepeti Onayla"
+                  width="100%"
+                  height="40px"
+                  onClick={onApplyCart}
+                />
+              </div>
             </div>
-            <div className={styles.spacer}></div>
-            <div className={styles.rightContainer}>
-              <MainColorButton
-                disabled={loading}
-                text="Sepeti Onayla"
-                width="100%"
-                height="40px"
-                onClick={onApplyCart}
-              />
-              <Card width="260px" height="275px" padding="10px">
-                <Divider direction="left">Toplam</Divider>
-                <Form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                ></Form>
-              </Card>
-              <MainColorButton
-                disabled={loading}
-                text="Sepeti Onayla"
-                width="100%"
-                height="40px"
-                onClick={onApplyCart}
-              />
+          ) : (
+            <div className={styles.cartEmpty}>
+              <ShoppingCartIcon />
+              Sepetiniz boş
             </div>
-          </div>
+          )}
         </div>
       </LayoutMain>
     </div>

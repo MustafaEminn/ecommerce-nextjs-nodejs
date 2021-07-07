@@ -4,6 +4,33 @@ const sql = require("mssql");
 const config = require("../config");
 const bcrypt = require("bcrypt-nodejs");
 
+exports.updateAddress = async (req, res, next) => {
+  const body = req.body;
+  const token = req.headers.authorization;
+  var decodedJWT = jwtDecode(token);
+  var request = new sql.Request();
+
+  const updateMember = `UPDATE Users SET 
+  City='${body["City"]}',
+  District='${body["District"]}',
+  Neighborhood='${body["Neighborhood"]}',
+  Address='${body["Address"]}',
+  billingCity='${body["billingCity"]}',
+  billingDistrict='${body["billingDistrict"]}',
+  billingNeighborhood='${body["billingNeighborhood"]}',
+  billingAddress='${body["billingAddress"]}'
+  WHERE id='${decodedJWT.userId}'`;
+
+  await request.query(updateMember, (err, record) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({ code: 1, message: "Update failed try again." });
+    } else {
+      res.status(200).send({ code: 2, message: "Updated." });
+    }
+  });
+};
+
 exports.updateMember = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();

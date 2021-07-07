@@ -23,10 +23,10 @@ function InputSelect({
         onChange={onChange}
         className={styles.select}
         name={name}
-        pattern={pattern}
+        required
         defaultValue={defaultValue}
       >
-        <option className={styles.option} value="-">
+        <option className={styles.option} value="">
           Seçiniz
         </option>
         {options.map((item) => {

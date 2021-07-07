@@ -44,4 +44,9 @@ export const PAGE = {
     urlPathname: "register",
     href: "/register",
   },
+  applyAddress: {
+    name: "Adres",
+    urlPathname: "applyAddress",
+    href: "/payment/apply-address",
+  },
 };

@@ -12,6 +12,9 @@ import { getData } from "../../api/fetch";
 import Swal from "sweetalert2";
 import { API, PAGE } from "../../constants";
 import router from "next/router";
+import { addCart } from "../../utils/cartMethods";
+import { useRecoilValue } from "recoil";
+import { isAuthed } from "../../states/index.atom";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
@@ -19,6 +22,7 @@ function ProductPage() {
   const [count, setCount] = useState(50);
   const [product, setProduct] = useState({ photos: [] });
   const [pageLoading, setPageLoading] = useState(true);
+  const isAuth = useRecoilValue(isAuthed);
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -28,6 +32,7 @@ function ProductPage() {
         if (res.data.product[0]) {
           var data = res.data.product[0];
           data["photos"] = JSON.parse(data["photos"]);
+          console.log(data["photos"].length);
           setProduct(data);
           setPageLoading(false);
         } else {
@@ -49,6 +54,12 @@ function ProductPage() {
         });
       });
   }, []);
+
+  const onAddCart = () => {
+    const pathname = window.location.pathname;
+    const path = pathname.split("-")[pathname.split("-").length - 1];
+    addCart({ productId: path, count: count, checked: true }, isAuth);
+  };
   return (
     <div>
       <Head>
@@ -67,7 +78,7 @@ function ProductPage() {
                 slidesPerView={1}
                 className={styles.swiperContainer}
                 navigation={true}
-                loop={product["photos"].length > 1}
+                loop={true}
                 slidesPerGroup={1}
               >
                 {product["photos"].map((item, index) => {
@@ -105,7 +116,9 @@ function ProductPage() {
             <div className={styles.rightContainer}>
               <Card className={styles.productCard}>
                 <h1 className={styles.productHeader}>{product.title}</h1>
-                <h2 className={styles.productPrice}>56.00 TL</h2>
+                <h2 className={styles.productPrice}>
+                  {(product.price * (count / 50)).toFixed(2)} TL
+                </h2>
                 <div className={styles.counterContainer}>
                   <LargeCounter
                     value={count}
@@ -119,6 +132,7 @@ function ProductPage() {
                     height="44px"
                     text="Sepete Ekle"
                     icon={<ShoppingCartIcon />}
+                    onClick={onAddCart}
                   />
                 </div>
               </Card>

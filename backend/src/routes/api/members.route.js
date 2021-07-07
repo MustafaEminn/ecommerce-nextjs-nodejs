@@ -15,6 +15,7 @@ router.get(
   membersController.getMemberByEmail
 );
 
+router.put("/updateAddress", auth(), membersController.updateAddress);
 router.put("/updateMember", auth(), membersController.updateMember);
 router.put("/updatePassword", auth(), membersController.updatePassword);
 

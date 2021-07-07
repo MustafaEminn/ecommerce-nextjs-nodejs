@@ -44,13 +44,21 @@ function Giris() {
       });
       setDisableButton(true);
       postData("/api/auth/login", sendValues)
-        .then((res) => {
+        .then(async (res) => {
+          localStorage.setItem("token", res.data.token);
+          const cart = localStorage.getItem("cart");
+          if (cart) {
+            postData("/api/cart/loginSetCart", { cart: cart })
+              .then((res) => {
+                localStorage.removeItem("cart");
+              })
+              .catch(() => {});
+          }
           Swal.fire({
             icon: "success",
             title: "Başarılı!",
             text: "Giriş yapıldı.",
             didClose: () => {
-              localStorage.setItem("token", res.data.token);
               router.push(PAGE.home.href);
             },
           });

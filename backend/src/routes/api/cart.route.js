@@ -7,11 +7,14 @@ const auth = require("../../middlewares/authorization");
 const checkRoles = require("../../middlewares/checkRoles");
 
 router.post("/addItem", auth(), cartController.addItem);
+router.post("/loginSetCart", auth(), cartController.loginSetCart);
 
 router.put("/updateCount", auth(), cartController.updateCount);
 router.put("/updateChecked", auth(), cartController.updateChecked);
 
 router.get("/getCart", auth(), cartController.getCart);
+router.get("/getCartLength", auth(), cartController.getCartLength);
+router.get("/getCartWithoutLogin/:cart", cartController.getCartWithoutLogin);
 
 router.delete("/deleteCart/:productId", auth(), cartController.deleteCart);
 // router.get("/getMemberById/:id", auth(), membersController.getMemberById);

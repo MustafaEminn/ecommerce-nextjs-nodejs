@@ -1,0 +1,34 @@
+.containerMain {
+  display: flex;
+  flex-direction: column;
+}
+.container {
+  display: flex;
+  align-self: center;
+
+  & .leftContainer {
+    margin: 15px 0;
+
+    & .checkboxContainer {
+      display: flex;
+      position: relative;
+      & span {
+        margin-left: 25px;
+        font-family: var(--source-sans-pro);
+        font-family: 16px;
+      }
+    }
+  }
+
+  & .rightContainer {
+    display: flex;
+    flex-direction: column;
+    & button {
+      margin: 15px 0 !important;
+    }
+  }
+
+  & .spacer {
+    width: 25px;
+  }
+}
