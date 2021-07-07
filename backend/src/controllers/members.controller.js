@@ -105,6 +105,32 @@ exports.getMembersNewest = async (req, res, next) => {
   });
 };
 
+exports.checkAddress = async (req, res, next) => {
+  const token = req.headers.authorization;
+  const decodedJWT = jwtDecode(token);
+  var request = new sql.Request();
+
+  const getAddressQuery = `SELECT City,District,Neighborhood,Address,billingCity,billingDistrict,billingNeighborhood,billingAddress FROM Users WHERE id='Z1jcaL6hT60ddf78fCuhHIfWZBLHnbx9'`;
+
+  await request.query(getAddressQuery, async (err, record) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ code: 1, message: "Address could not got." });
+    }
+    const resBody = record.recordset[0];
+    var anyvalueBlank = false;
+    await Object.values(resBody).map((item) => {
+      if (!item) {
+        anyvalueBlank = true;
+      }
+    });
+    res
+      .status(200)
+      .send({ code: 2, message: "Address got.", address: anyvalueBlank });
+  });
+};
+
 exports.getMembersTop = async (req, res, next) => {
   var request = new sql.Request();
 

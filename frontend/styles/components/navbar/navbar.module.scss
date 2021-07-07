@@ -54,14 +54,33 @@
         }
 
         .navbarHeadUserSectionLiMyCart {
+          position: relative;
+          padding-right: 17px;
           & span {
             transition: all 0.2s;
+          }
+
+          & .cartBubble {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            background-color: var(--main-color);
+            border-radius: 50%;
+            padding: 2px 5px;
+            right: 0;
+            top: -5px;
+            color: var(--white);
           }
         }
 
         .navbarHeadUserSectionLiMyCart:hover {
           & span {
             color: var(--main-color);
+          }
+
+          & .cartBubble {
+            color: var(--white);
           }
 
           & svg {

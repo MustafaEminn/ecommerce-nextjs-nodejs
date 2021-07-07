@@ -26,6 +26,7 @@ export const addCartWithoutLogin = (product) => {
       title: "Başarılı!",
       text: "Ürün sepete eklendi.",
     });
+
     return localStorage.setItem("cart", JSON.stringify(newCart));
   }
   const newCart = [product];
@@ -55,6 +56,7 @@ export const addCartWithLogin = async (product) => {
       });
       return (res = false);
     });
+
   return res;
 };
 

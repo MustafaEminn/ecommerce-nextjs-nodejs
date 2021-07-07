@@ -58,7 +58,7 @@ const Product = () => {
   const editorRef = useRef();
 
   const getPosts = async () => {
-    await postData("/api/product/getProductsTop", { count: countPosts })
+    await postData("/api/product/getProductsTopForAdmin", { count: countPosts })
       .then((res) => {
         setPosts(res.data.products);
       })

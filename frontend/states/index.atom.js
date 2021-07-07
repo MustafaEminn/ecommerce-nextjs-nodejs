@@ -1,3 +1,4 @@
 import { isAuthed } from "./auth/isAuthed.atom";
+import { cartChangeTrigger } from "./cart/cartChangeTrigger.atom";
 
-export { isAuthed };
+export { isAuthed, cartChangeTrigger };

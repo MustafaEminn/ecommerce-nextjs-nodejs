@@ -7,8 +7,15 @@ import SearchBar from "../SearchBar/searchbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ListPopupContainer, ListPopup } from "../popups/listPopup";
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { cartChangeTrigger, isAuthed } from "../../states/index.atom";
+import { getData } from "../../api/fetch";
 
 function Navbar({ auth }) {
+  const [cartLength, setCartLength] = useState(0);
+  const isAuth = useRecoilValue(isAuthed);
+  const cartChange = useRecoilValue(cartChangeTrigger);
   const router = useRouter();
   const NavbarFooterItem = ({ title, activeLinkText, href }) => {
     return router.pathname.split("/")[1] === activeLinkText ? (
@@ -35,6 +42,26 @@ function Navbar({ auth }) {
       </li>
     );
   };
+
+  const getCartLength = async () => {
+    if (isAuth) {
+      return await getData("/api/cart/getCartLength")
+        .then((res) => {
+          return setCartLength(res.data.length);
+        })
+        .catch(() => {
+          return setCartLength(0);
+        });
+    } else {
+      const cart = localStorage.getItem("cart");
+      const decodedCart = JSON.parse(cart);
+      setCartLength(decodedCart?.length || 0);
+    }
+  };
+
+  useEffect(() => {
+    getCartLength();
+  }, [isAuth, cartChange]);
 
   return (
     <div className={styles.container}>
@@ -105,11 +132,17 @@ function Navbar({ auth }) {
               </ListPopupContainer>
             </li>
 
-            <li className={styles.navbarHeadUserSectionLiMyCart}>
+            <li
+              style={{
+                paddingRight: `${15 + cartLength.toString().length * 3.5}px`,
+              }}
+              className={styles.navbarHeadUserSectionLiMyCart}
+            >
               <Link href={PAGE.cart.href}>
                 <a>
                   <ShoppingCartIcon width="16px" height="16px" />
                   <span>Sepetim</span>
+                  <span className={styles.cartBubble}>{cartLength}</span>
                 </a>
               </Link>
             </li>

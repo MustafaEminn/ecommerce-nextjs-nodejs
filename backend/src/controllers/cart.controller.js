@@ -24,7 +24,7 @@ exports.addItem = async (req, res, next) => {
         .send({ code: 1, message: "We got error when getting cart." });
     }
     const resBody = recordset.recordset;
-    console.log(resBody);
+
     if (resBody[0]) {
       const decodeBody = JSON.parse(resBody[0]["cart"]);
       var itemIsNew = true;
@@ -156,7 +156,7 @@ exports.getCart = async (req, res, next) => {
             checked: decodedBody[index].checked,
           });
         }
-        console.log(cartItem);
+
         index++;
       }
 
@@ -203,8 +203,8 @@ exports.getCartWithoutLogin = async (req, res, next) => {
     const getCartItemQuery = `SELECT * FROM Products WHERE id='${cartItem.productId}'`;
     return await request
       .query(getCartItemQuery)
-      .then((res) => {
-        return res.recordset[0] ? res.recordset[0] : null;
+      .then(async (res) => {
+        return (await res.recordset[0]) ? res.recordset[0] : null;
       })
       .catch((err) => {
         res.status(500).send({
@@ -238,6 +238,8 @@ exports.deleteCart = async (req, res, next) => {
   const token = req.headers.authorization;
   const decodedJWT = jwtDecode(token);
   var request = new sql.Request();
+  // If you will use please be careful
+  // request.query("sdsadsaDELETE FROM Carts WHERE userId='" + decodedJWT.userId + "'");
 
   const getCartQuery = `SELECT * FROM Carts WHERE userId='${decodedJWT.userId}'`;
 
@@ -253,6 +255,7 @@ exports.deleteCart = async (req, res, next) => {
       const newCart = decodedBody.filter((item) => {
         return item.productId !== req.params.productId;
       });
+      console.log(newCart);
 
       const deleteCartItemQuery = `UPDATE Carts SET
         cart='${JSON.stringify(newCart)}' WHERE userId='${decodedJWT.userId}'`;

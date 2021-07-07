@@ -32,7 +32,11 @@ export default function MyCart() {
         .then((res) => {
           var totalPriceItems = 0;
           res.data.cart.map((item) => {
-            totalPriceItems += +(item.price * (item.count / 50)).toFixed(2);
+            return item.checked
+              ? (totalPriceItems += +(item.price * (item.count / 50)).toFixed(
+                  2
+                ))
+              : void 0;
           });
           setTotalPrice(totalPriceItems);
           setCart(res.data.cart.reverse());
@@ -249,7 +253,7 @@ export default function MyCart() {
                       productName={item.title}
                       price={item.price}
                       productHref={
-                        "product/" + slugify(item.title) + "-" + item.id
+                        "/product/" + slugify(item.title) + "-" + item.id
                       }
                       productId={item.id}
                       count={item.count}
@@ -269,7 +273,7 @@ export default function MyCart() {
                 <Card width="260px" padding="10px">
                   <Divider direction="left">Toplam</Divider>
                   {cart.map((item, index) => {
-                    return (
+                    return item.checked ? (
                       <div key={index} className={styles.totalItemContainer}>
                         <span className={styles.totalItemTitle}>
                           {item.title}
@@ -278,6 +282,8 @@ export default function MyCart() {
                           {(item.price * (item.count / 50)).toFixed(2)}
                         </span>
                       </div>
+                    ) : (
+                      void 0
                     );
                   })}
                   <div className={styles.totalItemBottomContainer}>
@@ -285,7 +291,7 @@ export default function MyCart() {
                     <div className={styles.totalPrice}>
                       <span className={styles.totalText}>Toplam</span>
                       <span className={styles.totalPriceText}>
-                        {totalPrice}
+                        {totalPrice} TL
                       </span>
                     </div>
                   </div>

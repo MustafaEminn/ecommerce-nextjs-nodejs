@@ -12,6 +12,11 @@ router.post(
   productController.addProduct
 );
 router.post("/getProductsTop", productController.getProductsTop);
+router.post(
+  "/getProductsTopForAdmin",
+  [auth(), checkRoles("admin")],
+  productController.getProductsTopForAdmin
+);
 router.put(
   "/updateProduct",
   [auth(), checkRoles("admin")],

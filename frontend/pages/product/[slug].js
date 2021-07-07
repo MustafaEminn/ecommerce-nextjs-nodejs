@@ -13,8 +13,8 @@ import Swal from "sweetalert2";
 import { API, PAGE } from "../../constants";
 import router from "next/router";
 import { addCart } from "../../utils/cartMethods";
-import { useRecoilValue } from "recoil";
-import { isAuthed } from "../../states/index.atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { cartChangeTrigger, isAuthed } from "../../states/index.atom";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
@@ -23,6 +23,7 @@ function ProductPage() {
   const [product, setProduct] = useState({ photos: [] });
   const [pageLoading, setPageLoading] = useState(true);
   const isAuth = useRecoilValue(isAuthed);
+  const [cartTrigger, setCartTrigger] = useRecoilState(cartChangeTrigger);
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -58,6 +59,7 @@ function ProductPage() {
   const onAddCart = () => {
     const pathname = window.location.pathname;
     const path = pathname.split("-")[pathname.split("-").length - 1];
+    setCartTrigger(!cartTrigger);
     addCart({ productId: path, count: count, checked: true }, isAuth);
   };
   return (

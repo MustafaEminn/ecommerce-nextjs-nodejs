@@ -71,11 +71,39 @@ exports.addProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   var request = new sql.Request();
   const deleteProductQuery = `DELETE FROM Products WHERE id='${req.params.id}'`;
+  const getCarts = `SELECT * FROM Carts`;
 
-  await request.query(deleteProductQuery, (err, record) => {
+  await request.query(deleteProductQuery, async (err, record) => {
     if (err) {
+      console.log(err);
       res.status(500).send({ code: 1, message: "Product could not deleted." });
     } else {
+      await request.query(getCarts, async (err, record) => {
+        if (err) {
+          return console.log(err);
+        }
+        const carts = record.recordset;
+        for (const item of carts) {
+          const decodedCart = JSON.parse(item.cart);
+
+          const newCart = await Promise.all(
+            decodedCart.filter((item2) => {
+              return item2.productId !== req.params.id;
+            })
+          );
+
+          const setNewCartQuery = `UPDATE Carts SET cart='${JSON.stringify(
+            newCart
+          )}' WHERE userId='${item.userId}'`;
+          await request.query(setNewCartQuery, (err, record) => {
+            if (err) {
+              console.log(err);
+            }
+            return;
+          });
+        }
+      });
+
       res.status(200).send({ code: 2, message: "Product deleted." });
     }
   });
@@ -129,17 +157,17 @@ exports.getProductById = async (req, res, next) => {
 
 exports.getProductsMostSell = async (req, res, next) => {
   var request = new sql.Request();
-  const getProductsQuery = `SELECT TOP ${req.params.count} * FROM Products ORDER BY sellCount DESC`;
+  const getProductsQuery = `SELECT TOP ${req.params.count} * FROM Products WHERE isActive=1 ORDER BY sellCount DESC`;
 
   await request.query(getProductsQuery, (err, record) => {
-    const resBody = record.recordset;
-
     if (err) {
       console.log(err);
       res
         .status(500)
         .send({ code: 1, message: "We got error when products getting." });
-    } else if (!resBody[0]) {
+    }
+    const resBody = record.recordset;
+    if (!resBody[0]) {
       res.status(500).send({ code: 2, message: "Products not found." });
     } else {
       res.status(200).send({
@@ -154,7 +182,7 @@ exports.getProductsMostSell = async (req, res, next) => {
 exports.getProductsNewest = async (req, res, next) => {
   var request = new sql.Request();
 
-  const getNewestProductsQuery = `SELECT INTO * FROM Products`;
+  const getNewestProductsQuery = `SELECT INTO * FROM Products WHERE isActive=1`;
 
   await request.query(getNewestProductsQuery, (err, record) => {
     if (err) {
@@ -165,11 +193,30 @@ exports.getProductsNewest = async (req, res, next) => {
   });
 };
 
-exports.getProductsTop = async (req, res, next) => {
+exports.getProductsTopForAdmin = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();
 
   const getTopProductsQuery = `SELECT TOP ${body["count"]} * FROM Products ORDER BY createdAt DESC`;
+
+  await request.query(getTopProductsQuery, (err, record) => {
+    const resBody = record.recordset;
+    if (err) {
+      console.log(err);
+      res.status(500).send({ code: 1, message: "Products could not got." });
+    } else {
+      res
+        .status(200)
+        .send({ code: 2, message: "Products getted.", products: resBody });
+    }
+  });
+};
+
+exports.getProductsTop = async (req, res, next) => {
+  const body = req.body;
+  var request = new sql.Request();
+
+  const getTopProductsQuery = `SELECT TOP ${body["count"]} * FROM Products WHERE isActive=1 ORDER BY createdAt DESC`;
 
   await request.query(getTopProductsQuery, (err, record) => {
     const resBody = record.recordset;

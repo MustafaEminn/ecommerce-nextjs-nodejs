@@ -12,7 +12,7 @@ function FooterComp() {
     <div className={styles.containerBG}>
       <div className={styles.container} style={{ width: BASE.widthNavbar }}>
         <span className={styles.logo}>
-          <Link href={PAGE.login.href}>
+          <Link href={PAGE.home.href}>
             <a>
               <LogoWhite fontSize="40px" />
             </a>

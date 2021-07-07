@@ -7,6 +7,7 @@ const auth = require("../../middlewares/authorization");
 const checkRoles = require("../../middlewares/checkRoles");
 
 router.get("/getMembersTop/:count", auth(), membersController.getMembersTop);
+router.get("/checkAddress", auth(), membersController.checkAddress);
 router.get("/getMemberById/:id", auth(), membersController.getMemberById);
 router.get("/getMemberByName/:name", auth(), membersController.getMemberByName);
 router.get(

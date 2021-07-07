@@ -46,7 +46,12 @@ export const PAGE = {
   },
   applyAddress: {
     name: "Adres",
-    urlPathname: "applyAddress",
+    urlPathname: "apply-address",
     href: "/payment/apply-address",
+  },
+  applyPayment: {
+    name: "Ödeme",
+    urlPathname: "apply-payment",
+    href: "/payment/apply-payment",
   },
 };
