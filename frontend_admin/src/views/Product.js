@@ -12,6 +12,7 @@ import {
   Checkbox,
   InputNumber,
   Tag,
+  Cascader,
 } from "antd";
 import {
   EditOutlined,
@@ -37,8 +38,10 @@ import { PAGE } from "../constants/page";
 
 const Product = () => {
   const [posts, setPosts] = useState([]);
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
   const [searchPost, setSearchPost] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
   const [visibleAdd, setVisibleAdd] = useState("");
   const [price, setPrice] = useState(1);
   const [sellCount, setSellCount] = useState(1);
@@ -61,6 +64,27 @@ const Product = () => {
     await postData("/api/product/getProductsTopForAdmin", { count: countPosts })
       .then((res) => {
         setPosts(res.data.products);
+      })
+      .catch(() => {
+        message.error("Lütfen internetinizi kontrol edin.");
+      });
+  };
+  const getCategories = async () => {
+    await getData("/api/category/getCategories")
+      .then((res) => {
+        const categoryOptions = Object.keys(res.data.categories).map((item) => {
+          return {
+            value: item,
+            label: item,
+            children: Object.keys(res.data.categories[item]).map((item2) => {
+              return {
+                value: res.data.categories[item][item2].slug,
+                label: item2,
+              };
+            }),
+          };
+        });
+        setCategoriesOptions(categoryOptions);
       })
       .catch(() => {
         message.error("Lütfen internetinizi kontrol edin.");
@@ -122,6 +146,7 @@ const Product = () => {
     setDeletedPhotosNames([]);
     setTitle("");
     setEditorValue("");
+    setSelectedCategory([]);
     setSellCount(0);
     setPrice(0);
   };
@@ -140,6 +165,8 @@ const Product = () => {
             isActive: publicBool,
             price: price,
             sellCount: sellCount,
+            category: selectedCategory[selectedCategory.length - 1],
+            categoryAdmin: selectedCategory,
           };
 
           postData("/api/product/addProduct", productData)
@@ -204,6 +231,7 @@ const Product = () => {
         setPublicBool(posts[dataIndex].isActive);
         setPrice(posts[dataIndex].price);
         setSellCount(posts[dataIndex].sellCount);
+        setSelectedCategory(posts[dataIndex].categoryAdmin);
         setVisibleEdit(true);
       }
     };
@@ -265,6 +293,8 @@ const Product = () => {
             id: posts[editDataIndex].id,
             sellCount: sellCount,
             price: price,
+            category: selectedCategory[selectedCategory.length - 1],
+            categoryAdmin: selectedCategory,
           };
 
           await putData("/api/product/updateProduct", productData)
@@ -560,9 +590,16 @@ const Product = () => {
     }
   };
 
+  const onSelectCategory = (e) => {
+    setSelectedCategory(e);
+  };
+
   useEffect(() => {
-    getPosts();
-    setPageLoading(false);
+    (async () => {
+      await getPosts();
+      await getCategories();
+      setPageLoading(false);
+    })();
   }, []);
 
   return (
@@ -660,6 +697,13 @@ const Product = () => {
             </Upload>
           </Form.Item>
 
+          <Form.Item label="Kategori">
+            <Cascader
+              defaultValue={selectedCategory}
+              options={categoriesOptions}
+              onChange={onSelectCategory}
+            />
+          </Form.Item>
           <Form.Item label="Halka Açık">
             <Checkbox
               defaultChecked={publicBool}
@@ -722,7 +766,13 @@ const Product = () => {
               {fileList.length >= 10 ? null : uploadButton}
             </Upload>
           </Form.Item>
-
+          <Form.Item label="Kategori">
+            <Cascader
+              defaultValue={selectedCategory}
+              options={categoriesOptions}
+              onChange={onSelectCategory}
+            />
+          </Form.Item>
           <Form.Item label="Halka Açık">
             <Checkbox
               defaultChecked={publicBool}

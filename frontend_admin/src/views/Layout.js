@@ -5,6 +5,7 @@ import {
   UserOutlined,
   PictureOutlined,
   BoxPlotOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { getData } from "../api/fetch";
@@ -57,6 +58,9 @@ const LayoutAdmin = ({ children, mainLoading = false }) => {
               </Menu.Item>
               <Menu.Item icon={<BoxPlotOutlined />} key="3">
                 <Link to={PAGE.orders.href + "/1"}>{PAGE.orders.name}</Link>
+              </Menu.Item>
+              <Menu.Item icon={<AppstoreOutlined />} key="4">
+                <Link to={PAGE.category.href}>{PAGE.category.name}</Link>
               </Menu.Item>
             </Menu>
           </Header>

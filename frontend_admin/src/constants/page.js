@@ -19,4 +19,9 @@ export const PAGE = {
     urlPathname: "siparisler",
     href: "/siparisler",
   },
+  category: {
+    name: "Kategoriler",
+    urlPathname: "kategoriler",
+    href: "/kategoriler",
+  },
 };

@@ -4,6 +4,7 @@ import Login from "./views/login";
 import Product from "./views/Product";
 import Members from "./views/members";
 import Order from "./views/orders";
+import Category from "./views/Category";
 import { PAGE } from "./constants/page";
 
 export const AppViews = () => {
@@ -20,6 +21,9 @@ export const AppViews = () => {
       </Route>
       <Route path={PAGE.orders.href}>
         <Order />
+      </Route>
+      <Route path={PAGE.category.href}>
+        <Category />
       </Route>
     </Switch>
   );
