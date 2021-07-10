@@ -8,27 +8,40 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ListPopupContainer, ListPopup } from "../popups/listPopup";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { cartChangeTrigger, isAuthed } from "../../states/index.atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  cartChangeTrigger,
+  categoryChangeTrigger,
+  isAuthed,
+} from "../../states/index.atom";
 import { getData } from "../../api/fetch";
+import Swal from "sweetalert2";
 
 function Navbar({ auth }) {
   const [cartLength, setCartLength] = useState(0);
+  const [categories, setCategories] = useState([]);
   const isAuth = useRecoilValue(isAuthed);
   const cartChange = useRecoilValue(cartChangeTrigger);
+  const [categoryChange, setCategoryChange] = useRecoilState(
+    categoryChangeTrigger
+  );
   const router = useRouter();
-  const NavbarFooterItem = ({ title, activeLinkText, href }) => {
-    return router.pathname.split("/")[1] === activeLinkText ? (
-      <li className={styles.activeFooterItem}>
+  const NavbarFooterItem = ({ title, href }) => {
+    return (
+      <li className={styles.footerItem}>
         <Link href={href}>
           <a>{title}</a>
         </Link>
       </li>
-    ) : (
-      <li className={styles.deactiveFooterItem}>
-        <Link href={href}>
+    );
+  };
+  const NavbarFooterWithDropdownItem = ({ title, children }) => {
+    return (
+      <li className={styles.footerWithDropdownItem}>
+        <Link href={""}>
           <a>{title}</a>
         </Link>
+        <div className={styles.footerDropdown}>{children}</div>
       </li>
     );
   };
@@ -59,9 +72,37 @@ function Navbar({ auth }) {
     }
   };
 
+  const getCategories = async () => {
+    if (isAuth) {
+      return await getData("/api/category/getCategories")
+        .then((res) => {
+          return setCategories(res.data.categories);
+        })
+        .catch(() => {
+          return Swal.fire({
+            icon: "error",
+            title: "Hata!",
+            text: "LÜtfen sayfayı yenileyiniz!",
+          });
+        });
+    } else {
+      const cart = localStorage.getItem("cart");
+      const decodedCart = JSON.parse(cart);
+      setCartLength(decodedCart?.length || 0);
+    }
+  };
+
   useEffect(() => {
     getCartLength();
   }, [isAuth, cartChange]);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const onRouteCategory = () => {
+    setCategoryChange(!categoryChange);
+  };
 
   return (
     <div className={styles.container}>
@@ -154,16 +195,32 @@ function Navbar({ auth }) {
       {/* Navbar Footer Begin */}
       <div className={styles.navbarFooter} style={{ width: BASE.widthNavbar }}>
         <ul className={styles.navbarFooterUl}>
-          <NavbarFooterItem
-            title={PAGE.home.name}
-            activeLinkText={PAGE.home.urlPathname}
-            href={PAGE.home.href}
-          />
+          <NavbarFooterItem title={PAGE.home.name} href={PAGE.home.href} />
           <NavbarFooterItem
             title={PAGE.aboutUs.name}
-            activeLinkText={PAGE.aboutUs.urlPathname}
             href={PAGE.aboutUs.href}
           />
+          {Object.keys(categories).map((item) => {
+            return (
+              <NavbarFooterWithDropdownItem title={item}>
+                {Object.keys(categories[item]).map((item2) => {
+                  return (
+                    <div>
+                      <Link
+                        href={
+                          PAGE.category.href +
+                          categories[item][item2].slug +
+                          "_1"
+                        }
+                      >
+                        <a onClick={onRouteCategory}>{item2}</a>
+                      </Link>
+                    </div>
+                  );
+                })}
+              </NavbarFooterWithDropdownItem>
+            );
+          })}
         </ul>
       </div>
       {/* Navbar Footer End */}

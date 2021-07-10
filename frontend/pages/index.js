@@ -23,7 +23,7 @@ export default function Home() {
   const isAuth = useRecoilValue(isAuthed);
   const [cartTrigger, setCartTrigger] = useRecoilState(cartChangeTrigger);
   SwiperCore.use([Navigation]);
-  const SLIDES_PER_GROUP = 3;
+  const SLIDES_PER_GROUP = 1;
 
   useEffect(() => {
     postData("/api/product/getProductsTop", { count: 20 })

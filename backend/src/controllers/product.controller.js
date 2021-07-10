@@ -105,6 +105,46 @@ exports.updateProduct = async (req, res, next) => {
   });
 };
 
+exports.getProductsPageByPage = async (req, res, next) => {
+  var request = new sql.Request();
+
+  var numPerPage = 50;
+  var skip = (req.params.page - 1) * numPerPage;
+  request.query(
+    `SELECT count(*) as numRows FROM Products WHERE category='${req.params.category}'`,
+    function (err, rows, fields) {
+      if (err) {
+        console.log("error: ", err);
+        res.status(500).send({ code: 1, message: "Products count not got." });
+      } else {
+        console.log(rows.recordset);
+        var numRows = rows.recordset[0].numRows;
+        var countPage = Math.ceil(numRows / numPerPage);
+        request.query(
+          `SELECT * FROM Products WHERE category='${req.params.category}' ORDER BY createdAt DESC OFFSET ${skip} ROWS FETCH NEXT ${numPerPage} ROWS ONLY`,
+          function (err, rows, fields) {
+            if (err) {
+              console.log("error: ", err);
+              res.status(500).send({ code: 2, message: "Products not got." });
+            } else {
+              var resData = rows.recordsets[0];
+              var decodedData = resData.map((item) => {
+                return { ...item, photos: JSON.parse(item.photos) };
+              });
+              res.status(200).send({
+                code: 3,
+                message: "Products got.",
+                products: decodedData,
+                countOfPages: countPage,
+              });
+            }
+          }
+        );
+      }
+    }
+  );
+};
+
 exports.getProductById = async (req, res, next) => {
   var request = new sql.Request();
 

@@ -54,4 +54,9 @@ export const PAGE = {
     urlPathname: "apply-payment",
     href: "/payment/apply-payment",
   },
+  category: {
+    name: "Kategori",
+    urlPathname: "category",
+    href: "/category/",
+  },
 };

@@ -82,13 +82,6 @@ export default function MyCart() {
         .then(() => {
           getCart();
           setCartLoading(false);
-          Swal.fire({
-            icon: "success",
-            title: "Başarılı!",
-            text: "Adet değiştirildi.",
-            timer: 1250,
-            timerProgressBar: true,
-          });
         })
         .catch(() => {
           Swal.fire({

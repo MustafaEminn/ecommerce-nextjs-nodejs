@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  & .productContainer {
+    width: 224px;
+    height: 473px;
+    margin: 20px 0 0 0;
+    transition: box-shadow 0.2s;
+    overflow: hidden;
+    &:hover {
+      box-shadow: var(--card-shadow);
+
+      & img {
+        transform: scale(1.1);
+      }
+    }
+
+    & .imgContainer {
+      overflow: hidden;
+    }
+
+    & img {
+      width: 100%;
+      object-fit: cover;
+      height: 334px;
+      transition: transform 0.2s;
+    }
+
+    & .productDetails {
+      padding: 10px 10px 5px 10px;
+      & h1 {
+        font-size: 16px;
+        font-family: var(--source-sans-pro);
+        white-space: pre-wrap;
+        height: 30px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      & div {
+        font-size: 20px;
+        font-family: var(--source-sans-pro);
+        color: var(--main-color);
+        padding: 15px 0;
+        float: right;
+      }
+    }
+  }
+}

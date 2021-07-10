@@ -22,7 +22,8 @@ function LayoutMain({
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(false);
   const [, setIsAuthed] = useRecoilState(isAuthed);
-  useEffect(() => {
+
+  const checkAuth = () => {
     getData(API.checkAuth)
       .then(() => {
         setAuth(true);
@@ -40,6 +41,12 @@ function LayoutMain({
         setLoading(false);
         setAuth(false);
       });
+  };
+
+  useEffect(() => {
+    (async () => {
+      await checkAuth();
+    })();
   }, []);
 
   useEffect(() => {

@@ -33,6 +33,10 @@ router.get(
   "/getProductsMostSell/:count",
   productController.getProductsMostSell
 );
+router.get(
+  "/getProductsPageByPage/:category/:page",
+  productController.getProductsPageByPage
+);
 // router.get("/secret2", auth(["admin"]), (req, res) => {
 //   // example route for auth
 //   res.json({ message: "Only admin can access" });

@@ -1,7 +1,7 @@
-import styles from "../../../styles/components/buttons/cards/horizontalMiddleCartButton.module.scss";
+import styles from "../../../styles/components/buttons/cards/horizontalMiddleCartBorderedButton.module.scss";
 import ShoppingCartIcon from "../../../public/icons/shoppingCart";
 
-function HorizontalMiddleCartButton({ onClick, width = "150px" }) {
+function HorizontalMiddleCartBorderedButton({ onClick, width = "163px" }) {
   return (
     <button
       onClick={onClick}
@@ -14,4 +14,4 @@ function HorizontalMiddleCartButton({ onClick, width = "150px" }) {
   );
 }
 
-export default HorizontalMiddleCartButton;
+export default HorizontalMiddleCartBorderedButton;
