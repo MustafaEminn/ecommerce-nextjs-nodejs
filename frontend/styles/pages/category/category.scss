@@ -1,0 +1,24 @@
+.container-pagination {
+  display: flex;
+  justify-content: center;
+
+  & li {
+    margin: 0 5px;
+    border: 1px solid var(--main-color);
+    border-radius: 3px;
+    cursor: pointer;
+
+    & a {
+      padding: 7px 12px;
+      font-family: var(--source-sans-pro);
+      display: block;
+    }
+  }
+
+  & .pagination-active {
+    background-color: var(--main-color);
+    & a {
+      color: var(--white);
+    }
+  }
+}

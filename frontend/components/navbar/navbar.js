@@ -73,23 +73,17 @@ function Navbar({ auth }) {
   };
 
   const getCategories = async () => {
-    if (isAuth) {
-      return await getData("/api/category/getCategories")
-        .then((res) => {
-          return setCategories(res.data.categories);
-        })
-        .catch(() => {
-          return Swal.fire({
-            icon: "error",
-            title: "Hata!",
-            text: "LÜtfen sayfayı yenileyiniz!",
-          });
+    return await getData("/api/category/getCategories")
+      .then((res) => {
+        return setCategories(res.data.categories);
+      })
+      .catch(() => {
+        return Swal.fire({
+          icon: "error",
+          title: "Hata!",
+          text: "LÜtfen sayfayı yenileyiniz!",
         });
-    } else {
-      const cart = localStorage.getItem("cart");
-      const decodedCart = JSON.parse(cart);
-      setCartLength(decodedCart?.length || 0);
-    }
+      });
   };
 
   useEffect(() => {
@@ -200,18 +194,20 @@ function Navbar({ auth }) {
             title={PAGE.aboutUs.name}
             href={PAGE.aboutUs.href}
           />
-          {Object.keys(categories).map((item) => {
+          {Object.keys(categories).map((item, index) => {
             return (
-              <NavbarFooterWithDropdownItem title={item}>
+              <NavbarFooterWithDropdownItem key={index} title={item}>
                 {Object.keys(categories[item]).map((item2) => {
                   return (
                     <div>
                       <Link
-                        href={
-                          PAGE.category.href +
-                          categories[item][item2].slug +
-                          "_1"
-                        }
+                        href={{
+                          pathname:
+                            PAGE.category.href + categories[item][item2].slug,
+                          query: {
+                            page: 1,
+                          },
+                        }}
                       >
                         <a onClick={onRouteCategory}>{item2}</a>
                       </Link>
