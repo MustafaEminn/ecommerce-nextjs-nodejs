@@ -38,14 +38,16 @@ function ProductsPage() {
   const router = useRouter();
 
   const getCategory = () => {
-    return window.location.pathname.split("/")[
-      window.location.pathname.split("/").length - 1
-    ];
+    if (process.browser) {
+      return window.location.pathname.split("/")[
+        window.location.pathname.split("/").length - 1
+      ];
+    }
   };
 
   const getProducts = async (number = getParameterByName("page"), query) => {
     const queryUrl = query ? `?${query}` : "";
-    getData(
+    await getData(
       "/api/product/getProductsPageByPage/" +
         getCategory() +
         "/" +
@@ -125,7 +127,18 @@ function ProductsPage() {
               },
             }}
           >
-            <a>En Çok Satılanlar</a>
+            <a
+              onClick={async () => {
+                setLiveLoading(true);
+                await getProducts(
+                  getParameterByName("page"),
+                  "sort=mostSelling"
+                );
+                setLiveLoading(false);
+              }}
+            >
+              En Çok Satılanlar
+            </a>
           </Link>
           <Link
             href={{
@@ -136,7 +149,15 @@ function ProductsPage() {
               },
             }}
           >
-            <a>Artan Fiyat</a>
+            <a
+              onClick={async () => {
+                setLiveLoading(true);
+                await getProducts(getParameterByName("page"), "sort=lowToHigh");
+                setLiveLoading(false);
+              }}
+            >
+              Artan Fiyat
+            </a>
           </Link>
           <Link
             href={{
@@ -147,7 +168,15 @@ function ProductsPage() {
               },
             }}
           >
-            <a>Azalan Fiyat</a>
+            <a
+              onClick={async () => {
+                setLiveLoading(true);
+                await getProducts(getParameterByName("page"), "sort=highToLow");
+                setLiveLoading(false);
+              }}
+            >
+              Azalan Fiyat
+            </a>
           </Link>
         </div>
         {products.length > 0 ? (

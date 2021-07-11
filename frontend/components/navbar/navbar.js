@@ -129,7 +129,7 @@ function Navbar({ auth }) {
                           title="Hesabım"
                         />
                         <NavbarPopupItem
-                          href={PAGE.myAccount.href}
+                          href={PAGE.myOrders.href}
                           title="Siparişlerim"
                         />
                         <NavbarPopupItem

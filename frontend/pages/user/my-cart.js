@@ -212,7 +212,7 @@ export default function MyCart() {
     );
   };
 
-  const onApplyCart = () => {
+  const onApplyCart = async () => {
     if (!isAuth) {
       Swal.fire({
         icon: "error",
@@ -220,7 +220,19 @@ export default function MyCart() {
         text: "Lütfen hesabınız yoksa kayıt olun. Hesabınız varsa üst taraftan giriş yaparak alışveriş edebilirsiniz.",
       });
     } else {
-      return router.push(PAGE.applyAddress.href);
+      var checkedList = [];
+      cart.map((item) => {
+        return item.checked ? checkedList.push(item.checked) : void 0;
+      });
+      if (checkedList.length > 1) {
+        Swal.fire({
+          icon: "error",
+          title: "Hata!",
+          text: "Aynı anda sadece 1 sipariş verebilirsiniz. Sonraki sayfada davetiyede kullanılacak bilgiler istenecektir.",
+        });
+      } else {
+        return router.push(PAGE.applyAddress.href);
+      }
     }
   };
 

@@ -1,4 +1,5 @@
 "use strict";
+const { default: jwtDecode } = require("jwt-decode");
 const sql = require("mssql");
 const ShortUniqueId = require("short-unique-id");
 
@@ -110,6 +111,27 @@ exports.getOrders = async (req, res, next) => {
       }
     }
   );
+};
+
+exports.getOrdersAll = async (req, res, next) => {
+  var request = new sql.Request();
+  const token = req.headers.authorization;
+  const decodedJWT = jwtDecode(token);
+  const getOrderQuery = `SELECT * FROM Orders WHERE buyerId= '${decodedJWT.userId}'`;
+
+  await request.query(getOrderQuery, (err, record) => {
+    const resBody = record?.recordset;
+    if (err) {
+      console.log(err);
+      res.status(500).send({ code: 1, message: "Orders could not got." });
+    } else if (!resBody[0]) {
+      res.status(500).send({ code: 2, message: "Orders not found." });
+    } else {
+      res
+        .status(200)
+        .send({ code: 3, message: "Orders got.", orders: resBody });
+    }
+  });
 };
 
 exports.getOrderById = async (req, res, next) => {

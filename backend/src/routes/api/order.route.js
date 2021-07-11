@@ -11,6 +11,7 @@ router.get(
   [auth(), checkRoles("admin")],
   orderController.getOrders
 );
+router.get("/getOrders", auth(), orderController.getOrdersAll);
 router.get("/getOrderById/:id", auth(), orderController.getOrderById);
 
 router.post(

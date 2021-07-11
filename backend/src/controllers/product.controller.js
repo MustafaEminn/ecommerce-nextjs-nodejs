@@ -110,6 +110,16 @@ exports.getProductsPageByPage = async (req, res, next) => {
 
   var numPerPage = 50;
   var skip = (req.params.page - 1) * numPerPage;
+  var getProductsQuery = () => {
+    if (req.query?.sort === "mostSelling") {
+      return "sellCount DESC";
+    } else if (req.query?.sort === "lowToHigh") {
+      return "price ASC";
+    } else if (req.query?.sort === "highToLow") {
+      return "price DESC";
+    }
+    return "createdAt DESC";
+  };
   request.query(
     `SELECT count(*) as numRows FROM Products WHERE category='${req.params.category}'`,
     function (err, rows, fields) {
@@ -121,7 +131,9 @@ exports.getProductsPageByPage = async (req, res, next) => {
         var numRows = rows.recordset[0].numRows;
         var countPage = Math.ceil(numRows / numPerPage);
         request.query(
-          `SELECT * FROM Products WHERE category='${req.params.category}' ORDER BY createdAt DESC OFFSET ${skip} ROWS FETCH NEXT ${numPerPage} ROWS ONLY`,
+          `SELECT * FROM Products WHERE category='${
+            req.params.category
+          }' ORDER BY ${getProductsQuery()} OFFSET ${skip} ROWS FETCH NEXT ${numPerPage} ROWS ONLY`,
           function (err, rows, fields) {
             if (err) {
               console.log("error: ", err);
