@@ -24,6 +24,7 @@ import { getFormValues } from "../../utils/getFormValues";
 import LayoutMain from "../../components/Layout/layoutMain";
 import InputCheckbox from "../../components/inputs/inputCheckbox";
 import InputCardRadio from "../../components/inputs/inputCardRadio";
+import { calcPrice } from "../../utils/calcPrice";
 
 export default function ApplyPayment() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -37,7 +38,7 @@ export default function ApplyPayment() {
         var totalPriceItems = 0;
         res.data.cart.map((item) => {
           return item.checked
-            ? (totalPriceItems += +(item.price * (item.count / 50)).toFixed(2))
+            ? (totalPriceItems += +calcPrice(item.price, item.count))
             : void 0;
         });
         setTotalPrice(totalPriceItems);
@@ -73,12 +74,22 @@ export default function ApplyPayment() {
       });
   };
 
+  const getCartApproved = async () => {
+    return await getData("/api/cart/getCartApproved")
+      .then((res) => {
+        return res.data.approved;
+      })
+      .catch(() => {
+        return router.push(PAGE.home.href);
+      });
+  };
+
   useEffect(() => {
     (async () => {
       const cartLength = await getCartLength();
       const addressEntered = await getIsAddressEntered();
-
-      if (cartLength > 0 && addressEntered) {
+      const cartApproved = await getCartApproved();
+      if (cartLength > 0 && addressEntered && cartApproved) {
         getCart();
       } else {
         router.push(PAGE.login.href);
@@ -86,31 +97,93 @@ export default function ApplyPayment() {
     })();
   }, []);
 
-  const CreditCardExplainItem = () => {
-    return (
-      <div className={styles.explainItemContainer}>
-        <p>
-          Ödeme Yap butonuna tıkladığınızda sizi güvenle ödeme yapmak için
-          iyzico sayfasına yönlendireceğiz. Ödemeniz yapıldıktan sonra
-          siparişiniz alınacaktır. (Kart bilgileriniz bizde tutulmamaktadır.)
-        </p>
-      </div>
-    );
-  };
+  // const CreditCardExplainItem = () => {
+  //   return (
+  //     <div className={styles.explainItemContainer}>
+  //       <p>
+  //         Ödeme Yap butonuna tıkladığınızda sizi güvenle ödeme yapmak için
+  //         iyzico sayfasına yönlendireceğiz. Ödemeniz yapıldıktan sonra
+  //         siparişiniz alınacaktır. (Kart bilgileriniz bizde tutulmamaktadır.)
+  //       </p>
+  //     </div>
+  //   );
+  // };
 
   const PayAtTheDoorExplainItem = () => {
     return (
       <div className={styles.explainItemContainer}>
         <p>
-          Ödeme Yap butonuna tıkladığınızda sizi güvenle ödeme yapmak için
-          iyzico sayfasına yönlendireceğiz. Ödemeniz yapıldıktan sonra
-          siparişiniz alınacaktır. (Kart bilgileriniz bizde tutulmamaktadır.)
+          WhatsApp üzerinden tasarımı onayladıktan sonra kapıda ödeme yöntemiyle
+          davetiyeniz size iletilecektir.
         </p>
       </div>
     );
   };
 
-  const onApply = () => {};
+  const onApply = async () => {
+    setLiveLoading(true);
+    var productId = "";
+    var countProduct = 0;
+    var priceProduct = 0;
+    const token = localStorage.getItem("token");
+    const decodedToken = jwtDecode(token);
+    cart.map((item) => {
+      if (item.checked) {
+        countProduct = item.count;
+        priceProduct = item.price;
+        return (productId = item.id);
+      }
+    });
+    const user = await getData(
+      "/api/member/getMemberById/" + decodedToken.userId
+    )
+      .then((res) => {
+        return res.data.member[0];
+      })
+      .catch(() => {});
+    console.log(user);
+    const invitation = JSON.parse(user.Invitation);
+
+    const sendData = {
+      orderShippingAddress: {
+        contactName: `${decodedToken.name} ${decodedToken.surname}`,
+        city: user.City,
+        country: "Turkey",
+        address: `${user.Neighborhood} ${user.Address} ${user.District}`,
+      },
+      orderShippingAddress: {
+        contactName: `${decodedToken.name} ${decodedToken.surname}`,
+        city: user.billingCity,
+        country: "Turkey",
+        address: `${user.billingNeighborhood} ${user.billingAddress} ${user.billingDistrict}`,
+      },
+      orderStatus: 1,
+      productId: productId,
+      invitation: invitation,
+      count: countProduct,
+      price: calcPrice(priceProduct, countProduct),
+    };
+    await postData("/api/order/addOrder", sendData)
+      .then(async () => {
+        await deleteData("/api/cart/deleteCart/" + productId)
+          .then(async () => {
+            await putData("/api/member/updateInvitation", {})
+              .then(() => {
+                Swal.fire({
+                  icon: "success",
+                  title: "Başarılı",
+                  text: "Siparişiniz başarıyla alındı. WhatsApp üzerinden size dönülecek. Sipariş durumunu siparişlerim kısmından takip edebilirsiniz.",
+                  didClose: () => {
+                    return router.push(PAGE.home.href);
+                  },
+                });
+              })
+              .catch(() => {});
+          })
+          .catch(() => {});
+      })
+      .catch(() => {});
+  };
 
   return (
     <div>
@@ -131,11 +204,6 @@ export default function ApplyPayment() {
                     width="96%"
                     name="paymentType"
                     options={[
-                      {
-                        title: "Kredi Kartı",
-                        value: "creditCard",
-                        explain: <CreditCardExplainItem />,
-                      },
                       {
                         title: "Kapıda Ödeme",
                         value: "payAtTheDoor",

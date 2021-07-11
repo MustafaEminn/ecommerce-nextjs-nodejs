@@ -199,7 +199,7 @@ function ProductsPage() {
 
                         <div className={styles.productDetails}>
                           <h1>{item.title}</h1>
-                          <div>{item.price} TL</div>
+                          <div>{item.price + 30} TL</div>
                           <HorizontalMiddleCartBorderedButton
                             onClick={(e) => {
                               onAddCart(item, e);

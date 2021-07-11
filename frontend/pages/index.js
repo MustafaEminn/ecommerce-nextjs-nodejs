@@ -123,7 +123,7 @@ export default function Home() {
                 <CardProduct
                   title={item.title}
                   href={"product/" + slugify(item.title) + "-" + item.id}
-                  price={item.price || 0}
+                  price={item.price + 30 || 0}
                   imageUrl={`${API.imgUrl}${item.photos[0]}`}
                   onAddCart={() => {
                     setCartTrigger(!cartTrigger);
@@ -161,7 +161,7 @@ export default function Home() {
                 <CardProduct
                   title={item.title}
                   href={"product/" + slugify(item.title) + "-" + item.id}
-                  price={item.price || 0}
+                  price={item.price + 30 || 0}
                   imageUrl={`${API.imgUrl}${item.photos[0]}`}
                   onAddCart={() => {
                     setCartTrigger(!cartTrigger);

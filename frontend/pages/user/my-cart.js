@@ -18,6 +18,7 @@ import InputCheckbox from "../../components/inputs/inputCheckbox";
 import { useRecoilValue } from "recoil";
 import { isAuthed } from "../../states/index.atom";
 import ShoppingCartIcon from "../../public/icons/shoppingCart";
+import { calcPrice } from "../../utils/calcPrice";
 
 export default function MyCart() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -199,7 +200,7 @@ export default function MyCart() {
                 onChangeCount(productId, count + newCount);
               }}
             />
-            <span>{(price * (count / 50)).toFixed(2)} TL</span>
+            <span>{calcPrice(price, count)} TL</span>
             <IconButton
               onClick={() => {
                 deleteCartItem(productId);

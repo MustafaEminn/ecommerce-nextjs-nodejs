@@ -15,6 +15,7 @@ import router from "next/router";
 import { addCart } from "../../utils/cartMethods";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { cartChangeTrigger, isAuthed } from "../../states/index.atom";
+import { calcPrice } from "../../utils/calcPrice";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
@@ -119,7 +120,7 @@ function ProductPage() {
               <Card className={styles.productCard}>
                 <h1 className={styles.productHeader}>{product.title}</h1>
                 <h2 className={styles.productPrice}>
-                  {(product.price * (count / 50)).toFixed(2)} TL
+                  {calcPrice(product.price, count)} TL
                 </h2>
                 <div className={styles.counterContainer}>
                   <LargeCounter

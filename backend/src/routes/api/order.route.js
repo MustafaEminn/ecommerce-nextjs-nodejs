@@ -14,11 +14,7 @@ router.get(
 router.get("/getOrders", auth(), orderController.getOrdersAll);
 router.get("/getOrderById/:id", auth(), orderController.getOrderById);
 
-router.post(
-  "/addOrder",
-  [auth(), checkRoles("admin")],
-  orderController.addOrder
-);
+router.post("/addOrder", auth(), orderController.addOrder);
 
 router.put(
   "/updateOrder",

@@ -24,16 +24,20 @@ exports.addOrder = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();
   const uid = new ShortUniqueId();
-  const setOrderQuery = `INSERT INTO Orders (id,buyerId,orderShippingAddress,orderBillingAddress,orderStatus,productId,buyAt,shippingCompany,price) VALUES 
+  const token = req.headers.authorization;
+  const decodedJWT = jwtDecode(token);
+  const setOrderQuery = `INSERT INTO Orders (id,buyerId,orderShippingAddress,orderBillingAddress,orderStatus,productId,buyAt,shippingCompany,price,invitation,count) VALUES 
   ('${uid.stamp(12)}',
-  '${body["buyerId"]}',
+  '${decodedJWT.userId}',
   '${JSON.stringify(body["orderShippingAddress"])}',
   '${JSON.stringify(body["orderBillingAddress"])}',
   '${body["orderStatus"]}',
   '${body["productId"]}',
   '${new Date(Date.now()).toISOString()}',
   '0',
-  '${body["price"]}'
+  '${body["price"]}',
+  '${JSON.stringify(body["invitation"])}',
+  '${body["count"]}'
   )`;
 
   await request.query(setOrderQuery, (err, record) => {

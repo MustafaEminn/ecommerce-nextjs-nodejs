@@ -66,7 +66,7 @@ exports.updateInvitation = async (req, res, next) => {
 
   const updateInvitationQuery = `UPDATE Users SET 
   Invitation='${encodedBody}'
-  WHERE id='${decodedJWT.id}'`;
+  WHERE id='${decodedJWT.userId}'`;
 
   await request.query(updateInvitationQuery, (err, record) => {
     if (err) {
