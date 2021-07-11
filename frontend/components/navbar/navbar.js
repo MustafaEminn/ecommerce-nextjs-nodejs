@@ -197,9 +197,9 @@ function Navbar({ auth }) {
           {Object.keys(categories).map((item, index) => {
             return (
               <NavbarFooterWithDropdownItem key={index} title={item}>
-                {Object.keys(categories[item]).map((item2) => {
+                {Object.keys(categories[item]).map((item2, index2) => {
                   return (
-                    <div>
+                    <div key={index2}>
                       <Link
                         href={{
                           pathname:

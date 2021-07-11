@@ -11,8 +11,10 @@ router.post("/loginSetCart", auth(), cartController.loginSetCart);
 
 router.put("/updateCount", auth(), cartController.updateCount);
 router.put("/updateChecked", auth(), cartController.updateChecked);
+router.put("/updateApproved", auth(), cartController.updateApproved);
 
 router.get("/getCart", auth(), cartController.getCart);
+router.get("/getCartApproved", auth(), cartController.getCartApproved);
 router.get("/getCartLength", auth(), cartController.getCartLength);
 router.get("/getCartWithoutLogin/:cart", cartController.getCartWithoutLogin);
 

@@ -56,6 +56,29 @@ exports.updateMember = async (req, res, next) => {
   });
 };
 
+exports.updateInvitation = async (req, res, next) => {
+  const body = req.body;
+  const token = req.headers.authorization;
+  var decodedJWT = jwtDecode(token);
+  var request = new sql.Request();
+
+  const encodedBody = JSON.stringify(body);
+
+  const updateInvitationQuery = `UPDATE Users SET 
+  Invitation='${encodedBody}'
+  WHERE id='${decodedJWT.id}'`;
+
+  await request.query(updateInvitationQuery, (err, record) => {
+    if (err) {
+      console.log(err);
+      return res
+        .status(500)
+        .send({ code: 1, message: "Update failed try again." });
+    }
+    res.status(200).send({ code: 2, message: "Updated." });
+  });
+};
+
 exports.updatePassword = async (req, res, next) => {
   const body = req.body;
   var request = new sql.Request();

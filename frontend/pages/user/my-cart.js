@@ -225,13 +225,26 @@ export default function MyCart() {
         return item.checked ? checkedList.push(item.checked) : void 0;
       });
       if (checkedList.length > 1) {
+        await putData("/api/cart/updateApproved", { approved: false })
+          .then(() => {})
+          .catch(() => {});
         Swal.fire({
           icon: "error",
           title: "Hata!",
           text: "Aynı anda sadece 1 sipariş verebilirsiniz. Sonraki sayfada davetiyede kullanılacak bilgiler istenecektir.",
         });
       } else {
-        return router.push(PAGE.applyAddress.href);
+        await putData("/api/cart/updateApproved", { approved: true })
+          .then((res) => {
+            return router.push(PAGE.applyInvitation.href);
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: "error",
+              title: "Hata!",
+              text: "Lütfen tekrar deneyiniz.",
+            });
+          });
       }
     }
   };

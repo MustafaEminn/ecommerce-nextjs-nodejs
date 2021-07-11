@@ -1,0 +1,61 @@
+.containerMain {
+  display: flex;
+  flex-direction: column;
+}
+.container {
+  display: flex;
+  align-self: center;
+
+  & .leftContainer {
+    margin: 15px 0;
+
+    & .rowContainer {
+      display: flex;
+
+      & label {
+        flex: 1;
+      }
+    }
+
+    & .fluidContainer {
+      display: flex;
+
+      & label {
+        flex: 1;
+      }
+    }
+
+    & .checkboxContainer {
+      display: flex;
+      position: relative;
+      margin: 15px 0;
+      & span {
+        margin-left: 25px;
+        font-family: var(--source-sans-pro);
+        font-family: 16px;
+      }
+    }
+
+    & .warnText {
+      padding-top: 20px;
+      font-size: 28px;
+      font-family: var(--source-sans-pro);
+      color: var(--text-warn-color);
+    }
+
+    & .applyButton {
+      display: flex;
+      margin: 15px 0 0 0;
+    }
+  }
+
+  & .rightContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+  }
+
+  & .spacer {
+    width: 25px;
+  }
+}

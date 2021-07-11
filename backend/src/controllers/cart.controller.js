@@ -31,7 +31,11 @@ exports.addItem = async (req, res, next) => {
       var newCart = decodeBody.map((item) => {
         item.productId === body.productId ? (itemIsNew = false) : void 0;
         return item.productId === body.productId
-          ? { productId: item.productId, count: item.count + body.count }
+          ? {
+              ...item,
+              productId: item.productId,
+              count: item.count + body.count,
+            }
           : item;
       });
       if (itemIsNew) {
@@ -166,6 +170,28 @@ exports.getCart = async (req, res, next) => {
         .status(200)
         .send({ code: 4, message: "Cart got  but empty.", cart: [] });
     }
+  });
+};
+
+exports.getCartApproved = async (req, res, next) => {
+  const token = req.headers.authorization;
+  const decodedJWT = jwtDecode(token);
+  var request = new sql.Request();
+
+  const getCartApprovedQuery = `SELECT approved FROM Carts WHERE userId='${decodedJWT.userId}'`;
+
+  await request.query(getCartApprovedQuery, async (err, record) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ code: 1, message: "Approved data could not got." });
+    }
+    const resbody = record.recordset[0];
+    return res.status(200).send({
+      code: 2,
+      message: "Approved data sended.",
+      approved: resbody.approved,
+    });
   });
 };
 
@@ -350,5 +376,23 @@ exports.updateChecked = async (req, res, next) => {
             .send({ code: 1, message: "Update failed try again." });
         });
     }
+  });
+};
+
+exports.updateApproved = async (req, res, next) => {
+  const body = req.body;
+  const decodedJWT = jwtDecode(req.headers.authorization);
+  var request = new sql.Request();
+
+  const updateApprovedQuery = `UPDATE Carts SET approved='${body.approved}' WHERE userId='${decodedJWT.userId}'`;
+
+  request.query(updateApprovedQuery, (err, record) => {
+    if (err) {
+      console.log(err);
+      return res
+        .status(500)
+        .send({ code: 1, message: "Update failed try again." });
+    }
+    return res.status(200).send({ code: 2, message: "Updated" });
   });
 };

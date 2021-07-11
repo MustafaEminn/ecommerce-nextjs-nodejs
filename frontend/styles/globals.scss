@@ -138,3 +138,12 @@ a {
   text-decoration: none;
   color: var(--link-color);
 }
+
+.swal2-confirm {
+  background-color: var(--main-color) !important;
+}
+
+.swal2-html-container,
+.swal2-title {
+  font-family: var(--source-sans-pro);
+}

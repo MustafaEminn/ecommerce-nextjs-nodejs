@@ -19,6 +19,7 @@ router.get(
 router.put("/updateAddress", auth(), membersController.updateAddress);
 router.put("/updateMember", auth(), membersController.updateMember);
 router.put("/updatePassword", auth(), membersController.updatePassword);
+router.put("/updateInvitation", auth(), membersController.updateInvitation);
 
 router.delete(
   "/deleteMember/:id",
