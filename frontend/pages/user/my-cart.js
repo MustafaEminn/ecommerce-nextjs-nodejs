@@ -34,9 +34,7 @@ export default function MyCart() {
           var totalPriceItems = 0;
           res.data.cart.map((item) => {
             return item.checked
-              ? (totalPriceItems += +(item.price * (item.count / 50)).toFixed(
-                  2
-                ))
+              ? (totalPriceItems += +calcPrice(item.price, item.count))
               : void 0;
           });
           setTotalPrice(totalPriceItems);
@@ -57,7 +55,7 @@ export default function MyCart() {
           setCart(res.data.cart);
           var totalPriceItems = 0;
           res.data.cart.map((item) => {
-            totalPriceItems += +(item.price * (item.count / 50)).toFixed(2);
+            totalPriceItems += +calcPrice(item.count, item.price);
           });
           setTotalPrice(totalPriceItems);
           setPageLoading(false);
@@ -298,7 +296,7 @@ export default function MyCart() {
                           {item.title}
                         </span>
                         <span className={styles.totalItemPrice}>
-                          {(item.price * (item.count / 50)).toFixed(2)}
+                          {calcPrice(item.price, item.count)}
                         </span>
                       </div>
                     ) : (

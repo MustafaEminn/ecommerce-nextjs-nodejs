@@ -1,8 +1,9 @@
 import { BASE } from "../../constants/base";
 import SearchIcon from "../../public/icons/search";
-import styles from "../../styles/components/SearchBar/searchbar.module.scss";
+import styles from "../../styles/components/SearchBar/searchbarM.module.scss";
+import MainColorButton from "../buttons/mainColorButton";
 
-function SearchBar({ containerWidth = "590px", inputWidth = "539px" }) {
+function SearchBarMobile({ containerWidth = "590px", inputWidth = "539px" }) {
   return (
     <div
       style={{ width: containerWidth }}
@@ -13,9 +14,9 @@ function SearchBar({ containerWidth = "590px", inputWidth = "539px" }) {
         placeholder={BASE.navbarSearchbarPlaceholder}
         className={styles.searchBar}
       />
-      <SearchIcon className={styles.searchBarIcon} width="18px" height="18px" />
+      <MainColorButton height="30px" text="Ara" />
     </div>
   );
 }
 
-export default SearchBar;
+export default SearchBarMobile;

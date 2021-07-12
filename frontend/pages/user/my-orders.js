@@ -17,18 +17,23 @@ import Card from "../../components/cards/card";
 import MainColorButton from "../../components/buttons/mainColorButton";
 import { getFormValues } from "../../utils/getFormValues";
 import { resetFormValues } from "../../utils/resetFormValues";
+import Spacer from "../../components/Spacer/spacer";
 
 export default function MyOrders() {
   const [pageLoading, setPageLoading] = useState(true);
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const getOrders = async () => {
     if (localStorage.getItem("token")) {
+      var productIds = [];
       await getData("/api/order/getOrders")
         .then((res) => {
           setOrders(res.data.orders);
-          setPageLoading(false);
+          res.data.orders.map((item) => {
+            return productIds.push(item.productId);
+          });
         })
         .catch((err) => {
           Swal.fire({
@@ -37,6 +42,32 @@ export default function MyOrders() {
             text: "Lütfen sayfayı yenileyiniz. Eğer tekrar bu hatayı alırsanız bu hatayı en kısa sürede düzelteceğiz.",
           });
         });
+
+      const getProductFetch = async (id) => {
+        return await getData("/api/product/getProductById/" + id)
+          .then((res) => {
+            return res.data.product[0];
+          })
+          .catch((err) => {
+            return false;
+          });
+      };
+
+      var gettingProducts = [];
+      for await (const productItem of productIds.map((item) =>
+        getProductFetch(item)
+      )) {
+        if (productItem) {
+          var decodedPhotos = JSON.parse(productItem.photos);
+          var decodedProduct = { ...productItem, photos: decodedPhotos };
+          gettingProducts.push(decodedProduct);
+        } else {
+          // False is mean customer buyed product but product not selling now
+          gettingProducts.push(false);
+        }
+      }
+      setProducts(gettingProducts);
+      setPageLoading(false);
     } else {
       router.push(PAGE.login.href);
     }
@@ -45,7 +76,6 @@ export default function MyOrders() {
   useEffect(() => {
     (async () => {
       await getOrders();
-      console.log(orders);
     })();
   }, []);
   return (
@@ -58,7 +88,19 @@ export default function MyOrders() {
 
       <LayoutSidebar pageLoading={pageLoading}>
         <div className={styles.container}>
-          <Card width="100%"></Card>
+          {products.length > 0 &&
+            orders.map((item, index) => {
+              return (
+                <div key={index}>
+                  <Card width="100%">
+                    <div>
+                      <img src={products[index]?.photos[0]} />
+                    </div>
+                  </Card>
+                  <Spacer top="15px" />
+                </div>
+              );
+            })}
         </div>
       </LayoutSidebar>
     </div>

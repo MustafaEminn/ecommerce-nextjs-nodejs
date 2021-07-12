@@ -37,13 +37,5 @@ router.get(
   "/getProductsPageByPage/:category/:page",
   productController.getProductsPageByPage
 );
-// router.get("/secret2", auth(["admin"]), (req, res) => {
-//   // example route for auth
-//   res.json({ message: "Only admin can access" });
-// });
-// router.get("/secret3", auth(["user"]), (req, res) => {
-//   // example route for auth
-//   res.json({ message: "Only user can access" });
-// });
 
 module.exports = router;

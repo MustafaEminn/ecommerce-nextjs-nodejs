@@ -1,0 +1,291 @@
+.mobileSidebarBase {
+  top: 0;
+  height: 100vh;
+  width: 65vw;
+  background-color: var(--white);
+  position: fixed;
+  left: 0;
+  transition: all 0.2s;
+  z-index: 101;
+}
+
+.mobileSidebar[status="open"] {
+  @extend .mobileSidebarBase;
+  transform: translateX(0vw);
+}
+
+.mobileSidebar[status="close"] {
+  @extend .mobileSidebarBase;
+  transform: translateX(-65vw);
+}
+
+.mobileSidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  & .sidebarUl {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    & .sidebarLiDropdown {
+      width: 100%;
+      border-bottom: 1px solid var(--main-color);
+      & .sidebarLiDropdownContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        & h2 {
+          display: block;
+          font-family: var(--source-sans-pro);
+          padding: 15px 5px;
+        }
+      }
+
+      & svg {
+        display: block;
+        font-family: var(--source-sans-pro);
+        padding: 0 5px;
+        fill: var(--main-color);
+      }
+    }
+
+    & .sidebarLiHeader {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--main-color);
+      padding: 8px 5px;
+
+      & button {
+        background: none;
+        padding: 10px 10px 7px 0;
+        border: none;
+      }
+    }
+
+    & .sidebarLi {
+      width: 100%;
+      border-bottom: 1px solid var(--main-color);
+
+      & a {
+        display: block;
+        font-family: var(--source-sans-pro);
+        padding: 15px 5px;
+      }
+    }
+  }
+  & .sidebarLiDropdownSubUl {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    & .sidebarLiDropdownSubLi {
+      width: 100%;
+      border-top: 2px solid var(--border-gray);
+
+      & a {
+        display: block;
+        font-family: var(--source-sans-pro);
+        padding: 9px 15px;
+      }
+    }
+  }
+}
+
+.mobileSidebarContainer[status="close"] {
+  display: none;
+}
+
+.mobileSidebarContainer {
+  background-color: var(--modal-bg);
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+}
+
+.container {
+  background-color: white;
+
+  .navbarHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 51px;
+    width: 100vw;
+
+    .navbarHeadLeftContainer {
+      display: flex;
+      align-items: center;
+      & button {
+        margin-right: 15px;
+        background: none;
+        border: none;
+      }
+    }
+
+    .navbarHeadUserSectionContainer {
+      .navbarHeadUserSectionUl {
+        display: flex;
+
+        & li a {
+          display: flex;
+
+          & span {
+            font-size: 12px;
+            font-family: var(--source-sans-pro);
+            margin: 0 0 0 5px;
+          }
+        }
+
+        .navbarHeadUserSectionLiMyAccount {
+          margin: 0 14px 0 0;
+
+          & span {
+            transition: all 0.2s;
+          }
+
+          & .navbarPopupItem {
+            width: 200px;
+            & a {
+              padding: 15px;
+              font-size: 14px;
+              font-family: var(--source-sans-pro);
+            }
+
+            & a:hover {
+              color: var(--main-color);
+            }
+          }
+        }
+
+        .navbarHeadUserSectionLiMyAccount:hover {
+          & span {
+            color: var(--main-color);
+          }
+
+          & svg {
+            fill: var(--main-color);
+          }
+        }
+
+        .navbarHeadUserSectionLiMyCart {
+          position: relative;
+          padding-right: 17px;
+          & span {
+            transition: all 0.2s;
+          }
+
+          & .cartBubble {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            background-color: var(--main-color);
+            border-radius: 50%;
+            padding: 2px 5px;
+            right: 0;
+            top: -5px;
+            color: var(--white);
+          }
+        }
+
+        .navbarHeadUserSectionLiMyCart:hover {
+          & span {
+            color: var(--main-color);
+          }
+
+          & .cartBubble {
+            color: var(--white);
+          }
+
+          & svg {
+            fill: var(--main-color);
+          }
+        }
+      }
+    }
+  }
+
+  /* Navbar Footer */
+
+  .navbarFooter {
+    margin: 0 auto;
+    & .navbarFooterUl {
+      display: flex;
+      flex-wrap: wrap;
+
+      & li {
+        padding: 13px 0px;
+      }
+
+      & .footerItem a:hover {
+        padding: 10px 15px;
+        font-family: var(--source-sans-pro);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--main-color);
+        text-decoration: none;
+        border-bottom: 3px solid var(--main-color);
+      }
+
+      & .footerItem a {
+        padding: 10px 15px;
+        font-family: var(--source-sans-pro);
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none;
+      }
+
+      & .footerWithDropdownItem a {
+        padding: 10px 15px;
+        font-family: var(--source-sans-pro);
+        font-size: 14px;
+        font-weight: 600;
+
+        text-decoration: none;
+        &:hover {
+          color: var(--main-color);
+          border-bottom: 3px solid var(--main-color);
+        }
+      }
+
+      & .footerWithDropdownItem {
+        position: relative;
+        &:hover .footerDropdown {
+          display: block;
+        }
+      }
+
+      & .footerDropdown {
+        display: none;
+        position: absolute;
+        background-color: var(--white);
+        min-width: 100%;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        padding: 12px 16px;
+        z-index: 5;
+        margin-top: 15px;
+
+        & div {
+          width: 100%;
+          border-bottom: 2px solid var(--border-gray);
+
+          & a {
+            display: block;
+            border-bottom: none !important;
+            width: 100%;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+
+  /* Bottom  Border */
+
+  .bottomBorder {
+    border-bottom: 2px solid var(--border-gray);
+  }
+}
