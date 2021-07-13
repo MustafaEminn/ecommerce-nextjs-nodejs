@@ -11,6 +11,7 @@ import router from "next/router";
 import { useRecoilState } from "recoil";
 import { isAuthed } from "../../states/index.atom";
 import NavbarMobile from "../navbar/navbarM";
+import FooterCompMobile from "../footer/footerM";
 
 function LayoutMainMobile({
   children,
@@ -82,7 +83,7 @@ function LayoutMainMobile({
             >
               {children}
             </div>
-            <FooterComp />
+            <FooterCompMobile />
           </>
         )}
       </div>

@@ -1,36 +1,29 @@
 import Head from "next/head";
 import styles from "../../styles/pages/payment/applyPayment.module.scss";
-import { API, BASE, PAGE } from "../../constants";
+import stylesM from "../../styles/pages/payment/applyPaymentM.module.scss";
+import { PAGE } from "../../constants";
 import Divider from "../../components/divider/divider";
-import Link from "next/dist/client/link";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Navigation } from "swiper/core";
-import CardProduct from "../../components/cards/cardProduct";
 import Spacer from "../../components/Spacer/spacer";
 import { deleteData, getData, postData, putData } from "../../api/fetch";
 import { useEffect, useState } from "react";
-import slugify from "slugify";
 import Swal from "sweetalert2";
 import jwtDecode from "jwt-decode";
-import InputText from "../../components/inputs/inputText";
-import InputSelect from "../../components/inputs/inputSelect";
-import { cityDistrict } from "../../constants/cityDistrict";
 import router from "next/router";
-import Form from "../../components/forms/form";
-import InputTextbox from "../../components/inputs/inputTextbox";
 import Card from "../../components/cards/card";
 import MainColorButton from "../../components/buttons/mainColorButton";
-import { getFormValues } from "../../utils/getFormValues";
 import LayoutMain from "../../components/Layout/layoutMain";
-import InputCheckbox from "../../components/inputs/inputCheckbox";
 import InputCardRadio from "../../components/inputs/inputCardRadio";
 import { calcPrice } from "../../utils/calcPrice";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../../states/index.atom";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
 
 export default function ApplyPayment() {
   const [pageLoading, setPageLoading] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
   const [liveLoading, setLiveLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const getCart = async () => {
     getData("/api/cart/getCart")
@@ -119,6 +112,16 @@ export default function ApplyPayment() {
       </div>
     );
   };
+  const PayAtTheDoorExplainItemMobile = () => {
+    return (
+      <div className={stylesM.explainItemContainer}>
+        <p>
+          WhatsApp üzerinden tasarımı onayladıktan sonra kapıda ödeme yöntemiyle
+          davetiyeniz size iletilecektir.
+        </p>
+      </div>
+    );
+  };
 
   const onApply = async () => {
     setLiveLoading(true);
@@ -193,67 +196,131 @@ export default function ApplyPayment() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain liveLoading={liveLoading} pageLoading={pageLoading}>
-        <div className={styles.containerMain}>
-          <div className={styles.container}>
-            <div className={styles.leftContainer}>
-              <Card width="812px" padding="15px">
-                <Divider direction="left">Ödeme Yöntemi</Divider>
-                <div>
-                  <InputCardRadio
-                    width="96%"
-                    name="paymentType"
-                    options={[
-                      {
-                        title: "Kapıda Ödeme",
-                        value: "payAtTheDoor",
-                        explain: <PayAtTheDoorExplainItem />,
-                      },
-                    ]}
-                  />
-                  <Spacer top="15px" />
-                </div>
-              </Card>
-            </div>
-            <div className={styles.spacer}></div>
-            <div className={styles.rightContainer}>
-              <Card width="260px" padding="10px">
-                <Divider direction="left">Toplam</Divider>
-                {cart.map((item, index) => {
-                  return item.checked ? (
-                    <div key={index} className={styles.totalItemContainer}>
-                      <span className={styles.totalItemTitle}>
-                        {item.title}
-                      </span>
-                      <span className={styles.totalItemPrice}>
-                        {(item.price * (item.count / 50)).toFixed(2)}
+      {isMobileDevice ? (
+        <LayoutMainMobile liveLoading={liveLoading} pageLoading={pageLoading}>
+          <div className={stylesM.containerMain}>
+            <div className={stylesM.container}>
+              <div className={stylesM.leftContainer}>
+                <Card width="85vw" padding="15px">
+                  <Divider direction="left">Ödeme Yöntemi</Divider>
+                  <div>
+                    <InputCardRadio
+                      width="96%"
+                      name="paymentType"
+                      options={[
+                        {
+                          title: "Kapıda Ödeme",
+                          value: "payAtTheDoor",
+                          explain: <PayAtTheDoorExplainItemMobile />,
+                        },
+                      ]}
+                    />
+                    <Spacer top="15px" />
+                  </div>
+                </Card>
+              </div>
+              <div className={stylesM.spacer}></div>
+              <div className={stylesM.rightContainer}>
+                <Card width="85vw" padding="10px">
+                  <Divider direction="left">Toplam</Divider>
+                  {cart.map((item, index) => {
+                    return item.checked ? (
+                      <div key={index} className={stylesM.totalItemContainer}>
+                        <span className={stylesM.totalItemTitle}>
+                          {item.title}
+                        </span>
+                        <span className={stylesM.totalItemPrice}>
+                          {(item.price * (item.count / 50)).toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      void 0
+                    );
+                  })}
+                  <div className={stylesM.totalItemBottomContainer}>
+                    <hr />
+                    <div className={stylesM.totalPrice}>
+                      <span className={stylesM.totalText}>Toplam</span>
+                      <span className={stylesM.totalPriceText}>
+                        {totalPrice} TL
                       </span>
                     </div>
-                  ) : (
-                    void 0
-                  );
-                })}
-                <div className={styles.totalItemBottomContainer}>
-                  <hr />
-                  <div className={styles.totalPrice}>
-                    <span className={styles.totalText}>Toplam</span>
-                    <span className={styles.totalPriceText}>
-                      {totalPrice} TL
-                    </span>
                   </div>
-                </div>
-              </Card>
-              <Spacer top="15px" />
-              <MainColorButton
-                text="Ödeme Yap"
-                width="100%"
-                height="40px"
-                onClick={onApply}
-              />
+                </Card>
+                <Spacer top="15px" />
+                <MainColorButton
+                  text="Ödeme Yap"
+                  width="100%"
+                  height="40px"
+                  onClick={onApply}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </LayoutMain>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain liveLoading={liveLoading} pageLoading={pageLoading}>
+          <div className={styles.containerMain}>
+            <div className={styles.container}>
+              <div className={styles.leftContainer}>
+                <Card width="812px" padding="15px">
+                  <Divider direction="left">Ödeme Yöntemi</Divider>
+                  <div>
+                    <InputCardRadio
+                      width="96%"
+                      name="paymentType"
+                      options={[
+                        {
+                          title: "Kapıda Ödeme",
+                          value: "payAtTheDoor",
+                          explain: <PayAtTheDoorExplainItem />,
+                        },
+                      ]}
+                    />
+                    <Spacer top="15px" />
+                  </div>
+                </Card>
+              </div>
+              <div className={styles.spacer}></div>
+              <div className={styles.rightContainer}>
+                <Card width="260px" padding="10px">
+                  <Divider direction="left">Toplam</Divider>
+                  {cart.map((item, index) => {
+                    return item.checked ? (
+                      <div key={index} className={styles.totalItemContainer}>
+                        <span className={styles.totalItemTitle}>
+                          {item.title}
+                        </span>
+                        <span className={styles.totalItemPrice}>
+                          {(item.price * (item.count / 50)).toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      void 0
+                    );
+                  })}
+                  <div className={styles.totalItemBottomContainer}>
+                    <hr />
+                    <div className={styles.totalPrice}>
+                      <span className={styles.totalText}>Toplam</span>
+                      <span className={styles.totalPriceText}>
+                        {totalPrice} TL
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+                <Spacer top="15px" />
+                <MainColorButton
+                  text="Ödeme Yap"
+                  width="100%"
+                  height="40px"
+                  onClick={onApply}
+                />
+              </div>
+            </div>
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

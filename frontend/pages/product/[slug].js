@@ -1,6 +1,7 @@
 import LayoutMain from "../../components/Layout/layoutMain";
 import Head from "next/dist/next-server/lib/head";
 import styles from "../../styles/pages/product/product.module.scss";
+import stylesM from "../../styles/pages/product/productM.module.scss";
 import Card from "../../components/cards/card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Navigation, Thumbs } from "swiper/core";
@@ -14,8 +15,9 @@ import { API, PAGE } from "../../constants";
 import router from "next/router";
 import { addCart } from "../../utils/cartMethods";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { cartChangeTrigger, isAuthed } from "../../states/index.atom";
+import { cartChangeTrigger, isAuthed, isMobile } from "../../states/index.atom";
 import { calcPrice } from "../../utils/calcPrice";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
@@ -24,6 +26,7 @@ function ProductPage() {
   const [product, setProduct] = useState({ photos: [] });
   const [pageLoading, setPageLoading] = useState(true);
   const isAuth = useRecoilValue(isAuthed);
+  const isMobileDevice = useRecoilValue(isMobile);
   const [cartTrigger, setCartTrigger] = useRecoilState(cartChangeTrigger);
 
   useEffect(() => {
@@ -71,15 +74,15 @@ function ProductPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain pageLoading={pageLoading}>
-        <div className="productContainerForSwiper">
-          <div className={styles.container}>
-            <Card className={styles.productPhoto}>
+      {isMobileDevice ? (
+        <LayoutMainMobile pageLoading={pageLoading}>
+          <div className="productContainerForSwiper">
+            <div className={stylesM.container}>
               <Swiper
                 thumbs={{ swiper: thumbsSwiper }}
-                spaceBetween={25}
+                spaceBetween={5}
                 slidesPerView={1}
-                className={styles.swiperContainer}
+                className={stylesM.swiperContainer}
                 navigation={true}
                 loop={true}
                 slidesPerGroup={1}
@@ -90,66 +93,128 @@ function ProductPage() {
                       <img
                         width="100%"
                         src={`${API.imgUrl}${item}`}
-                        className={styles.swiperImg}
+                        className={stylesM.swiperImg}
                       />
                     </SwiperSlide>
                   );
                 })}
               </Swiper>
-              <Swiper
-                onSwiper={setThumbsSwiper}
-                spaceBetween={10}
-                slidesPerView={4}
-                watchSlidesVisibility={true}
-                watchSlidesProgress={true}
-                className="mySwiper"
-              >
-                {product["photos"].map((item, index) => {
-                  return (
-                    <SwiperSlide key={index}>
-                      <img
-                        src={`${API.imgUrl}${item}`}
-                        className={styles.thumbImg}
-                      />
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
-            </Card>
-            <div className={styles.rightContainer}>
-              <Card className={styles.productCard}>
-                <h1 className={styles.productHeader}>{product.title}</h1>
-                <h2 className={styles.productPrice}>
-                  {calcPrice(product.price, count)} TL
-                </h2>
-                <div className={styles.counterContainer}>
-                  <LargeCounter
-                    value={count}
-                    onChange={(newCount) => {
-                      setCount(count + newCount);
-                    }}
-                  />
-                </div>
-                <div className={styles.cartButtonContainer}>
-                  <MainColorButton
-                    height="44px"
-                    text="Sepete Ekle"
-                    icon={<ShoppingCartIcon />}
-                    onClick={onAddCart}
-                  />
-                </div>
-              </Card>
-              <Card className={styles.productInfo}>
-                <h1 className={styles.productHeader}>Ürün Bilgileri</h1>
-                <div
-                  className={styles.productDetails}
-                  dangerouslySetInnerHTML={{ __html: product.details }}
-                ></div>
-              </Card>
+
+              <div className={stylesM.rightContainer}>
+                <Card className={stylesM.productCard}>
+                  <h1 className={stylesM.productHeader}>{product.title}</h1>
+                  <h2 className={stylesM.productPrice}>
+                    {calcPrice(product.price, count)} TL
+                  </h2>
+                  <div className={stylesM.counterContainer}>
+                    <LargeCounter
+                      value={count}
+                      onChange={(newCount) => {
+                        setCount(count + newCount);
+                      }}
+                    />
+                  </div>
+                  <div className={stylesM.cartButtonContainer}>
+                    <MainColorButton
+                      height="44px"
+                      text="Sepete Ekle"
+                      icon={<ShoppingCartIcon />}
+                      onClick={onAddCart}
+                    />
+                  </div>
+                </Card>
+                <Card className={stylesM.productInfo}>
+                  <h1 className={stylesM.productHeader}>Ürün Bilgileri</h1>
+                  <div
+                    className={stylesM.productDetails}
+                    dangerouslySetInnerHTML={{ __html: product.details }}
+                  ></div>
+                </Card>
+              </div>
             </div>
           </div>
-        </div>
-      </LayoutMain>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain pageLoading={pageLoading}>
+          <div className="productContainerForSwiper">
+            <div className={styles.container}>
+              <Card className={styles.productPhoto}>
+                <Swiper
+                  thumbs={{ swiper: thumbsSwiper }}
+                  spaceBetween={25}
+                  slidesPerView={1}
+                  className={styles.swiperContainer}
+                  navigation={true}
+                  loop={true}
+                  slidesPerGroup={1}
+                >
+                  {product["photos"].map((item, index) => {
+                    return (
+                      <SwiperSlide key={index}>
+                        <img
+                          width="100%"
+                          src={`${API.imgUrl}${item}`}
+                          className={styles.swiperImg}
+                        />
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+                <Swiper
+                  onSwiper={setThumbsSwiper}
+                  spaceBetween={10}
+                  slidesPerView={4}
+                  watchSlidesVisibility={true}
+                  watchSlidesProgress={true}
+                  className="mySwiper"
+                >
+                  {product["photos"].map((item, index) => {
+                    return (
+                      <SwiperSlide key={index}>
+                        <img
+                          src={`${API.imgUrl}${item}`}
+                          className={styles.thumbImg}
+                        />
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+              </Card>
+              <div className={styles.rightContainer}>
+                <Card className={styles.productCard}>
+                  <h1 className={styles.productHeader}>{product.title}</h1>
+                  <h2 className={styles.productPrice}>
+                    {calcPrice(product.price, count)} TL
+                  </h2>
+                  <div className={styles.counterContainer}>
+                    <LargeCounter
+                      value={count}
+                      onChange={(newCount) => {
+                        setCount(count + newCount);
+                      }}
+                    />
+                  </div>
+                  <div className={styles.cartButtonContainer}>
+                    <MainColorButton
+                      height="44px"
+                      text="Sepete Ekle"
+                      icon={<ShoppingCartIcon />}
+                      onClick={onAddCart}
+                    />
+                  </div>
+                </Card>
+                <Card className={styles.productInfo}>
+                  <h1 className={styles.productHeader}>Ürün Bilgileri</h1>
+                  <div
+                    className={styles.productDetails}
+                    dangerouslySetInnerHTML={{ __html: product.details }}
+                  ></div>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

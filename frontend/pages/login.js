@@ -14,12 +14,16 @@ import Link from "next/dist/client/link";
 import Swal from "sweetalert2";
 import { postData } from "../api/fetch";
 import router from "next/router";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../states/index.atom";
+import LayoutMainMobile from "../components/Layout/layoutMainM";
 
 function Giris() {
   const [forgotPasswordModalVisible, setForgotPasswordModalVisible] =
     useState(false);
   const [disableButton, setDisableButton] = useState(false);
   const [forgotPassEmail, setForgotPassEmail] = useState("");
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const onLogin = (e) => {
     e.preventDefault();
@@ -124,92 +128,183 @@ function Giris() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain
-        whenAuthDisabledPage={true}
-        centerContent={true}
-        fadeBG={true}
-      >
-        <Modal
-          title="Şifre Yenile"
-          width="400px"
-          height="200px"
-          visible={forgotPasswordModalVisible}
-          onClose={() => {
-            setForgotPasswordModalVisible(false);
-          }}
+      {isMobileDevice ? (
+        <LayoutMainMobile
+          whenAuthDisabledPage={true}
+          centerContent={true}
+          fadeBG={true}
         >
-          <Spacer top="20px" />
-          <h4 className={styles.forgotPassHeader}>
-            Lütfen email adresinizi giriniz. Size şifrebizi sıfırlamanız için
-            mail göndereceğiz.
-          </h4>
-          <Spacer top="15px" />
-          <Form onSubmit={onResetPassword}>
-            <InputText
-              width="94%"
-              labelText="Email"
-              name="email"
-              type="email"
-              onChange={(e) => {
-                setForgotPassEmail(e.target.value);
-              }}
-            />
-            <Spacer top="14px" />
-            <MainColorButton
-              height="44px"
-              type="button"
-              disabled={disableButton}
-              text="Şifre Sıfırlama Maili Gönder"
-              onClick={onResetPassword}
-            />
-          </Form>
-        </Modal>
-        <div className={styles.container}>
-          <Card width="325px" height="320px">
-            <Form onSubmit={onLogin}>
+          <Modal
+            title="Şifre Yenile"
+            width="90vw"
+            height="200px"
+            visible={forgotPasswordModalVisible}
+            onClose={() => {
+              setForgotPasswordModalVisible(false);
+            }}
+          >
+            <Spacer top="20px" />
+            <h4 className={styles.forgotPassHeader}>
+              Lütfen email adresinizi giriniz. Size şifrebizi sıfırlamanız için
+              mail göndereceğiz.
+            </h4>
+            <Spacer top="15px" />
+            <Form onSubmit={onResetPassword}>
               <InputText
+                width="94%"
                 labelText="Email"
                 name="email"
                 type="email"
-                pattern="^.{6,}$"
+                onChange={(e) => {
+                  setForgotPassEmail(e.target.value);
+                }}
               />
-              <Spacer top="16px" />
-              <InputText
-                labelText="Şifre"
-                name="password"
-                type="password"
-                pattern="^.{6,}$"
-              />
-              <Spacer top="24px" />
-              <div className={styles.forgotPass}>
-                <button
-                  onClick={() => {
-                    setForgotPasswordModalVisible(true);
-                  }}
-                  className={styles.forgotPassButton}
-                  type="button"
-                >
-                  Şifremi unuttum
-                </button>
-              </div>
-              <Spacer bottom="10px" />
+              <Spacer top="14px" />
               <MainColorButton
-                onClick={onLogin}
-                type="button"
                 height="44px"
-                text="Giriş Yap"
+                type="button"
                 disabled={disableButton}
+                text="Şifre Sıfırlama Maili Gönder"
+                onClick={onResetPassword}
               />
-              <Spacer bottom="16px" />
-              <Link href={PAGE.register.href}>
-                <a>
-                  <WhiteButton type="button" height="44px" text="Kayıt Ol" />
-                </a>
-              </Link>
             </Form>
-          </Card>
-        </div>
-      </LayoutMain>
+          </Modal>
+          <div className={styles.container}>
+            <Card width="90vw" height="320px">
+              <Form onSubmit={onLogin}>
+                <InputText
+                  labelText="Email"
+                  name="email"
+                  type="email"
+                  pattern="^.{6,}$"
+                  width="84vw"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  labelText="Şifre"
+                  name="password"
+                  type="password"
+                  pattern="^.{6,}$"
+                  width="84vw"
+                />
+                <Spacer top="24px" />
+                <div className={styles.forgotPass}>
+                  <button
+                    onClick={() => {
+                      setForgotPasswordModalVisible(true);
+                    }}
+                    className={styles.forgotPassButton}
+                    type="button"
+                  >
+                    Şifremi unuttum
+                  </button>
+                </div>
+                <Spacer bottom="10px" />
+                <MainColorButton
+                  onClick={onLogin}
+                  type="button"
+                  height="44px"
+                  text="Giriş Yap"
+                  disabled={disableButton}
+                />
+                <Spacer bottom="16px" />
+                <Link href={PAGE.register.href}>
+                  <a>
+                    <WhiteButton type="button" height="44px" text="Kayıt Ol" />
+                  </a>
+                </Link>
+              </Form>
+            </Card>
+          </div>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain
+          whenAuthDisabledPage={true}
+          centerContent={true}
+          fadeBG={true}
+        >
+          <Modal
+            title="Şifre Yenile"
+            width="400px"
+            height="200px"
+            visible={forgotPasswordModalVisible}
+            onClose={() => {
+              setForgotPasswordModalVisible(false);
+            }}
+          >
+            <Spacer top="20px" />
+            <h4 className={styles.forgotPassHeader}>
+              Lütfen email adresinizi giriniz. Size şifrebizi sıfırlamanız için
+              mail göndereceğiz.
+            </h4>
+            <Spacer top="15px" />
+            <Form onSubmit={onResetPassword}>
+              <InputText
+                width="94%"
+                labelText="Email"
+                name="email"
+                type="email"
+                onChange={(e) => {
+                  setForgotPassEmail(e.target.value);
+                }}
+              />
+              <Spacer top="14px" />
+              <MainColorButton
+                height="44px"
+                type="button"
+                disabled={disableButton}
+                text="Şifre Sıfırlama Maili Gönder"
+                onClick={onResetPassword}
+              />
+            </Form>
+          </Modal>
+          <div className={styles.container}>
+            <Card width="325px" height="320px">
+              <Form onSubmit={onLogin}>
+                <InputText
+                  labelText="Email"
+                  name="email"
+                  type="email"
+                  pattern="^.{6,}$"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  labelText="Şifre"
+                  name="password"
+                  type="password"
+                  pattern="^.{6,}$"
+                />
+                <Spacer top="24px" />
+                <div className={styles.forgotPass}>
+                  <button
+                    onClick={() => {
+                      setForgotPasswordModalVisible(true);
+                    }}
+                    className={styles.forgotPassButton}
+                    type="button"
+                  >
+                    Şifremi unuttum
+                  </button>
+                </div>
+                <Spacer bottom="10px" />
+                <MainColorButton
+                  onClick={onLogin}
+                  type="button"
+                  height="44px"
+                  text="Giriş Yap"
+                  disabled={disableButton}
+                />
+                <Spacer bottom="16px" />
+                <Link href={PAGE.register.href}>
+                  <a>
+                    <WhiteButton type="button" height="44px" text="Kayıt Ol" />
+                  </a>
+                </Link>
+              </Form>
+            </Card>
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

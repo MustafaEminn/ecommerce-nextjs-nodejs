@@ -1,0 +1,122 @@
+.containerMain {
+  display: flex;
+  flex-direction: column;
+}
+
+.cartEmpty {
+  font-size: 26px;
+  font-family: var(--source-sans-pro);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  & svg {
+    width: 80px;
+    height: 80px;
+    fill: var(--main-color);
+    margin-bottom: 10px;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+
+  & .leftContainer {
+    margin: 15px 0;
+  }
+  & .containerCartItemCard {
+    margin-bottom: 20px;
+    & .containerCartItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      & .leftContainerCartItem {
+        display: flex;
+        align-items: center;
+
+        & a {
+          font-family: var(--source-sans-pro);
+          font-weight: 600;
+        }
+
+        & img {
+          margin-left: 15px;
+          margin-right: 15px;
+          width: 100px;
+          max-height: 52px;
+          object-fit: cover;
+        }
+      }
+
+      & .rightContainerCartItem {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 333px;
+
+        & span {
+          font-family: var(--source-sans-pro);
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--main-color);
+        }
+      }
+    }
+  }
+
+  & .rightContainer {
+    display: flex;
+    flex-direction: column;
+    & button {
+      margin: 15px 0 !important;
+    }
+
+    & .totalItemContainer {
+      display: flex;
+      justify-content: space-between;
+      margin: 7px 0;
+
+      & .totalItemTitle {
+        font-size: 16px;
+        font-family: var(--source-sans-pro);
+        max-width: 143px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      & .totalItemPrice {
+        font-size: 16px;
+        font-family: var(--source-sans-pro);
+        color: var(--main-color);
+      }
+    }
+
+    & .totalItemBottomContainer {
+      margin-top: 10px;
+      & .totalPrice {
+        display: flex;
+        justify-content: space-between;
+
+        & .totalPriceText {
+          font-size: 20px;
+          font-family: var(--source-sans-pro);
+          color: var(--main-color);
+        }
+
+        & span {
+          font-size: 20px;
+          font-family: var(--source-sans-pro);
+        }
+      }
+    }
+  }
+
+  & .spacer {
+    width: 25px;
+  }
+}

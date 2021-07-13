@@ -17,6 +17,9 @@ import { getFormValues } from "../../utils/getFormValues";
 import LayoutMain from "../../components/Layout/layoutMain";
 import InputCheckbox from "../../components/inputs/inputCheckbox";
 import { useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../../states/index.atom";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
 
 export default function ApplyAddress() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -24,6 +27,7 @@ export default function ApplyAddress() {
   const [districts, setDistricts] = useState([]);
   const [liveLoading, setLiveLoading] = useState(false);
   const [billingCheck, setBillingCheck] = useState(true);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const getUser = () => {
     const token = localStorage.getItem("token");
@@ -190,78 +194,16 @@ export default function ApplyAddress() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain liveLoading={liveLoading} pageLoading={pageLoading}>
-        <div className={styles.containerMain}>
-          <div className={styles.container}>
-            <div className={styles.leftContainer}>
-              <Card width="812px" padding="15px">
-                <Divider direction="left">Teslim Adresi</Divider>
-                <div className={styles.cardTop}>
-                  <Form
-                    id="ship-form"
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    <InputText
-                      defaultValue={user.Name + " " + user.Surname || ""}
-                      name="fullName"
-                      labelText="Teslim Alacak Kişi"
-                    />
-
-                    <InputSelect
-                      defaultValue={user.City || ""}
-                      options={citys}
-                      name="city"
-                      labelText="İl"
-                      onChange={onChangeCity}
-                      width="325px"
-                      id="cityMyAccount"
-                    />
-                    <InputSelect
-                      defaultValue={user.District || ""}
-                      options={districts}
-                      name="district"
-                      labelText="İlçe"
-                      width="325px"
-                      id="districtMyAccount"
-                    />
-                    <InputText
-                      defaultValue={user.Neighborhood || ""}
-                      name="neighborhood"
-                      labelText="Mahalle"
-                    />
-                    <InputTextbox
-                      defaultValue={user.Address || ""}
-                      name="address"
-                      labelText="Adres"
-                      maxWidth="520px"
-                      rows={5}
-                      maxHeight="500px"
-                      height="200px"
-                    />
-                    <InputText
-                      defaultValue={user.PhoneNumber || ""}
-                      name="phoneNumber"
-                      labelText="Telefon Numarası"
-                    />
-                  </Form>
-                </div>
-                <div className={styles.checkboxContainer}>
-                  <InputCheckbox
-                    defaultChecked={true}
-                    onChange={onChangeBillingCheckbox}
-                  />
-                  <span>Kargo adresimle fatura adresim aynı</span>
-                </div>
-                {!billingCheck ? (
-                  <div className={styles.cardBottom}>
-                    <Divider direction="left">Fatura Adresi</Divider>
+      {isMobileDevice ? (
+        <LayoutMainMobile liveLoading={liveLoading} pageLoading={pageLoading}>
+          <div className={styles.containerMain}>
+            <div className={styles.container}>
+              <div className={styles.leftContainer}>
+                <Card width="812px" padding="15px">
+                  <Divider direction="left">Teslim Adresi</Divider>
+                  <div className={styles.cardTop}>
                     <Form
-                      id="billing-form"
+                      id="ship-form"
                       style={{
                         display: "flex",
                         flexDirection: "row",
@@ -276,7 +218,7 @@ export default function ApplyAddress() {
                       />
 
                       <InputSelect
-                        defaultValue={user.billingCity || ""}
+                        defaultValue={user.City || ""}
                         options={citys}
                         name="city"
                         labelText="İl"
@@ -285,7 +227,7 @@ export default function ApplyAddress() {
                         id="cityMyAccount"
                       />
                       <InputSelect
-                        defaultValue={user.billingDistrict || ""}
+                        defaultValue={user.District || ""}
                         options={districts}
                         name="district"
                         labelText="İlçe"
@@ -293,15 +235,14 @@ export default function ApplyAddress() {
                         id="districtMyAccount"
                       />
                       <InputText
-                        defaultValue={user.billingNeighborhood || ""}
+                        defaultValue={user.Neighborhood || ""}
                         name="neighborhood"
                         labelText="Mahalle"
                       />
                       <InputTextbox
-                        defaultValue={user.billingAddress || ""}
+                        defaultValue={user.Address || ""}
                         name="address"
                         labelText="Adres"
-                        pattern="^.{2,}$"
                         maxWidth="520px"
                         rows={5}
                         maxHeight="500px"
@@ -314,23 +255,230 @@ export default function ApplyAddress() {
                       />
                     </Form>
                   </div>
-                ) : (
-                  <></>
-                )}
-              </Card>
-            </div>
-            <div className={styles.spacer}></div>
-            <div className={styles.rightContainer}>
-              <MainColorButton
-                text="Adresi Onayla"
-                width="260px"
-                height="40px"
-                onClick={onApply}
-              />
+                  <div className={styles.checkboxContainer}>
+                    <InputCheckbox
+                      defaultChecked={true}
+                      onChange={onChangeBillingCheckbox}
+                    />
+                    <span>Kargo adresimle fatura adresim aynı</span>
+                  </div>
+                  {!billingCheck ? (
+                    <div className={styles.cardBottom}>
+                      <Divider direction="left">Fatura Adresi</Divider>
+                      <Form
+                        id="billing-form"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <InputText
+                          defaultValue={user.Name + " " + user.Surname || ""}
+                          name="fullName"
+                          labelText="Teslim Alacak Kişi"
+                        />
+
+                        <InputSelect
+                          defaultValue={user.billingCity || ""}
+                          options={citys}
+                          name="city"
+                          labelText="İl"
+                          onChange={onChangeCity}
+                          width="325px"
+                          id="cityMyAccount"
+                        />
+                        <InputSelect
+                          defaultValue={user.billingDistrict || ""}
+                          options={districts}
+                          name="district"
+                          labelText="İlçe"
+                          width="325px"
+                          id="districtMyAccount"
+                        />
+                        <InputText
+                          defaultValue={user.billingNeighborhood || ""}
+                          name="neighborhood"
+                          labelText="Mahalle"
+                        />
+                        <InputTextbox
+                          defaultValue={user.billingAddress || ""}
+                          name="address"
+                          labelText="Adres"
+                          pattern="^.{2,}$"
+                          maxWidth="520px"
+                          rows={5}
+                          maxHeight="500px"
+                          height="200px"
+                        />
+                        <InputText
+                          defaultValue={user.PhoneNumber || ""}
+                          name="phoneNumber"
+                          labelText="Telefon Numarası"
+                        />
+                      </Form>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </Card>
+              </div>
+              <div className={styles.spacer}></div>
+              <div className={styles.rightContainer}>
+                <MainColorButton
+                  text="Adresi Onayla"
+                  width="260px"
+                  height="40px"
+                  onClick={onApply}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </LayoutMain>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain liveLoading={liveLoading} pageLoading={pageLoading}>
+          <div className={styles.containerMain}>
+            <div className={styles.container}>
+              <div className={styles.leftContainer}>
+                <Card width="812px" padding="15px">
+                  <Divider direction="left">Teslim Adresi</Divider>
+                  <div className={styles.cardTop}>
+                    <Form
+                      id="ship-form"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        justifyContent: "space-around",
+                      }}
+                    >
+                      <InputText
+                        defaultValue={user.Name + " " + user.Surname || ""}
+                        name="fullName"
+                        labelText="Teslim Alacak Kişi"
+                      />
+
+                      <InputSelect
+                        defaultValue={user.City || ""}
+                        options={citys}
+                        name="city"
+                        labelText="İl"
+                        onChange={onChangeCity}
+                        width="325px"
+                        id="cityMyAccount"
+                      />
+                      <InputSelect
+                        defaultValue={user.District || ""}
+                        options={districts}
+                        name="district"
+                        labelText="İlçe"
+                        width="325px"
+                        id="districtMyAccount"
+                      />
+                      <InputText
+                        defaultValue={user.Neighborhood || ""}
+                        name="neighborhood"
+                        labelText="Mahalle"
+                      />
+                      <InputTextbox
+                        defaultValue={user.Address || ""}
+                        name="address"
+                        labelText="Adres"
+                        maxWidth="520px"
+                        rows={5}
+                        maxHeight="500px"
+                        height="200px"
+                      />
+                      <InputText
+                        defaultValue={user.PhoneNumber || ""}
+                        name="phoneNumber"
+                        labelText="Telefon Numarası"
+                      />
+                    </Form>
+                  </div>
+                  <div className={styles.checkboxContainer}>
+                    <InputCheckbox
+                      defaultChecked={true}
+                      onChange={onChangeBillingCheckbox}
+                    />
+                    <span>Kargo adresimle fatura adresim aynı</span>
+                  </div>
+                  {!billingCheck ? (
+                    <div className={styles.cardBottom}>
+                      <Divider direction="left">Fatura Adresi</Divider>
+                      <Form
+                        id="billing-form"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <InputText
+                          defaultValue={user.Name + " " + user.Surname || ""}
+                          name="fullName"
+                          labelText="Teslim Alacak Kişi"
+                        />
+
+                        <InputSelect
+                          defaultValue={user.billingCity || ""}
+                          options={citys}
+                          name="city"
+                          labelText="İl"
+                          onChange={onChangeCity}
+                          width="325px"
+                          id="cityMyAccount"
+                        />
+                        <InputSelect
+                          defaultValue={user.billingDistrict || ""}
+                          options={districts}
+                          name="district"
+                          labelText="İlçe"
+                          width="325px"
+                          id="districtMyAccount"
+                        />
+                        <InputText
+                          defaultValue={user.billingNeighborhood || ""}
+                          name="neighborhood"
+                          labelText="Mahalle"
+                        />
+                        <InputTextbox
+                          defaultValue={user.billingAddress || ""}
+                          name="address"
+                          labelText="Adres"
+                          pattern="^.{2,}$"
+                          maxWidth="520px"
+                          rows={5}
+                          maxHeight="500px"
+                          height="200px"
+                        />
+                        <InputText
+                          defaultValue={user.PhoneNumber || ""}
+                          name="phoneNumber"
+                          labelText="Telefon Numarası"
+                        />
+                      </Form>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </Card>
+              </div>
+              <div className={styles.spacer}></div>
+              <div className={styles.rightContainer}>
+                <MainColorButton
+                  text="Adresi Onayla"
+                  width="260px"
+                  height="40px"
+                  onClick={onApply}
+                />
+              </div>
+            </div>
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

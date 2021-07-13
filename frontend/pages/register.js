@@ -16,10 +16,14 @@ import InputSelect from "../components/inputs/inputSelect";
 import Swal from "sweetalert2";
 import { postData } from "../api/fetch";
 import { useRouter } from "next/router";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../states/index.atom";
+import LayoutMainMobile from "../components/Layout/layoutMainM";
 
 function Register() {
   const router = useRouter();
   const [disabledRegisterButton, setDisabledRegisterButton] = useState(false);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const onRegister = () => {
     e.preventDefault();
@@ -80,77 +84,158 @@ function Register() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain
-        whenAuthDisabledPage={true}
-        centerContent={true}
-        fadeBG={true}
-      >
-        <div className={styles.container}>
-          <Spacer top="30px" />
-          <Card width="325px" height="100%">
-            <Form onSubmit={onRegister}>
-              <InputText
-                pattern="^.{3,}$"
-                labelText="Ad"
-                name="name"
-                type="text"
-              />
-              <Spacer top="16px" />
-              <InputText
-                pattern="^.{2,}$"
-                labelText="Soyad"
-                name="surname"
-                type="text"
-              />
-              <Spacer top="16px" />
-              <InputText
-                pattern="^.{6,}$"
-                labelText="Email"
-                name="email"
-                type="email"
-              />
-              <Spacer top="16px" />
-              <InputText
-                pattern="^.{6,}$"
-                labelText="Şifre"
-                name="password"
-                type="password"
-              />
+      {isMobileDevice ? (
+        <LayoutMainMobile
+          whenAuthDisabledPage={true}
+          centerContent={true}
+          fadeBG={true}
+        >
+          <div className={styles.container}>
+            <Spacer top="30px" />
+            <Card width="85vw" height="100%">
+              <Form onSubmit={onRegister}>
+                <InputText
+                  pattern="^.{3,}$"
+                  labelText="Ad"
+                  name="name"
+                  type="text"
+                  width="80vw"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  pattern="^.{2,}$"
+                  labelText="Soyad"
+                  name="surname"
+                  type="text"
+                  width="80vw"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  pattern="^.{6,}$"
+                  labelText="Email"
+                  name="email"
+                  type="email"
+                  width="80vw"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  pattern="^.{6,}$"
+                  labelText="Şifre"
+                  name="password"
+                  type="password"
+                  width="80vw"
+                />
 
-              <Spacer top="16px" />
-              <InputPhoneNumber
-                labelText="Telefon Numarası"
-                pattern="^.{10,}$"
-                name="phoneNumber"
-              />
-              <Spacer top="16px" />
-              <InputSelect
-                options={[
-                  { title: "Erkek", value: "male" },
-                  { title: "Kadın", value: "female" },
-                  { title: "Belirtmek istemiyorum", value: "-" },
-                ]}
-                labelText="Cinsiyet"
-                name="gender"
-                pattern="^.{1,}$"
-              />
+                <Spacer top="16px" />
+                <InputPhoneNumber
+                  labelText="Telefon Numarası"
+                  pattern="^.{10,}$"
+                  name="phoneNumber"
+                  width="80vw"
+                />
+                <Spacer top="16px" />
+                <InputSelect
+                  options={[
+                    { title: "Erkek", value: "male" },
+                    { title: "Kadın", value: "female" },
+                    { title: "Belirtmek istemiyorum", value: "-" },
+                  ]}
+                  labelText="Cinsiyet"
+                  name="gender"
+                  pattern="^.{1,}$"
+                  width="88vw"
+                />
 
-              <Spacer top="24px" />
-              <MainColorButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  onRegister();
-                }}
-                disabled={disabledRegisterButton}
-                type="submit"
-                height="44px"
-                text="Kayıt Ol"
-              />
-            </Form>
-          </Card>
-          <Spacer top="30px" />
-        </div>
-      </LayoutMain>
+                <Spacer top="24px" />
+                <MainColorButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onRegister();
+                  }}
+                  disabled={disabledRegisterButton}
+                  type="submit"
+                  height="44px"
+                  text="Kayıt Ol"
+                  width="88vw"
+                />
+              </Form>
+            </Card>
+            <Spacer top="30px" />
+          </div>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain
+          whenAuthDisabledPage={true}
+          centerContent={true}
+          fadeBG={true}
+        >
+          <div className={styles.container}>
+            <Spacer top="30px" />
+            <Card width="325px" height="100%">
+              <Form onSubmit={onRegister}>
+                <InputText
+                  pattern="^.{3,}$"
+                  labelText="Ad"
+                  name="name"
+                  type="text"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  pattern="^.{2,}$"
+                  labelText="Soyad"
+                  name="surname"
+                  type="text"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  pattern="^.{6,}$"
+                  labelText="Email"
+                  name="email"
+                  type="email"
+                />
+                <Spacer top="16px" />
+                <InputText
+                  pattern="^.{6,}$"
+                  labelText="Şifre"
+                  name="password"
+                  type="password"
+                />
+
+                <Spacer top="16px" />
+                <InputPhoneNumber
+                  labelText="Telefon Numarası"
+                  pattern="^.{10,}$"
+                  name="phoneNumber"
+                />
+                <Spacer top="16px" />
+                <InputSelect
+                  options={[
+                    { title: "Erkek", value: "male" },
+                    { title: "Kadın", value: "female" },
+                    { title: "Belirtmek istemiyorum", value: "-" },
+                  ]}
+                  labelText="Cinsiyet"
+                  name="gender"
+                  pattern="^.{1,}$"
+                />
+
+                <Spacer top="24px" />
+                <MainColorButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onRegister();
+                  }}
+                  disabled={disabledRegisterButton}
+                  type="submit"
+                  height="44px"
+                  text="Kayıt Ol"
+                />
+              </Form>
+            </Card>
+            <Spacer top="30px" />
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

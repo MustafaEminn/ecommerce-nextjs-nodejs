@@ -22,3 +22,28 @@
     }
   }
 }
+
+.container-pagination-mobile {
+  display: flex;
+  justify-content: center;
+
+  & li {
+    margin: 0 5px;
+    border: 1px solid var(--main-color);
+    border-radius: 3px;
+    cursor: pointer;
+
+    & a {
+      padding: 4px 9px;
+      font-family: var(--source-sans-pro);
+      display: block;
+    }
+  }
+
+  & .pagination-active-mobile {
+    background-color: var(--main-color);
+    & a {
+      color: var(--white);
+    }
+  }
+}

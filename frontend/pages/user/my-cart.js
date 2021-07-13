@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../../styles/pages/user/myCart.module.scss";
+import stylesM from "../../styles/pages/user/myCartM.module.scss";
 import { API, PAGE } from "../../constants";
 import Divider from "../../components/divider/divider";
 import Link from "next/dist/client/link";
@@ -16,9 +17,11 @@ import IconButton from "../../components/buttons/iconButton";
 import TrashIcon from "../../public/icons/trash";
 import InputCheckbox from "../../components/inputs/inputCheckbox";
 import { useRecoilValue } from "recoil";
-import { isAuthed } from "../../states/index.atom";
+import { isAuthed, isMobile } from "../../states/index.atom";
 import ShoppingCartIcon from "../../public/icons/shoppingCart";
 import { calcPrice } from "../../utils/calcPrice";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
+import Spacer from "../../components/Spacer/spacer";
 
 export default function MyCart() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -26,6 +29,7 @@ export default function MyCart() {
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const isAuth = useRecoilValue(isAuthed);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const getCart = () => {
     if (isAuth) {
@@ -158,6 +162,58 @@ export default function MyCart() {
     }
   };
 
+  const CartItemMobile = ({
+    srcImg = "",
+    productName = "",
+    productHref = "",
+    price = 0,
+    checked = true,
+    count = 50,
+    productId,
+  }) => {
+    return (
+      <Card
+        className={stylesM.containerCartItemCard}
+        width="85vw"
+        padding="20px"
+        height="100%"
+      >
+        <div className={stylesM.containerCartItem}>
+          <div className={stylesM.leftContainerCartItem}>
+            <div id="input-checkbox-container">
+              <InputCheckbox
+                onChange={(e) => {
+                  onCheckedChange(productId, e.target.checked);
+                }}
+                defaultChecked={checked}
+              />
+            </div>
+            <img src={srcImg} />
+
+            <Link href={productHref}>
+              <a>{productName}</a>
+            </Link>
+          </div>
+          <Spacer top="20px" />
+          <div className={stylesM.rightContainerCartItem}>
+            <LargeCounter
+              value={count}
+              onChange={(newCount) => {
+                onChangeCount(productId, count + newCount);
+              }}
+            />
+            <span>{calcPrice(price, count)} TL</span>
+            <IconButton
+              onClick={() => {
+                deleteCartItem(productId);
+              }}
+              icon={<TrashIcon width="18px" height="18px" />}
+            />
+          </div>
+        </div>
+      </Card>
+    );
+  };
   const CartItem = ({
     srcImg = "",
     productName = "",
@@ -256,79 +312,153 @@ export default function MyCart() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain liveLoading={cartLoading} pageLoading={pageLoading}>
-        <div className={styles.containerMain}>
-          {cart.length > 0 ? (
-            <div className={styles.container}>
-              <div className={styles.leftContainer}>
-                <Divider direction="left">Sepetim | {cart.length} Ürün</Divider>
-                {cart.map((item, index) => {
-                  return (
-                    <CartItem
-                      key={index}
-                      srcImg={API.imgUrl + item.photos[0]}
-                      productName={item.title}
-                      price={item.price}
-                      productHref={
-                        "/product/" + slugify(item.title) + "-" + item.id
-                      }
-                      productId={item.id}
-                      count={item.count}
-                      checked={item.checked}
-                    />
-                  );
-                })}
-              </div>
-              <div className={styles.spacer}></div>
-              <div className={styles.rightContainer}>
-                <MainColorButton
-                  text="Sepeti Onayla"
-                  width="100%"
-                  height="40px"
-                  onClick={onApplyCart}
-                />
-                <Card width="260px" padding="10px">
-                  <Divider direction="left">Toplam</Divider>
+      {isMobileDevice ? (
+        <LayoutMainMobile liveLoading={cartLoading} pageLoading={pageLoading}>
+          <div className={stylesM.containerMain}>
+            {cart.length > 0 ? (
+              <div className={stylesM.container}>
+                <div className={stylesM.leftContainer}>
+                  <Divider direction="left">
+                    Sepetim | {cart.length} Ürün
+                  </Divider>
                   {cart.map((item, index) => {
-                    return item.checked ? (
-                      <div key={index} className={styles.totalItemContainer}>
-                        <span className={styles.totalItemTitle}>
-                          {item.title}
-                        </span>
-                        <span className={styles.totalItemPrice}>
-                          {calcPrice(item.price, item.count)}
-                        </span>
-                      </div>
-                    ) : (
-                      void 0
+                    return (
+                      <CartItemMobile
+                        key={index}
+                        srcImg={API.imgUrl + item.photos[0]}
+                        productName={item.title}
+                        price={item.price}
+                        productHref={
+                          "/product/" + slugify(item.title) + "-" + item.id
+                        }
+                        productId={item.id}
+                        count={item.count}
+                        checked={item.checked}
+                      />
                     );
                   })}
-                  <div className={styles.totalItemBottomContainer}>
-                    <hr />
-                    <div className={styles.totalPrice}>
-                      <span className={styles.totalText}>Toplam</span>
-                      <span className={styles.totalPriceText}>
-                        {totalPrice} TL
-                      </span>
+                </div>
+                <div className={stylesM.spacer}></div>
+                <div className={stylesM.rightContainer}>
+                  <Card width="85vw" padding="10px">
+                    <Divider direction="left">Toplam</Divider>
+                    {cart.map((item, index) => {
+                      return item.checked ? (
+                        <div key={index} className={stylesM.totalItemContainer}>
+                          <span className={stylesM.totalItemTitle}>
+                            {item.title}
+                          </span>
+                          <span className={stylesM.totalItemPrice}>
+                            {calcPrice(item.price, item.count)}
+                          </span>
+                        </div>
+                      ) : (
+                        void 0
+                      );
+                    })}
+                    <div className={stylesM.totalItemBottomContainer}>
+                      <hr />
+                      <div className={stylesM.totalPrice}>
+                        <span className={stylesM.totalText}>Toplam</span>
+                        <span className={stylesM.totalPriceText}>
+                          {totalPrice} TL
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-                <MainColorButton
-                  text="Sepeti Onayla"
-                  width="100%"
-                  height="40px"
-                  onClick={onApplyCart}
-                />
+                  </Card>
+                  <MainColorButton
+                    text="Sepeti Onayla"
+                    width="100%"
+                    height="40px"
+                    onClick={onApplyCart}
+                  />
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className={styles.cartEmpty}>
-              <ShoppingCartIcon />
-              Sepetiniz boş
-            </div>
-          )}
-        </div>
-      </LayoutMain>
+            ) : (
+              <div className={stylesM.cartEmpty}>
+                <ShoppingCartIcon />
+                Sepetiniz boş
+              </div>
+            )}
+          </div>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain liveLoading={cartLoading} pageLoading={pageLoading}>
+          <div className={styles.containerMain}>
+            {cart.length > 0 ? (
+              <div className={styles.container}>
+                <div className={styles.leftContainer}>
+                  <Divider direction="left">
+                    Sepetim | {cart.length} Ürün
+                  </Divider>
+                  {cart.map((item, index) => {
+                    return (
+                      <CartItem
+                        key={index}
+                        srcImg={API.imgUrl + item.photos[0]}
+                        productName={item.title}
+                        price={item.price}
+                        productHref={
+                          "/product/" + slugify(item.title) + "-" + item.id
+                        }
+                        productId={item.id}
+                        count={item.count}
+                        checked={item.checked}
+                      />
+                    );
+                  })}
+                </div>
+                <div className={styles.spacer}></div>
+                <div className={styles.rightContainer}>
+                  <MainColorButton
+                    text="Sepeti Onayla"
+                    width="100%"
+                    height="40px"
+                    onClick={onApplyCart}
+                  />
+                  <Card width="260px" padding="10px">
+                    <Divider direction="left">Toplam</Divider>
+                    {cart.map((item, index) => {
+                      return item.checked ? (
+                        <div key={index} className={styles.totalItemContainer}>
+                          <span className={styles.totalItemTitle}>
+                            {item.title}
+                          </span>
+                          <span className={styles.totalItemPrice}>
+                            {calcPrice(item.price, item.count)}
+                          </span>
+                        </div>
+                      ) : (
+                        void 0
+                      );
+                    })}
+                    <div className={styles.totalItemBottomContainer}>
+                      <hr />
+                      <div className={styles.totalPrice}>
+                        <span className={styles.totalText}>Toplam</span>
+                        <span className={styles.totalPriceText}>
+                          {totalPrice} TL
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                  <MainColorButton
+                    text="Sepeti Onayla"
+                    width="100%"
+                    height="40px"
+                    onClick={onApplyCart}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className={styles.cartEmpty}>
+                <ShoppingCartIcon />
+                Sepetiniz boş
+              </div>
+            )}
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

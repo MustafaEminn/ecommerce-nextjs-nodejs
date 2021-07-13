@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../../styles/pages/user/myAccount.module.scss";
+import stylesM from "../../styles/pages/user/myAccountM.module.scss";
 import { API, PAGE } from "../../constants";
 import Divider from "../../components/divider/divider";
 import Link from "next/dist/client/link";
@@ -23,12 +24,16 @@ import Card from "../../components/cards/card";
 import MainColorButton from "../../components/buttons/mainColorButton";
 import { getFormValues } from "../../utils/getFormValues";
 import { resetFormValues } from "../../utils/resetFormValues";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../../states/index.atom";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
 
 export default function MyAccount() {
   const [pageLoading, setPageLoading] = useState(true);
   const [user, setUser] = useState({});
   const [districts, setDistricts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -171,120 +176,244 @@ export default function MyAccount() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutSidebar pageLoading={pageLoading}>
-        <div className={styles.container}>
-          <Card width="50%">
-            <Divider direction="left">Kişisel Bilgilerim</Divider>
-            <Form
-              id="personalInfos"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <InputText
-                defaultValue={user.Name || ""}
-                name="name"
-                labelText="Ad"
-                pattern="^.{2,}$"
-              />
-              <InputText
-                defaultValue={user.Surname || ""}
-                name="surname"
-                labelText="Soyad"
-                pattern="^.{2,}$"
-              />
-              <InputText
-                defaultValue={user.PhoneNumber || ""}
-                name="phoneNumber"
-                labelText="Telefon Numarası"
-                pattern="^.{6,}$"
-              />
-              <div className={styles.spaceDivider} />
-              <Divider direction="left">Adres Bilgilerim</Divider>
-              <InputSelect
-                defaultValue={user.City || ""}
-                options={citys}
-                name="city"
-                labelText="İl"
-                onChange={onChangeCity}
-                width="325px"
-                id="cityMyAccount"
-              />
-              <InputSelect
-                defaultValue={user.District || ""}
-                options={districts}
-                name="district"
-                labelText="İlçe"
-                width="325px"
-                id="districtMyAccount"
-              />
-              <InputText
-                defaultValue={user.Neighborhood || ""}
-                name="neighborhood"
-                labelText="Mahalle"
-                pattern="^.{2,}$"
-              />
-              <InputTextbox
-                defaultValue={user.Address || ""}
-                name="address"
-                labelText="Adres"
-                pattern="^.{2,}$"
-                maxWidth="520px"
-                rows={5}
-                maxHeight="500px"
-                height="200px"
-              />
-              <MainColorButton
-                center
-                disabled={loading}
-                width="328px"
-                height="40px"
-                text="Güncelle"
-                onClick={onUpdateUser}
-              />
-            </Form>
-          </Card>
-          <Card width="50%" height="275px">
-            <Divider direction="left">Şifre Yenileme</Divider>
-            <Form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-              id="form-password"
-            >
-              <InputText
-                name="oldPassword"
-                labelText="Şuanki Şifreniz"
-                pattern="^.{2,}$"
-                type="password"
-              />
-              <InputText
-                name="newPassword"
-                labelText="Yeni Şifreniz"
-                pattern="^.{2,}$"
-                type="password"
-              />
-              <MainColorButton
-                center
-                width="328px"
-                height="40px"
-                text="Güncelle"
-                onClick={onUpdatePassword}
-              />
-            </Form>
-          </Card>
-        </div>
-      </LayoutSidebar>
+      {isMobileDevice ? (
+        <LayoutMainMobile pageLoading={pageLoading}>
+          <div className={stylesM.container}>
+            <Card width="85vw">
+              <Divider direction="left">Kişisel Bilgilerim</Divider>
+              <Form
+                id="personalInfos"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <InputText
+                  defaultValue={user.Name || ""}
+                  name="name"
+                  labelText="Ad"
+                  pattern="^.{2,}$"
+                  width="80vw"
+                />
+                <InputText
+                  defaultValue={user.Surname || ""}
+                  name="surname"
+                  labelText="Soyad"
+                  pattern="^.{2,}$"
+                  width="80vw"
+                />
+                <InputText
+                  defaultValue={user.PhoneNumber || ""}
+                  name="phoneNumber"
+                  labelText="Telefon Numarası"
+                  pattern="^.{6,}$"
+                  width="80vw"
+                />
+                <div className={styles.spaceDivider} />
+                <Divider direction="left">Adres Bilgilerim</Divider>
+                <InputSelect
+                  defaultValue={user.City || ""}
+                  options={citys}
+                  name="city"
+                  labelText="İl"
+                  onChange={onChangeCity}
+                  id="cityMyAccount"
+                  width="88vw"
+                />
+                <InputSelect
+                  defaultValue={user.District || ""}
+                  options={districts}
+                  name="district"
+                  labelText="İlçe"
+                  width="88vw"
+                  id="districtMyAccount"
+                />
+                <InputText
+                  defaultValue={user.Neighborhood || ""}
+                  name="neighborhood"
+                  labelText="Mahalle"
+                  pattern="^.{2,}$"
+                  width="80vw"
+                />
+                <InputTextbox
+                  defaultValue={user.Address || ""}
+                  name="address"
+                  labelText="Adres"
+                  pattern="^.{2,}$"
+                  maxWidth="520px"
+                  rows={5}
+                  maxHeight="500px"
+                  height="200px"
+                  width="80vw"
+                />
+                <MainColorButton
+                  center
+                  disabled={loading}
+                  width="80vw"
+                  height="40px"
+                  text="Güncelle"
+                  onClick={onUpdateUser}
+                />
+              </Form>
+            </Card>
+            <Card width="85vw" height="275px">
+              <Divider direction="left">Şifre Yenileme</Divider>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                id="form-password"
+              >
+                <InputText
+                  name="oldPassword"
+                  labelText="Şuanki Şifreniz"
+                  pattern="^.{2,}$"
+                  type="password"
+                  width="80vw"
+                />
+                <InputText
+                  name="newPassword"
+                  labelText="Yeni Şifreniz"
+                  pattern="^.{2,}$"
+                  type="password"
+                  width="80vw"
+                />
+                <MainColorButton
+                  center
+                  width="80vw"
+                  height="40px"
+                  text="Güncelle"
+                  onClick={onUpdatePassword}
+                />
+              </Form>
+            </Card>
+          </div>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutSidebar pageLoading={pageLoading}>
+          <div className={styles.container}>
+            <Card width="50%">
+              <Divider direction="left">Kişisel Bilgilerim</Divider>
+              <Form
+                id="personalInfos"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <InputText
+                  defaultValue={user.Name || ""}
+                  name="name"
+                  labelText="Ad"
+                  pattern="^.{2,}$"
+                />
+                <InputText
+                  defaultValue={user.Surname || ""}
+                  name="surname"
+                  labelText="Soyad"
+                  pattern="^.{2,}$"
+                />
+                <InputText
+                  defaultValue={user.PhoneNumber || ""}
+                  name="phoneNumber"
+                  labelText="Telefon Numarası"
+                  pattern="^.{6,}$"
+                />
+                <div className={styles.spaceDivider} />
+                <Divider direction="left">Adres Bilgilerim</Divider>
+                <InputSelect
+                  defaultValue={user.City || ""}
+                  options={citys}
+                  name="city"
+                  labelText="İl"
+                  onChange={onChangeCity}
+                  width="325px"
+                  id="cityMyAccount"
+                />
+                <InputSelect
+                  defaultValue={user.District || ""}
+                  options={districts}
+                  name="district"
+                  labelText="İlçe"
+                  width="325px"
+                  id="districtMyAccount"
+                />
+                <InputText
+                  defaultValue={user.Neighborhood || ""}
+                  name="neighborhood"
+                  labelText="Mahalle"
+                  pattern="^.{2,}$"
+                />
+                <InputTextbox
+                  defaultValue={user.Address || ""}
+                  name="address"
+                  labelText="Adres"
+                  pattern="^.{2,}$"
+                  maxWidth="520px"
+                  rows={5}
+                  maxHeight="500px"
+                  height="200px"
+                />
+                <MainColorButton
+                  center
+                  disabled={loading}
+                  width="328px"
+                  height="40px"
+                  text="Güncelle"
+                  onClick={onUpdateUser}
+                />
+              </Form>
+            </Card>
+            <Card width="50%" height="275px">
+              <Divider direction="left">Şifre Yenileme</Divider>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                id="form-password"
+              >
+                <InputText
+                  name="oldPassword"
+                  labelText="Şuanki Şifreniz"
+                  pattern="^.{2,}$"
+                  type="password"
+                />
+                <InputText
+                  name="newPassword"
+                  labelText="Yeni Şifreniz"
+                  pattern="^.{2,}$"
+                  type="password"
+                />
+                <MainColorButton
+                  center
+                  width="328px"
+                  height="40px"
+                  text="Güncelle"
+                  onClick={onUpdatePassword}
+                />
+              </Form>
+            </Card>
+          </div>
+        </LayoutSidebar>
+      )}
     </div>
   );
 }

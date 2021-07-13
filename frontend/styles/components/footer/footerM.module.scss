@@ -1,0 +1,51 @@
+.containerBG {
+  width: 100%;
+  background-color: var(--main-color);
+  border-top: 3px solid var(--border-gray);
+  margin: 15px 0 0 0;
+  & .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    margin: 0 auto;
+    & .logo {
+      padding: 0 0 0 25px;
+    }
+
+    & .contact {
+      display: flex;
+      flex-direction: column;
+      padding: 0 25px 0 0;
+
+      & .baseSocialClass {
+        display: flex;
+
+        align-items: center;
+        padding: 2px 0;
+        & svg {
+          padding: 0 5px 0 0;
+          fill: var(--white);
+        }
+
+        & p {
+          color: var(--white);
+          font-family: var(--source-sans-pro);
+          font-size: 14px;
+        }
+      }
+
+      & .phone {
+        @extend .baseSocialClass;
+      }
+
+      & .instagram a {
+        @extend .baseSocialClass;
+      }
+
+      & .whatsapp {
+        @extend .baseSocialClass;
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../../styles/pages/payment/applyInvitation.module.scss";
+import stylesM from "../../styles/pages/payment/applyInvitationM.module.scss";
 import { PAGE } from "../../constants";
 import Divider from "../../components/divider/divider";
 import { getData, putData } from "../../api/fetch";
@@ -17,6 +18,9 @@ import { getFormValues } from "../../utils/getFormValues";
 import LayoutMain from "../../components/Layout/layoutMain";
 import InputCheckbox from "../../components/inputs/inputCheckbox";
 import { useState, useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../../states/index.atom";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
 
 export default function ApplyInvitation() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -24,6 +28,7 @@ export default function ApplyInvitation() {
   const [districts, setDistricts] = useState([]);
   const [liveLoading, setLiveLoading] = useState(false);
   const [hennaCheck, setHennaCheck] = useState(true);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const getCartLength = async () => {
     return await getData("/api/cart/getCartLength")
@@ -112,156 +117,300 @@ export default function ApplyInvitation() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain liveLoading={liveLoading} pageLoading={pageLoading}>
-        <div className={styles.containerMain}>
-          <div className={styles.container}>
-            <div className={styles.leftContainer}>
-              <Card width="812px" padding="15px">
-                <Divider direction="left">Davetiye Bilgileri</Divider>
-                <Form id="invitation-form">
-                  <div className={styles.rowContainer}>
-                    <InputText
-                      labelText="Gelinin Adı Soyadı"
-                      width="85%"
-                      name="brideFullname"
-                    />
-                    <InputText
-                      labelText="Damadın Adı Soyadı"
-                      width="85%"
-                      name="groomFullname"
-                    />
-                  </div>
-                  <div className={styles.rowContainer}>
-                    <InputText
-                      labelText="Gelinin Anne Baba Adı"
-                      width="85%"
-                      name="brideParentsName"
-                    />
-                    <InputText
-                      labelText="Damadın Anne Baba Adı"
-                      width="85%"
-                      name="groomParentsName"
-                    />
-                  </div>
-                  <div className={styles.fluidContainer}>
-                    <InputText
-                      labelText="Düğün Tarihi"
-                      width="92.5%"
-                      name="weddingDate"
-                    />
-                  </div>
-                  <div className={styles.rowContainer}>
-                    <InputText
-                      labelText="Düğün Başlangıç Saati"
-                      width="85%"
-                      name="weddingStartTime"
-                    />
-                    <InputText
-                      labelText="Düğün Bitiş Saati"
-                      width="85%"
-                      name="weddingEndTime"
-                    />
-                  </div>
-                  <div className={styles.rowContainer}>
-                    <InputText
-                      labelText="Düğün Yeri"
-                      width="85%"
-                      name="weddingLocation"
-                    />
-                    <InputText
-                      labelText="Düğün Adresi"
-                      width="85%"
-                      name="weddingAddress"
-                    />
-                  </div>
-                  <div className={styles.checkboxContainer}>
-                    <InputCheckbox
-                      defaultChecked={true}
-                      onChange={onChangeHennaCheckbox}
-                    />
-                    <span>Kına yapacak mısınız?</span>
-                  </div>
+      {isMobileDevice ? (
+        <LayoutMainMobile liveLoading={liveLoading} pageLoading={pageLoading}>
+          <div className={stylesM.containerMain}>
+            <div className={stylesM.container}>
+              <div className={stylesM.leftContainer}>
+                <Card width="85vw" padding="15px">
+                  <Divider direction="left">Davetiye Bilgileri</Divider>
+                  <Form id="invitation-form">
+                    <div className={stylesM.rowContainer}>
+                      <InputText
+                        labelText="Gelinin Adı Soyadı"
+                        width="77vw"
+                        name="brideFullname"
+                      />
+                      <InputText
+                        labelText="Damadın Adı Soyadı"
+                        width="77vw"
+                        name="groomFullname"
+                      />
+                    </div>
+                    <div className={stylesM.rowContainer}>
+                      <InputText
+                        labelText="Gelinin Anne Baba Adı"
+                        width="77vw"
+                        name="brideParentsName"
+                      />
+                      <InputText
+                        labelText="Damadın Anne Baba Adı"
+                        width="77vw"
+                        name="groomParentsName"
+                      />
+                    </div>
+                    <div className={stylesM.fluidContainer}>
+                      <InputText
+                        labelText="Düğün Tarihi"
+                        width="92.5%"
+                        name="weddingDate"
+                      />
+                    </div>
+                    <div className={stylesM.rowContainer}>
+                      <InputText
+                        labelText="Düğün Başlangıç Saati"
+                        width="77vw"
+                        name="weddingStartTime"
+                      />
+                      <InputText
+                        labelText="Düğün Bitiş Saati"
+                        width="77vw"
+                        name="weddingEndTime"
+                      />
+                    </div>
+                    <div className={stylesM.rowContainer}>
+                      <InputText
+                        labelText="Düğün Yeri"
+                        width="77vw"
+                        name="weddingLocation"
+                      />
+                      <InputText
+                        labelText="Düğün Adresi"
+                        width="77vw"
+                        name="weddingAddress"
+                      />
+                    </div>
+                    <div className={stylesM.checkboxContainer}>
+                      <InputCheckbox
+                        defaultChecked={true}
+                        onChange={onChangeHennaCheckbox}
+                      />
+                      <span>Kına yapacak mısınız?</span>
+                    </div>
 
-                  {hennaCheck ? (
-                    <>
-                      <div className={styles.fluidContainer}>
-                        <InputText
-                          labelText="Kına Tarihi"
-                          width="92.5%"
-                          name="hennaDate"
-                        />
-                      </div>
-                      <div className={styles.rowContainer}>
-                        <InputText
-                          labelText="Kına Başlangıç Saati"
-                          width="85%"
-                          name="hennaStartTime"
-                        />
-                        <InputText
-                          labelText="Kına Bitiş Saati"
-                          width="85%"
-                          name="hennaEndTime"
-                        />
-                      </div>
-                      <div className={styles.rowContainer}>
-                        <InputText
-                          labelText="Kına Yeri"
-                          width="85%"
-                          name="hennaLocation"
-                        />
-                        <InputText
-                          labelText="Kına Adresi"
-                          width="85%"
-                          name="hennaAddress"
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                  <div className={styles.fluidContainer}>
-                    <InputText
-                      labelText="Davetiye Sözü"
-                      width="92.5%"
-                      name="invitationWord"
-                    />
-                  </div>
-                  <div className={styles.fluidContainer}>
-                    <InputText
-                      labelText="WhatsApp Numaranız"
-                      width="92.5%"
-                      name="whatsappNumber"
-                    />
-                  </div>
+                    {hennaCheck ? (
+                      <>
+                        <div className={stylesM.fluidContainer}>
+                          <InputText
+                            labelText="Kına Tarihi"
+                            width="92.5%"
+                            name="hennaDate"
+                          />
+                        </div>
+                        <div className={stylesM.rowContainer}>
+                          <InputText
+                            labelText="Kına Başlangıç Saati"
+                            width="77vw"
+                            name="hennaStartTime"
+                          />
+                          <InputText
+                            labelText="Kına Bitiş Saati"
+                            width="77vw"
+                            name="hennaEndTime"
+                          />
+                        </div>
+                        <div className={stylesM.rowContainer}>
+                          <InputText
+                            labelText="Kına Yeri"
+                            width="77vw"
+                            name="hennaLocation"
+                          />
+                          <InputText
+                            labelText="Kına Adresi"
+                            width="77vw"
+                            name="hennaAddress"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    <div className={stylesM.fluidContainer}>
+                      <InputText
+                        labelText="Davetiye Sözü"
+                        width="92.5%"
+                        name="invitationWord"
+                      />
+                    </div>
+                    <div className={stylesM.fluidContainer}>
+                      <InputText
+                        labelText="WhatsApp Numaranız"
+                        width="92.5%"
+                        name="whatsappNumber"
+                      />
+                    </div>
 
-                  <span className={styles.warnText}>
-                    Verdiğiniz bilgilerle size WhatsApp üzerinden tasarım
-                    gönderilecektir. Siz tasarımı onaylamadığınız sürece
-                    kesinlikle baskı olmayacaktır.
-                  </span>
-                  <div className={styles.applyButton}>
-                    <MainColorButton
-                      text="Onayla"
-                      width="100%"
-                      height="40px"
-                      onClick={onApply}
-                    />
-                  </div>
-                </Form>
-              </Card>
-            </div>
-            <div className={styles.spacer}></div>
-            <div className={styles.rightContainer}>
-              <MainColorButton
-                text="Onayla"
-                width="248px"
-                height="40px"
-                onClick={onApply}
-              />
+                    <span className={stylesM.warnText}>
+                      Verdiğiniz bilgilerle size WhatsApp üzerinden tasarım
+                      gönderilecektir. Siz tasarımı onaylamadığınız sürece
+                      kesinlikle baskı olmayacaktır.
+                    </span>
+                    <div className={stylesM.applyButton}>
+                      <MainColorButton
+                        text="Onayla"
+                        width="100%"
+                        height="40px"
+                        onClick={onApply}
+                      />
+                    </div>
+                  </Form>
+                </Card>
+              </div>
             </div>
           </div>
-        </div>
-      </LayoutMain>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain liveLoading={liveLoading} pageLoading={pageLoading}>
+          <div className={styles.containerMain}>
+            <div className={styles.container}>
+              <div className={styles.leftContainer}>
+                <Card width="812px" padding="15px">
+                  <Divider direction="left">Davetiye Bilgileri</Divider>
+                  <Form id="invitation-form">
+                    <div className={styles.rowContainer}>
+                      <InputText
+                        labelText="Gelinin Adı Soyadı"
+                        width="85%"
+                        name="brideFullname"
+                      />
+                      <InputText
+                        labelText="Damadın Adı Soyadı"
+                        width="85%"
+                        name="groomFullname"
+                      />
+                    </div>
+                    <div className={styles.rowContainer}>
+                      <InputText
+                        labelText="Gelinin Anne Baba Adı"
+                        width="85%"
+                        name="brideParentsName"
+                      />
+                      <InputText
+                        labelText="Damadın Anne Baba Adı"
+                        width="85%"
+                        name="groomParentsName"
+                      />
+                    </div>
+                    <div className={styles.fluidContainer}>
+                      <InputText
+                        labelText="Düğün Tarihi"
+                        width="92.5%"
+                        name="weddingDate"
+                      />
+                    </div>
+                    <div className={styles.rowContainer}>
+                      <InputText
+                        labelText="Düğün Başlangıç Saati"
+                        width="85%"
+                        name="weddingStartTime"
+                      />
+                      <InputText
+                        labelText="Düğün Bitiş Saati"
+                        width="85%"
+                        name="weddingEndTime"
+                      />
+                    </div>
+                    <div className={styles.rowContainer}>
+                      <InputText
+                        labelText="Düğün Yeri"
+                        width="85%"
+                        name="weddingLocation"
+                      />
+                      <InputText
+                        labelText="Düğün Adresi"
+                        width="85%"
+                        name="weddingAddress"
+                      />
+                    </div>
+                    <div className={styles.checkboxContainer}>
+                      <InputCheckbox
+                        defaultChecked={true}
+                        onChange={onChangeHennaCheckbox}
+                      />
+                      <span>Kına yapacak mısınız?</span>
+                    </div>
+
+                    {hennaCheck ? (
+                      <>
+                        <div className={styles.fluidContainer}>
+                          <InputText
+                            labelText="Kına Tarihi"
+                            width="92.5%"
+                            name="hennaDate"
+                          />
+                        </div>
+                        <div className={styles.rowContainer}>
+                          <InputText
+                            labelText="Kına Başlangıç Saati"
+                            width="85%"
+                            name="hennaStartTime"
+                          />
+                          <InputText
+                            labelText="Kına Bitiş Saati"
+                            width="85%"
+                            name="hennaEndTime"
+                          />
+                        </div>
+                        <div className={styles.rowContainer}>
+                          <InputText
+                            labelText="Kına Yeri"
+                            width="85%"
+                            name="hennaLocation"
+                          />
+                          <InputText
+                            labelText="Kına Adresi"
+                            width="85%"
+                            name="hennaAddress"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    <div className={styles.fluidContainer}>
+                      <InputText
+                        labelText="Davetiye Sözü"
+                        width="92.5%"
+                        name="invitationWord"
+                      />
+                    </div>
+                    <div className={styles.fluidContainer}>
+                      <InputText
+                        labelText="WhatsApp Numaranız"
+                        width="92.5%"
+                        name="whatsappNumber"
+                      />
+                    </div>
+
+                    <span className={styles.warnText}>
+                      Verdiğiniz bilgilerle size WhatsApp üzerinden tasarım
+                      gönderilecektir. Siz tasarımı onaylamadığınız sürece
+                      kesinlikle baskı olmayacaktır.
+                    </span>
+                    <div className={styles.applyButton}>
+                      <MainColorButton
+                        text="Onayla"
+                        width="100%"
+                        height="40px"
+                        onClick={onApply}
+                      />
+                    </div>
+                  </Form>
+                </Card>
+              </div>
+              <div className={styles.spacer}></div>
+              <div className={styles.rightContainer}>
+                <MainColorButton
+                  text="Onayla"
+                  width="248px"
+                  height="40px"
+                  onClick={onApply}
+                />
+              </div>
+            </div>
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }

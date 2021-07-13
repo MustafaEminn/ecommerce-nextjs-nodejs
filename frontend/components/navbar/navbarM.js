@@ -99,17 +99,19 @@ function NavbarMobile({ auth }) {
     getCategories();
   }, []);
 
-  const onRouteCategory = () => {
-    setCategoryChange(!categoryChange);
-  };
   const onToggleSidebar = () => {
     setSideBarStatus(!sideBarStatus);
+  };
+
+  const onRouteCategory = () => {
+    onToggleSidebar();
+    setCategoryChange(!categoryChange);
   };
 
   const onToggleDropdown = (index) => {
     var dropDownElement = document.getElementById("sub-dropdown-" + index).style
       .display;
-    if (dropDownElement === "none") {
+    if (dropDownElement === "none" || dropDownElement === "") {
       return (document.getElementById("sub-dropdown-" + index).style.display =
         "flex");
     }
@@ -150,41 +152,6 @@ function NavbarMobile({ auth }) {
               <a>Hakkımızda</a>
             </Link>
           </li>
-          {Object.keys(categories).map((item, index) => {
-            return (
-              <li className={styles.sidebarLiDropdown}>
-                <div
-                  onClick={() => onToggleDropdown(index)}
-                  className={styles.sidebarLiDropdownContainer}
-                >
-                  <h2>{item}</h2>
-                  <BottomArrowIcon width="15px" height="15px" />
-                </div>
-                <ul
-                  id={"sub-dropdown-" + index}
-                  className={styles.sidebarLiDropdownSubUl}
-                >
-                  {Object.keys(categories[item]).map((item2, index2) => {
-                    return (
-                      <li className={styles.sidebarLiDropdownSubLi}>
-                        <Link
-                          href={{
-                            pathname:
-                              PAGE.category.href + categories[item][item2].slug,
-                            query: {
-                              page: 1,
-                            },
-                          }}
-                        >
-                          <a onClick={onRouteCategory}>{item2}</a>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </li>
-            );
-          })}
           {Object.keys(categories).map((item, index) => {
             return (
               <li className={styles.sidebarLiDropdown}>

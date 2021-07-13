@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/pages/Home/Home.module.scss";
+import stylesM from "../styles/pages/Home/HomeM.module.scss";
 import LayoutMain from "../components/Layout/layoutMain";
 import { API, PAGE } from "../constants";
 import Divider from "../components/divider/divider";
@@ -16,6 +17,7 @@ import { addCart, addCartWithLogin } from "../utils/cartMethods";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { cartChangeTrigger, isAuthed, isMobile } from "../states/index.atom";
 import LayoutMainMobile from "../components/Layout/layoutMainM";
+import CardProductMobile from "../components/cards/cardProductM";
 
 export default function Home() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -73,6 +75,18 @@ export default function Home() {
       </Link>
     );
   };
+  const TopSwiperItemMobile = ({ src, title, href }) => {
+    return (
+      <Link href={`product/${href}`}>
+        <a>
+          <img className={stylesM.topSwiperImg} src={src} />
+          <div className={stylesM.topSwiperTitle}>
+            <h1>{title}</h1>
+          </div>
+        </a>
+      </Link>
+    );
+  };
   return (
     <div>
       <Head>
@@ -82,7 +96,104 @@ export default function Home() {
       </Head>
 
       {isMobileDevice ? (
-        <LayoutMainMobile></LayoutMainMobile>
+        <LayoutMainMobile>
+          {/* Top Swiper Begin */}
+          <Swiper
+            slidesPerView={1}
+            className={stylesM.topSwiperContainer}
+            navigation={true}
+            loop={true}
+          >
+            {productsTopData.map((item, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <TopSwiperItemMobile
+                    title={item.title}
+                    href={slugify(item.title) + "-" + item.id}
+                    src={`${API.imgUrl}${item.photos[0]}`}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+          {/* Top Swiper End */}
+
+          <Spacer top="25px" />
+
+          {/* Çok Satanlar Begin */}
+          <Divider direction="left">
+            <Link href={PAGE.bestSelling.href}>
+              <a>{PAGE.bestSelling.name}</a>
+            </Link>
+          </Divider>
+          <Swiper
+            spaceBetween={5}
+            slidesPerView={2}
+            className={stylesM.swiperContainer}
+            navigation={true}
+            slidesPerGroup={SLIDES_PER_GROUP}
+            loop={true}
+          >
+            {mostSellData.map((item, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <CardProductMobile
+                    title={item.title}
+                    href={"product/" + slugify(item.title) + "-" + item.id}
+                    price={item.price + 30 || 0}
+                    imageUrl={`${API.imgUrl}${item.photos[0]}`}
+                    onAddCart={() => {
+                      setCartTrigger(!cartTrigger);
+                      addCart(
+                        { productId: item.id, count: 50, checked: true },
+                        isAuth
+                      );
+                    }}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+          {/* Çok Satanlar End */}
+
+          <Spacer top="50px" />
+
+          {/* En Yeniler Begin */}
+          <Divider direction="left">
+            <Link href={PAGE.newests.href}>
+              <a>{PAGE.newests.name}</a>
+            </Link>
+          </Divider>
+          <Swiper
+            spaceBetween={5}
+            slidesPerView={2}
+            className={stylesM.swiperContainer}
+            navigation={true}
+            loop={true}
+            slidesPerGroup={SLIDES_PER_GROUP}
+          >
+            {productsTopData.map((item, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <CardProductMobile
+                    title={item.title}
+                    href={"product/" + slugify(item.title) + "-" + item.id}
+                    price={item.price + 30 || 0}
+                    imageUrl={`${API.imgUrl}${item.photos[0]}`}
+                    onAddCart={() => {
+                      setCartTrigger(!cartTrigger);
+                      addCart(
+                        { productId: item.id, count: 50, checked: true },
+                        isAuth
+                      );
+                    }}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+          {/* En Yeniler End */}
+        </LayoutMainMobile>
       ) : (
         <LayoutMain pageLoading={pageLoading}>
           {/* Top Swiper Begin */}
