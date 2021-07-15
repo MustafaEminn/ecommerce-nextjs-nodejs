@@ -1,5 +1,5 @@
 module.exports = {
   reactStrictMode: true,
-  domains: ["localhost"],
+  domains: ["localhost:8085"],
   webpack5: true,
 };
