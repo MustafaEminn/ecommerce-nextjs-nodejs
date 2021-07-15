@@ -18,6 +18,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { cartChangeTrigger, isAuthed, isMobile } from "../states/index.atom";
 import LayoutMainMobile from "../components/Layout/layoutMainM";
 import CardProductMobile from "../components/cards/cardProductM";
+import Image from "next/image";
 
 export default function Home() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -67,7 +68,7 @@ export default function Home() {
     return (
       <Link href={`product/${href}`}>
         <a>
-          <img loading="lazy" className={styles.topSwiperImg} src={src} />
+          <Image loading="lazy" className={styles.topSwiperImg} src={src} />
           <div className={styles.topSwiperTitle}>
             <h1>{title}</h1>
           </div>
@@ -79,7 +80,7 @@ export default function Home() {
     return (
       <Link href={`product/${href}`}>
         <a>
-          <img loading="lazy" className={stylesM.topSwiperImg} src={src} />
+          <Image loading="lazy" className={stylesM.topSwiperImg} src={src} />
           <div className={stylesM.topSwiperTitle}>
             <h1>{title}</h1>
           </div>

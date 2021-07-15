@@ -22,6 +22,7 @@ import ShoppingCartIcon from "../../public/icons/shoppingCart";
 import { calcPrice } from "../../utils/calcPrice";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
 import Spacer from "../../components/Spacer/spacer";
+import Image from "next/dist/client/image";
 
 export default function MyCart() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -188,7 +189,7 @@ export default function MyCart() {
                 defaultChecked={checked}
               />
             </div>
-            <img src={srcImg} />
+            <Image src={srcImg} />
 
             <Link href={productHref}>
               <a>{productName}</a>
@@ -240,7 +241,7 @@ export default function MyCart() {
                 defaultChecked={checked}
               />
             </div>
-            <img src={srcImg} />
+            <Image src={srcImg} />
 
             <Link href={productHref}>
               <a>{productName}</a>

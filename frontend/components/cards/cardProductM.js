@@ -3,6 +3,7 @@ import Link from "next/dist/client/link";
 import HorizontalMiddleCartButton from "../buttons/cards/horizontalMiddleCartButton";
 import HorizontalMiddleProductButton from "../buttons/cards/horizontalMiddleProductButton";
 import Spacer from "../Spacer/spacer";
+import Image from "next/dist/client/image";
 
 function CardProductMobile({
   imageUrl,
@@ -15,7 +16,7 @@ function CardProductMobile({
     <div className={styles.container}>
       <Link href={`${href}`}>
         <a>
-          <img loading="lazy" className={styles.img} src={imageUrl} />
+          <Image loading="lazy" className={styles.img} src={imageUrl} />
         </a>
       </Link>
       <Link href={`${href}`}>

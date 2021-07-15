@@ -29,9 +29,9 @@ function InputSelect({
         <option className={styles.option} value="">
           Seçiniz
         </option>
-        {options.map((item) => {
+        {options.map((item, index) => {
           return (
-            <option className={styles.option} value={item?.value}>
+            <option key={index} className={styles.option} value={item?.value}>
               {item?.title}
             </option>
           );

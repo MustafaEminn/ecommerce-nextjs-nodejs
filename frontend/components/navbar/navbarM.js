@@ -1,12 +1,9 @@
-import { API, BASE, PAGE } from "../../constants/index";
+import { PAGE } from "../../constants/index";
 import ShoppingCartIcon from "../../public/icons/shoppingCart";
 import UserIcon from "../../public/icons/user";
 import styles from "../../styles/components/navbar/navbarM.module.scss";
 import Logo from "../logo";
-import SearchBar from "../SearchBar/searchbar";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { ListPopupContainer, ListPopup } from "../popups/listPopup";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
@@ -34,27 +31,6 @@ function NavbarMobile({ auth }) {
     categoryChangeTrigger
   );
   const [sideBarStatus, setSideBarStatus] = useState(false);
-  const router = useRouter();
-  const NavbarFooterItem = ({ title, href }) => {
-    return (
-      <li className={styles.footerItem}>
-        <Link href={href}>
-          <a>{title}</a>
-        </Link>
-      </li>
-    );
-  };
-  const NavbarFooterWithDropdownItem = ({ title, children }) => {
-    return (
-      <li className={styles.footerWithDropdownItem}>
-        <Link href={""}>
-          <a>{title}</a>
-        </Link>
-        <div className={styles.footerDropdown}>{children}</div>
-      </li>
-    );
-  };
-
   const NavbarPopupItem = ({ title, href = "/", onClick = () => {} }) => {
     return (
       <li onClick={onClick} className={styles.navbarPopupItem}>
@@ -158,7 +134,7 @@ function NavbarMobile({ auth }) {
           </li>
           {Object.keys(categories).map((item, index) => {
             return (
-              <li className={styles.sidebarLiDropdown}>
+              <li key={index} className={styles.sidebarLiDropdown}>
                 <div
                   onClick={() => onToggleDropdown(index)}
                   className={styles.sidebarLiDropdownContainer}
@@ -172,7 +148,10 @@ function NavbarMobile({ auth }) {
                 >
                   {Object.keys(categories[item]).map((item2, index2) => {
                     return (
-                      <li className={styles.sidebarLiDropdownSubLi}>
+                      <li
+                        key={index2}
+                        className={styles.sidebarLiDropdownSubLi}
+                      >
                         <Link
                           href={{
                             pathname:

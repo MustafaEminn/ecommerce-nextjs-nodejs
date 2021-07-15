@@ -17,6 +17,7 @@ import WhiteButton from "../../components/buttons/whiteButton";
 import { useRecoilValue } from "recoil";
 import { isMobile } from "../../states/index.atom";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
+import Image from "next/dist/client/image";
 
 export default function MyOrders() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -166,7 +167,7 @@ export default function MyOrders() {
                     {products[item.productId]?.photos ? (
                       <Card width="95vw" padding="8px">
                         <div className={stylesM.cardContainer}>
-                          <img
+                          <Image
                             src={
                               API.imgUrl + products[item.productId].photos[0]
                             }
@@ -305,7 +306,7 @@ export default function MyOrders() {
                     {products[item.productId]?.photos ? (
                       <Card width="100%" padding="8px">
                         <div className={styles.cardContainer}>
-                          <img
+                          <Image
                             src={
                               API.imgUrl + products[item.productId].photos[0]
                             }

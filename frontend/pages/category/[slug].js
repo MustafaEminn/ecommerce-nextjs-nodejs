@@ -21,6 +21,7 @@ import ReactPaginate from "react-paginate";
 import { getParameterByName } from "../../utils/getQuery";
 import InvitationIcon from "../../public/icons/invitationIcon";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
+import Image from "next/dist/client/image";
 
 function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -200,9 +201,9 @@ function ProductsPage() {
                       <a>
                         <div className={stylesM.productContainer}>
                           <div className={stylesM.imgContainer}>
-                            <img
+                            <Image
                               loading="lazy"
-                              src={API.imgUrl + item.photos[0]}
+                              src={`${API.imgUrl}${item.photos[0]}`}
                             />
                           </div>
 
@@ -322,9 +323,9 @@ function ProductsPage() {
                       <a>
                         <div className={styles.productContainer}>
                           <div className={styles.imgContainer}>
-                            <img
+                            <Image
                               loading="lazy"
-                              src={API.imgUrl + item.photos[0]}
+                              src={`${API.imgUrl}${item.photos[0]}`}
                             />
                           </div>
 

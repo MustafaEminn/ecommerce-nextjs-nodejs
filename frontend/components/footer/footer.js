@@ -26,7 +26,7 @@ function FooterComp() {
             <WhatsappIcon width="18px" height="18px" /> <p>+90 555 555 55 55</p>
           </span>
           <span className={styles.instagram}>
-            <a href={SOCIAL.instagram.href} target="_blank">
+            <a href={SOCIAL.instagram.href} rel="noreferrer" target="_blank">
               <InstagramIcon width="18px" height="18px" />
               <p>{SOCIAL.instagram.username}</p>
             </a>

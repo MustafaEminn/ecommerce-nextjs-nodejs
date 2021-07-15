@@ -18,6 +18,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { cartChangeTrigger, isAuthed, isMobile } from "../../states/index.atom";
 import { calcPrice } from "../../utils/calcPrice";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
+import Image from "next/dist/client/image";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
@@ -90,7 +91,7 @@ function ProductPage() {
                 {product["photos"].map((item, index) => {
                   return (
                     <SwiperSlide key={index}>
-                      <img
+                      <Image
                         width="100%"
                         src={`${API.imgUrl}${item}`}
                         className={stylesM.swiperImg}
@@ -154,7 +155,7 @@ function ProductPage() {
                   {product["photos"].map((item, index) => {
                     return (
                       <SwiperSlide key={index}>
-                        <img
+                        <Image
                           width="100%"
                           src={`${API.imgUrl}${item}`}
                           className={styles.swiperImg}
@@ -174,7 +175,7 @@ function ProductPage() {
                   {product["photos"].map((item, index) => {
                     return (
                       <SwiperSlide key={index}>
-                        <img
+                        <Image
                           src={`${API.imgUrl}${item}`}
                           className={styles.thumbImg}
                         />
