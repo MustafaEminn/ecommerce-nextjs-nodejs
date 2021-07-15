@@ -26,7 +26,7 @@ app.use(errorHandler.handleNotFound);
 app.use(errorHandler.handleError);
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "localhost:3000");
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
   // Request methods you wish to allow
   res.setHeader(
