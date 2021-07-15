@@ -114,6 +114,9 @@ function ProductPage() {
                       }}
                     />
                   </div>
+                  <span className={stylesM.invitationCode}>
+                    Davetiye Kodu: <span>{product.id}</span>
+                  </span>
                   <div className={stylesM.cartButtonContainer}>
                     <MainColorButton
                       height="44px"
@@ -194,6 +197,9 @@ function ProductPage() {
                       }}
                     />
                   </div>
+                  <span className={styles.invitationCode}>
+                    Davetiye Kodu: <span>{product.id}</span>
+                  </span>
                   <div className={styles.cartButtonContainer}>
                     <MainColorButton
                       height="44px"

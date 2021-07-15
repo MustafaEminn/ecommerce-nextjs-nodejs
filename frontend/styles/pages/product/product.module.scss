@@ -44,6 +44,17 @@
       & .cartButtonContainer {
         margin-top: 14px;
       }
+
+      & .invitationCode {
+        display: inline-block;
+        margin-top: 10px;
+        font-weight: 600;
+        font-family: var(--source-sans-pro);
+
+        & span {
+          color: var(--main-color);
+        }
+      }
     }
 
     & .productInfo {

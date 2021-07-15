@@ -180,6 +180,57 @@ exports.getProductById = async (req, res, next) => {
   });
 };
 
+exports.getCheckId = async (req, res, next) => {
+  var request = new sql.Request();
+
+  const getCheckQuery = `SELECT id FROM Products WHERE id= '${req.params.id}'`;
+
+  await request.query(getCheckQuery, (err, record) => {
+    var resBody = record.recordset;
+    if (err) {
+      return res
+        .status(500)
+        .send({ code: 1, message: "We got error when checking." });
+    } else if (!resBody[0]) {
+      return res.status(500).send({ code: 2, message: "Id not found." });
+    } else {
+      res.status(200).send({
+        code: 3,
+        message: "Id found.",
+      });
+    }
+  });
+};
+
+exports.getRandomProducts = async (req, res, next) => {
+  var request = new sql.Request();
+
+  const getProductQuery = `SELECT TOP ${
+    req.params.count || 1
+  } * FROM Products ORDER BY NEWID()`;
+
+  await request.query(getProductQuery, (err, record) => {
+    if (err) {
+      console.log(err);
+      return res
+        .status(500)
+        .send({ code: 1, message: "We got error when product getting." });
+    }
+    var resBody = record.recordset;
+    if (!resBody[0]) {
+      return res.status(500).send({ code: 2, message: "Product not found." });
+    }
+    var newBody = resBody.map((item) => {
+      return { ...item, photos: JSON.parse(item.photos) };
+    });
+    return res.status(200).send({
+      code: 3,
+      message: "Products getted.",
+      products: newBody,
+    });
+  });
+};
+
 exports.getProductsMostSell = async (req, res, next) => {
   var request = new sql.Request();
   const getProductsQuery = `SELECT TOP ${req.params.count} * FROM Products WHERE isActive=1 ORDER BY sellCount DESC`;

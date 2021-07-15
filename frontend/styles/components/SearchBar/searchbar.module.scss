@@ -17,7 +17,9 @@
   .searchBarIcon {
     fill: var(--main-color);
     position: absolute;
-    right: 15px;
-    top: 10px;
+    right: 8px;
+    top: 3px;
+    cursor: pointer;
+    padding: 7px;
   }
 }

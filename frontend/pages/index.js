@@ -67,7 +67,7 @@ export default function Home() {
     return (
       <Link href={`product/${href}`}>
         <a>
-          <img className={styles.topSwiperImg} src={src} />
+          <img loading="lazy" className={styles.topSwiperImg} src={src} />
           <div className={styles.topSwiperTitle}>
             <h1>{title}</h1>
           </div>
@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <Link href={`product/${href}`}>
         <a>
-          <img className={stylesM.topSwiperImg} src={src} />
+          <img loading="lazy" className={stylesM.topSwiperImg} src={src} />
           <div className={stylesM.topSwiperTitle}>
             <h1>{title}</h1>
           </div>

@@ -41,4 +41,18 @@
   /* Modal */
   --modal-bg: rgba(0, 0, 0, 0.4);
   --modal-bg-in: #ffffff;
+
+  /* Order Status */
+  --status-waiting-for-approve: #d4380d;
+  --status-waiting-for-approve-bg: #fff2e8;
+  --status-approved: #389e0d;
+  --status-approved-bg: #f6ffed;
+  --status-shipped: #c41d7f;
+  --status-shipped-bg: #fff0f6;
+  --status-ship-delivered: #096dd9;
+  --status-ship-delivered-bg: #e6f7ff;
+  --status-rejected: #cf1322;
+  --status-rejected-bg: #fff1f0;
+  --status-order-canceled: #08979c;
+  --status-order-canceled-bg: #e6fffb;
 }

@@ -28,7 +28,9 @@ router.delete(
   productController.deleteProduct
 );
 
+router.get("/getCheckId/:id", productController.getCheckId);
 router.get("/getProductById/:id", productController.getProductById);
+router.get("/getRandomProducts/:count", productController.getRandomProducts);
 router.get(
   "/getProductsMostSell/:count",
   productController.getProductsMostSell

@@ -20,6 +20,10 @@ import MenuIcon from "../../public/icons/menu";
 import SearchBarMobile from "../SearchBar/searchbarM";
 import CloseIcon from "../../public/icons/close";
 import BottomArrowIcon from "../../public/icons/bottomArrow";
+import {
+  ListPopupMobile,
+  ListPopupMobileContainer,
+} from "../popups/listPopupM";
 
 function NavbarMobile({ auth }) {
   const [cartLength, setCartLength] = useState(0);
@@ -207,12 +211,12 @@ function NavbarMobile({ auth }) {
           <div className={styles.navbarHeadUserSectionContainer}>
             <ul className={styles.navbarHeadUserSectionUl}>
               <li className={styles.navbarHeadUserSectionLiMyAccount}>
-                <ListPopupContainer>
+                <ListPopupMobileContainer>
                   {auth ? (
                     <div>
                       <UserIcon width="24px" height="24px" />
 
-                      <ListPopup>
+                      <ListPopupMobile>
                         <ul>
                           <NavbarPopupItem
                             href={PAGE.myAccount.href}
@@ -230,13 +234,13 @@ function NavbarMobile({ auth }) {
                             title="Çıkış Yap"
                           />
                         </ul>
-                      </ListPopup>
+                      </ListPopupMobile>
                     </div>
                   ) : (
                     <div>
                       <UserIcon width="24px" height="24px" />
 
-                      <ListPopup>
+                      <ListPopupMobile>
                         <ul>
                           <NavbarPopupItem
                             href={PAGE.register.href}
@@ -247,10 +251,10 @@ function NavbarMobile({ auth }) {
                             title="Giriş Yap"
                           />
                         </ul>
-                      </ListPopup>
+                      </ListPopupMobile>
                     </div>
                   )}
-                </ListPopupContainer>
+                </ListPopupMobileContainer>
               </li>
 
               <li

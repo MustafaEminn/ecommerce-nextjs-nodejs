@@ -1,35 +1,36 @@
 import Head from "next/head";
 import styles from "../../styles/pages/user/myOrders.module.scss";
+import stylesM from "../../styles/pages/user/myOrdersM.module.scss";
 import { API, PAGE } from "../../constants";
-import Divider from "../../components/divider/divider";
-import { getData, putData } from "../../api/fetch";
+import { getData } from "../../api/fetch";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import jwtDecode from "jwt-decode";
 import LayoutSidebar from "../../components/Layout/layoutSidebar";
-import InputText from "../../components/inputs/inputText";
-import InputSelect from "../../components/inputs/inputSelect";
-import { cityDistrict } from "../../constants/cityDistrict";
 import router from "next/router";
-import Form from "../../components/forms/form";
-import InputTextbox from "../../components/inputs/inputTextbox";
 import Card from "../../components/cards/card";
 import MainColorButton from "../../components/buttons/mainColorButton";
-import { getFormValues } from "../../utils/getFormValues";
-import { resetFormValues } from "../../utils/resetFormValues";
 import Spacer from "../../components/Spacer/spacer";
+import Link from "next/link";
+import slugify from "slugify";
+import { dateFormat } from "../../utils/dateFormat";
+import WhiteButton from "../../components/buttons/whiteButton";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../../states/index.atom";
+import LayoutMainMobile from "../../components/Layout/layoutMainM";
 
 export default function MyOrders() {
   const [pageLoading, setPageLoading] = useState(true);
   const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(false);
+  const isMobileDevice = useRecoilValue(isMobile);
 
   const getOrders = async () => {
     if (localStorage.getItem("token")) {
       var productIds = [];
       await getData("/api/order/getOrders")
         .then((res) => {
+          res.data.orders.reverse();
           setOrders(res.data.orders);
           res.data.orders.map((item) => {
             return productIds.push(item.productId);
@@ -43,34 +44,102 @@ export default function MyOrders() {
           });
         });
 
+      var gettingProducts = {};
+
       const getProductFetch = async (id) => {
         return await getData("/api/product/getProductById/" + id)
           .then((res) => {
-            return res.data.product[0];
+            const productItem = res.data.product[0];
+            if (productItem) {
+              var decodedPhotos = JSON.parse(productItem.photos);
+              var decodedProduct = { ...productItem, photos: decodedPhotos };
+              gettingProducts[id] = decodedProduct;
+            } else {
+              // False is mean customer buyed product but product not selling now
+              gettingProducts[id] = {};
+            }
+            return true;
           })
           .catch((err) => {
             return false;
           });
       };
 
-      var gettingProducts = [];
       for await (const productItem of productIds.map((item) =>
         getProductFetch(item)
       )) {
-        if (productItem) {
-          var decodedPhotos = JSON.parse(productItem.photos);
-          var decodedProduct = { ...productItem, photos: decodedPhotos };
-          gettingProducts.push(decodedProduct);
-        } else {
-          // False is mean customer buyed product but product not selling now
-          gettingProducts.push(false);
-        }
       }
       setProducts(gettingProducts);
       setPageLoading(false);
     } else {
       router.push(PAGE.login.href);
     }
+  };
+
+  const StatusItem = ({ status }) => {
+    var renderItem;
+    switch (status) {
+      case "1":
+        renderItem = (
+          <span className={styles.waitingForApprove}>Onay Bekliyor</span>
+        );
+        break;
+      case "2":
+        renderItem = <span className={styles.approved}>Onaylandı</span>;
+        break;
+      case "3":
+        renderItem = <span className={styles.shipped}>Kargo verildi</span>;
+        break;
+      case "4":
+        renderItem = (
+          <span className={styles.shipDelivered}>Kargo teslim edildi</span>
+        );
+        break;
+      case "100":
+        renderItem = <span className={styles.rejected}>Onaylanmadı</span>;
+        break;
+      case "101":
+        renderItem = (
+          <span className={styles.orderCanceled}>Sipariş iptal edildi</span>
+        );
+        break;
+      default:
+        renderItem = <p>-</p>;
+    }
+    return <>{renderItem}</>;
+  };
+
+  const StatusItemMobile = ({ status }) => {
+    var renderItem;
+    switch (status) {
+      case "1":
+        renderItem = (
+          <span className={stylesM.waitingForApprove}>Onay Bekliyor</span>
+        );
+        break;
+      case "2":
+        renderItem = <span className={stylesM.approved}>Onaylandı</span>;
+        break;
+      case "3":
+        renderItem = <span className={stylesM.shipped}>Kargo verildi</span>;
+        break;
+      case "4":
+        renderItem = (
+          <span className={stylesM.shipDelivered}>Kargo teslim edildi</span>
+        );
+        break;
+      case "100":
+        renderItem = <span className={stylesM.rejected}>Onaylanmadı</span>;
+        break;
+      case "101":
+        renderItem = (
+          <span className={stylesM.orderCanceled}>Sipariş iptal edildi</span>
+        );
+        break;
+      default:
+        renderItem = <p>-</p>;
+    }
+    return <>{renderItem}</>;
   };
 
   useEffect(() => {
@@ -86,23 +155,278 @@ export default function MyOrders() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutSidebar pageLoading={pageLoading}>
-        <div className={styles.container}>
-          {products.length > 0 &&
-            orders.map((item, index) => {
-              return (
-                <div key={index}>
-                  <Card width="100%">
-                    <div>
-                      <img src={products[index]?.photos[0]} />
-                    </div>
-                  </Card>
-                  <Spacer top="15px" />
-                </div>
-              );
-            })}
-        </div>
-      </LayoutSidebar>
+      {isMobileDevice ? (
+        <LayoutMainMobile pageLoading={pageLoading}>
+          <div className={stylesM.container}>
+            {Object.keys(products).length > 0 &&
+              orders.map((item, index) => {
+                console.log(products[item.productId]);
+                return (
+                  <div key={index}>
+                    {products[item.productId]?.photos ? (
+                      <Card width="95vw" padding="8px">
+                        <div className={stylesM.cardContainer}>
+                          <img
+                            src={
+                              API.imgUrl + products[item.productId].photos[0]
+                            }
+                            loading="lazy"
+                          />
+                          <Spacer top="20px" />
+                          <div className={stylesM.rowContainer}>
+                            <div className={stylesM.columnContainer}>
+                              <Link
+                                href={
+                                  "/product/" +
+                                  slugify(products[item.productId].title) +
+                                  "-" +
+                                  products[item.productId].id
+                                }
+                              >
+                                <a
+                                  target="_blank"
+                                  className={stylesM.itemTitle}
+                                >
+                                  {products[item.productId].title}
+                                </a>
+                              </Link>
+                              <Spacer top="10px" />
+                              <span className={stylesM.productCount}>
+                                {item.count} Adet
+                              </span>
+                              <Spacer top="10px" />
+                              <span className={stylesM.productBuyat}>
+                                Sipariş Tarihi:{" "}
+                                <span>{dateFormat(item.buyAt)}</span>
+                              </span>
+                              <Spacer top="10px" />
+                              <span className={stylesM.productId}>
+                                Sipariş Numarası: <span>{item.id}</span>
+                              </span>
+                              <Spacer top="10px" />
+                              <span className={stylesM.productPrice}>
+                                Fiyat: <span>{item.price} TL</span>
+                              </span>
+                            </div>
+                            <div className={stylesM.columnContainerRight}>
+                              <Spacer top="20px" />
+                              <StatusItemMobile status={item.orderStatus} />
+
+                              {Number(item.orderStatus) === 3 ? (
+                                <>
+                                  <Spacer top="10px" />
+                                  <Link
+                                    href={
+                                      "http://kargotakip.araskargo.com.tr/mainpage.aspx?code=" +
+                                      item.shippingTrackId
+                                    }
+                                  >
+                                    <a target="_blank">
+                                      <MainColorButton
+                                        width="201px"
+                                        height="40px"
+                                        text="Kargom Nerede?"
+                                      />
+                                    </a>
+                                  </Link>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                              <Spacer top="10px" />
+                              <Link
+                                href={
+                                  "/product/" +
+                                  slugify(products[item.productId].title) +
+                                  "-" +
+                                  products[item.productId].id
+                                }
+                              >
+                                <a target="_blank">
+                                  <WhiteButton
+                                    width="201px"
+                                    height="40px"
+                                    text="Ürüne Git"
+                                  />
+                                </a>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    ) : (
+                      <Card width="95vw" padding="8px">
+                        <div className={stylesM.cardContainer}>
+                          <h1 className={stylesM.productRemovedText}>
+                            Ürün
+                            <br />
+                            Kaldırıldı
+                          </h1>
+                          <span></span>
+                          <Spacer top="10px" />
+                          <div className={stylesM.columnContainer}>
+                            <Spacer top="10px" />
+                            <span className={stylesM.productCount}>
+                              {item.count} Adet
+                            </span>
+                            <Spacer top="10px" />
+                            <span className={stylesM.productBuyat}>
+                              Sipariş Tarihi:{" "}
+                              <span>{dateFormat(item.buyAt)}</span>
+                            </span>
+                            <Spacer top="10px" />
+                            <span className={stylesM.productPrice}>
+                              Fiyat: <span>{item.price} TL</span>
+                            </span>
+                            <Spacer top="10px" />
+                            <span className={stylesM.productId}>
+                              Sipariş Numarası: <span>{item.id}</span>
+                            </span>
+                          </div>
+                          <Spacer top="10px" />
+                        </div>
+                      </Card>
+                    )}
+
+                    <Spacer top="15px" />
+                  </div>
+                );
+              })}
+          </div>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutSidebar pageLoading={pageLoading}>
+          <div className={styles.container}>
+            {Object.keys(products).length > 0 &&
+              orders.map((item, index) => {
+                console.log(products[item.productId]);
+                return (
+                  <div key={index}>
+                    {products[item.productId]?.photos ? (
+                      <Card width="100%" padding="8px">
+                        <div className={styles.cardContainer}>
+                          <img
+                            src={
+                              API.imgUrl + products[item.productId].photos[0]
+                            }
+                            loading="lazy"
+                          />
+                          <div className={styles.rowContainer}>
+                            <div className={styles.columnContainer}>
+                              <Link
+                                href={
+                                  "/product/" +
+                                  slugify(products[item.productId].title) +
+                                  "-" +
+                                  products[item.productId].id
+                                }
+                              >
+                                <a target="_blank" className={styles.itemTitle}>
+                                  {products[item.productId].title}
+                                </a>
+                              </Link>
+                              <Spacer top="10px" />
+                              <span className={styles.productCount}>
+                                {item.count} Adet
+                              </span>
+                              <Spacer top="10px" />
+                              <span className={styles.productBuyat}>
+                                Sipariş Tarihi:{" "}
+                                <span>{dateFormat(item.buyAt)}</span>
+                              </span>
+                              <Spacer top="10px" />
+                              <span className={styles.productId}>
+                                Sipariş Numarası: <span>{item.id}</span>
+                              </span>
+                              <Spacer top="10px" />
+                              <span className={styles.productPrice}>
+                                Fiyat: <span>{item.price} TL</span>
+                              </span>
+                            </div>
+                            <div className={styles.columnContainerRight}>
+                              <StatusItem status={item.orderStatus} />
+
+                              {Number(item.orderStatus) === 3 ? (
+                                <>
+                                  <Spacer top="10px" />
+                                  <Link
+                                    href={
+                                      "http://kargotakip.araskargo.com.tr/mainpage.aspx?code=" +
+                                      item.shippingTrackId
+                                    }
+                                  >
+                                    <a target="_blank">
+                                      <MainColorButton
+                                        width="201px"
+                                        height="40px"
+                                        text="Kargom Nerede?"
+                                      />
+                                    </a>
+                                  </Link>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                              <Spacer top="10px" />
+                              <Link
+                                href={
+                                  "/product/" +
+                                  slugify(products[item.productId].title) +
+                                  "-" +
+                                  products[item.productId].id
+                                }
+                              >
+                                <a target="_blank">
+                                  <WhiteButton
+                                    width="201px"
+                                    height="40px"
+                                    text="Ürüne Git"
+                                  />
+                                </a>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    ) : (
+                      <Card width="100%" padding="8px">
+                        <div className={styles.cardContainer}>
+                          <h1 className={styles.productRemovedText}>
+                            Ürün
+                            <br />
+                            Kaldırıldı
+                          </h1>
+                          <span></span>
+                          <div className={styles.columnContainer}>
+                            <Spacer top="10px" />
+                            <span className={styles.productCount}>
+                              {item.count} Adet
+                            </span>
+                            <Spacer top="10px" />
+                            <span className={styles.productBuyat}>
+                              Sipariş Tarihi:{" "}
+                              <span>{dateFormat(item.buyAt)}</span>
+                            </span>
+                            <Spacer top="10px" />
+                            <span className={styles.productPrice}>
+                              Fiyat: <span>{item.price} TL</span>
+                            </span>
+                            <Spacer top="10px" />
+                            <span className={styles.productId}>
+                              Sipariş Numarası: <span>{item.id}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </Card>
+                    )}
+
+                    <Spacer top="15px" />
+                  </div>
+                );
+              })}
+          </div>
+        </LayoutSidebar>
+      )}
     </div>
   );
 }
