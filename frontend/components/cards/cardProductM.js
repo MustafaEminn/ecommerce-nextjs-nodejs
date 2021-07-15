@@ -1,4 +1,4 @@
-import styles from "../../styles/components/cards/CardProduct.module.scss";
+import styles from "../../styles/components/cards/cardProduct.module.scss";
 import Link from "next/dist/client/link";
 import HorizontalMiddleCartButton from "../buttons/cards/horizontalMiddleCartButton";
 import HorizontalMiddleProductButton from "../buttons/cards/horizontalMiddleProductButton";
