@@ -3,10 +3,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    img {
+    & .orderImgContainer {
       width: 90%;
       height: 170px;
-      object-fit: cover;
+      position: relative;
+      & img {
+        object-fit: cover;
+        border-radius: 4px;
+      }
     }
 
     & .productRemovedText {

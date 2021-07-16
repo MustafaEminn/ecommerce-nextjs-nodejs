@@ -7,6 +7,12 @@
   border: 1px solid var(--card-product-border);
   padding: 15px;
 
+  & .imgContainer {
+    height: 150px;
+    width: 100%;
+    position: relative;
+  }
+
   &:hover {
     & .linkTitle {
       color: var(--main-color);

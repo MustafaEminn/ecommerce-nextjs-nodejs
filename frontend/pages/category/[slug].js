@@ -22,6 +22,7 @@ import { getParameterByName } from "../../utils/getQuery";
 import InvitationIcon from "../../public/icons/invitationIcon";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
 import Image from "next/dist/client/image";
+import { srcLoader } from "../../utils/srcLoader";
 
 function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -204,6 +205,8 @@ function ProductsPage() {
                             <Image
                               loading="lazy"
                               src={`${API.imgUrl}${item.photos[0]}`}
+                              layout="fill"
+                              loader={srcLoader}
                             />
                           </div>
 
@@ -326,6 +329,8 @@ function ProductsPage() {
                             <Image
                               loading="lazy"
                               src={`${API.imgUrl}${item.photos[0]}`}
+                              layout="fill"
+                              loader={srcLoader}
                             />
                           </div>
 

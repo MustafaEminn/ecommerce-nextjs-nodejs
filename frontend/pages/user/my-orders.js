@@ -18,6 +18,7 @@ import { useRecoilValue } from "recoil";
 import { isMobile } from "../../states/index.atom";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
 import Image from "next/dist/client/image";
+import { srcLoader } from "../../utils/srcLoader";
 
 export default function MyOrders() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -167,12 +168,16 @@ export default function MyOrders() {
                     {products[item.productId]?.photos ? (
                       <Card width="95vw" padding="8px">
                         <div className={stylesM.cardContainer}>
-                          <Image
-                            src={
-                              API.imgUrl + products[item.productId].photos[0]
-                            }
-                            loading="lazy"
-                          />
+                          <div className={stylesM.orderImgContainer}>
+                            <Image
+                              src={
+                                API.imgUrl + products[item.productId].photos[0]
+                              }
+                              loading="lazy"
+                              layout="fill"
+                              loader={srcLoader}
+                            />
+                          </div>
                           <Spacer top="20px" />
                           <div className={stylesM.rowContainer}>
                             <div className={stylesM.columnContainer}>
@@ -306,12 +311,16 @@ export default function MyOrders() {
                     {products[item.productId]?.photos ? (
                       <Card width="100%" padding="8px">
                         <div className={styles.cardContainer}>
-                          <Image
-                            src={
-                              API.imgUrl + products[item.productId].photos[0]
-                            }
-                            loading="lazy"
-                          />
+                          <div className={styles.orderImgContainer}>
+                            <Image
+                              src={
+                                API.imgUrl + products[item.productId].photos[0]
+                              }
+                              loading="lazy"
+                              layout="fill"
+                              loader={srcLoader}
+                            />
+                          </div>
                           <div className={styles.rowContainer}>
                             <div className={styles.columnContainer}>
                               <Link

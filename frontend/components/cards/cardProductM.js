@@ -4,6 +4,7 @@ import HorizontalMiddleCartButton from "../buttons/cards/horizontalMiddleCartBut
 import HorizontalMiddleProductButton from "../buttons/cards/horizontalMiddleProductButton";
 import Spacer from "../Spacer/spacer";
 import Image from "next/dist/client/image";
+import { srcLoader } from "../../utils/srcLoader";
 
 function CardProductMobile({
   imageUrl,
@@ -14,11 +15,19 @@ function CardProductMobile({
 }) {
   return (
     <div className={styles.container}>
-      <Link href={`${href}`}>
-        <a>
-          <Image loading="lazy" className={styles.img} src={imageUrl} />
-        </a>
-      </Link>
+      <div className={styles.imgContainer}>
+        <Link href={`${href}`}>
+          <a>
+            <Image
+              loader={srcLoader}
+              loading="lazy"
+              className={styles.img}
+              src={imageUrl}
+              layout="fill"
+            />
+          </a>
+        </Link>
+      </div>
       <Link href={`${href}`}>
         <a className={styles.linkTitle}>{title}</a>
       </Link>

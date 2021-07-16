@@ -39,7 +39,11 @@
     box-shadow: var(--card-shadow);
 
     & .imgContainer {
+      position: relative;
       overflow: hidden;
+      width: 100%;
+
+      height: 334px;
     }
 
     & img {

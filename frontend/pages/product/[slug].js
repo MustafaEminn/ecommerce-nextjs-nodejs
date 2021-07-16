@@ -19,6 +19,9 @@ import { cartChangeTrigger, isAuthed, isMobile } from "../../states/index.atom";
 import { calcPrice } from "../../utils/calcPrice";
 import LayoutMainMobile from "../../components/Layout/layoutMainM";
 import Image from "next/dist/client/image";
+import { srcLoader } from "../../utils/srcLoader";
+import ZoomImageCarousel from "../../components/carousel/zoomImageCarousel";
+import ZoomImageCarouselMobile from "../../components/carousel/zoomImageCarouselMobile";
 
 function ProductPage() {
   SwiperCore.use([Navigation, Thumbs]);
@@ -29,6 +32,7 @@ function ProductPage() {
   const isAuth = useRecoilValue(isAuthed);
   const isMobileDevice = useRecoilValue(isMobile);
   const [cartTrigger, setCartTrigger] = useRecoilState(cartChangeTrigger);
+  const [visibleProductPhoto, setVisibleProductPhoto] = useState(false);
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -77,6 +81,13 @@ function ProductPage() {
 
       {isMobileDevice ? (
         <LayoutMainMobile pageLoading={pageLoading}>
+          <ZoomImageCarouselMobile
+            visible={visibleProductPhoto}
+            photos={product["photos"]}
+            onClose={() => {
+              setVisibleProductPhoto(false);
+            }}
+          />
           <div className="productContainerForSwiper">
             <div className={stylesM.container}>
               <Swiper
@@ -87,14 +98,18 @@ function ProductPage() {
                 navigation={true}
                 loop={true}
                 slidesPerGroup={1}
+                onClick={() => {
+                  setVisibleProductPhoto(true);
+                }}
               >
                 {product["photos"].map((item, index) => {
                   return (
                     <SwiperSlide key={index}>
                       <Image
-                        width="100%"
                         src={`${API.imgUrl}${item}`}
                         className={stylesM.swiperImg}
+                        layout="fill"
+                        loader={srcLoader}
                       />
                     </SwiperSlide>
                   );
@@ -140,6 +155,13 @@ function ProductPage() {
         </LayoutMainMobile>
       ) : (
         <LayoutMain pageLoading={pageLoading}>
+          <ZoomImageCarousel
+            visible={visibleProductPhoto}
+            photos={product["photos"]}
+            onClose={() => {
+              setVisibleProductPhoto(false);
+            }}
+          />
           <div className="productContainerForSwiper">
             <div className={styles.container}>
               <Card className={styles.productPhoto}>
@@ -151,14 +173,18 @@ function ProductPage() {
                   navigation={true}
                   loop={true}
                   slidesPerGroup={1}
+                  onClick={() => {
+                    setVisibleProductPhoto(true);
+                  }}
                 >
                   {product["photos"].map((item, index) => {
                     return (
                       <SwiperSlide key={index}>
                         <Image
-                          width="100%"
                           src={`${API.imgUrl}${item}`}
                           className={styles.swiperImg}
+                          layout="fill"
+                          loader={srcLoader}
                         />
                       </SwiperSlide>
                     );
@@ -178,6 +204,8 @@ function ProductPage() {
                         <Image
                           src={`${API.imgUrl}${item}`}
                           className={styles.thumbImg}
+                          layout="fill"
+                          loader={srcLoader}
                         />
                       </SwiperSlide>
                     );

@@ -19,6 +19,7 @@ import { cartChangeTrigger, isAuthed, isMobile } from "../states/index.atom";
 import LayoutMainMobile from "../components/Layout/layoutMainM";
 import CardProductMobile from "../components/cards/cardProductM";
 import Image from "next/image";
+import { srcLoader } from "../utils/srcLoader";
 
 export default function Home() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -68,7 +69,16 @@ export default function Home() {
     return (
       <Link href={`product/${href}`}>
         <a>
-          <Image loading="lazy" className={styles.topSwiperImg} src={src} />
+          <Image
+            width="1200px"
+            height="400px"
+            loading="lazy"
+            className={styles.topSwiperImg}
+            src={src}
+            loader={srcLoader}
+            layout="fixed"
+          />
+
           <div className={styles.topSwiperTitle}>
             <h1>{title}</h1>
           </div>
@@ -80,7 +90,15 @@ export default function Home() {
     return (
       <Link href={`product/${href}`}>
         <a>
-          <Image loading="lazy" className={stylesM.topSwiperImg} src={src} />
+          <Image
+            // width="100%"
+            // height="350px"
+            loading="lazy"
+            className={stylesM.topSwiperImg}
+            src={src}
+            loader={srcLoader}
+            layout="fill"
+          />
           <div className={stylesM.topSwiperTitle}>
             <h1>{title}</h1>
           </div>

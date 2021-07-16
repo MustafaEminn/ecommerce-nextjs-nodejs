@@ -4,6 +4,7 @@ import HorizontalMiddleCartButton from "../buttons/cards/horizontalMiddleCartBut
 import HorizontalMiddleProductButton from "../buttons/cards/horizontalMiddleProductButton";
 import Spacer from "../Spacer/spacer";
 import Image from "next/dist/client/image";
+import { srcLoader } from "../../utils/srcLoader";
 
 function CardProduct({
   imageUrl,
@@ -16,7 +17,14 @@ function CardProduct({
     <div className={styles.container}>
       <Link href={`${href}`}>
         <a>
-          <Image loading="lazy" className={styles.img} src={imageUrl} />
+          <Image
+            width="188px"
+            height="150px"
+            loading="lazy"
+            className={styles.img}
+            loader={srcLoader}
+            src={imageUrl}
+          />
         </a>
       </Link>
       <Link href={`${href}`}>

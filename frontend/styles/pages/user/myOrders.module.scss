@@ -1,10 +1,15 @@
 .container {
   & .cardContainer {
     display: flex;
-    img {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
+
+    & .orderImgContainer {
+      width: 145px;
+      height: 145px;
+      position: relative;
+      & img {
+        object-fit: cover;
+        border-radius: 4px;
+      }
     }
 
     & .productRemovedText {
