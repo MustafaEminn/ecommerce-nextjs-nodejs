@@ -4,8 +4,12 @@ import Spacer from "../components/Spacer/spacer";
 import styles from "../styles/pages/hakkimizda/hakkimizda.module.scss";
 import { PAGE } from "../constants";
 import { postData, postFormData } from "../api/fetch";
+import { useRecoilValue } from "recoil";
+import { isMobile } from "../states/index.atom";
+import LayoutMainMobile from "../components/Layout/layoutMainM";
 
 export default function Home() {
+  const isMobileDevice = useRecoilValue(isMobile);
   function onSubmit(e) {
     e.preventDefault();
     const productPhoto = new FormData(e.target);
@@ -28,27 +32,56 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <LayoutMain>
-        <div className={styles.container}>
-          <div className={styles.topTitleContainer}>
-            <h1>{PAGE.aboutUs.name}</h1>
+      {isMobileDevice ? (
+        <LayoutMainMobile>
+          <div className={styles.container}>
+            <div
+              style={{ height: "100px" }}
+              className={styles.topTitleContainer}
+            >
+              <h1 style={{ fontSize: "56px" }}>{PAGE.aboutUs.name}</h1>
+            </div>
+
+            <Spacer top="15px" />
+
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industrys standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing software like Aldus PageMaker including versions of
+              Lorem Ipsum.
+            </p>
           </div>
+        </LayoutMainMobile>
+      ) : (
+        <LayoutMain>
+          <div className={styles.container}>
+            <div className={styles.topTitleContainer}>
+              <h1>{PAGE.aboutUs.name}</h1>
+            </div>
 
-          <Spacer top="15px" />
+            <Spacer top="15px" />
 
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industrys standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
-          </p>
-        </div>
-      </LayoutMain>
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industrys standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing software like Aldus PageMaker including versions of
+              Lorem Ipsum.
+            </p>
+          </div>
+        </LayoutMain>
+      )}
     </div>
   );
 }
