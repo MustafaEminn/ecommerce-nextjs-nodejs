@@ -1,5 +1,6 @@
 node_modules/
-images/
 .idea
 .env-example
+.vercel
+now.json
 .vercel

@@ -4,7 +4,7 @@ node_js:
   - "stable"
 
 services:
-  - mongodb
+  - mssql
 
 cache:
   directories:
